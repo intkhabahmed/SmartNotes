@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/navigation_drawer_group"
+        android:checkableBehavior="single">
+        <item android:id="@+id/home_page"
+            android:title="@string/home" />
+        <item android:id="@+id/trash"
+            android:title="@string/trash"/>
+        <item android:id="@+id/settings"
+            android:title="@string/settings"/>
+        <item android:id="@+id/help"
+            android:title="@string/help"/>
+        <item android:id="@+id/about"
+            android:title="@string/about"/>
+    </group>
+</menu>

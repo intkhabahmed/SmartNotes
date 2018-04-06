@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/sort_menu"
+        android:title="@string/sort"
+        android:icon="@drawable/ic_sort_white_24dp"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group
+                android:id="@+id/sort_submenu"
+                android:checkableBehavior="single" >
+                <item android:id="@+id/sort_title_ascending"
+                    android:orderInCategory="1"
+                    android:title="@string/title_ascending"
+                    app:showAsAction="never"/>
+                <item android:id="@+id/sort_date_created_acsending"
+                    android:orderInCategory="2"
+                    android:title="@string/date_created_ascending"
+                    app:showAsAction="never"/>
+                <item android:id="@+id/sort_date_created_descending"
+                    android:orderInCategory="3"
+                    android:title="@string/date_created_descending"
+                    app:showAsAction="never"/>
+            </group>
+        </menu>
+    </item>
+
+</menu>
