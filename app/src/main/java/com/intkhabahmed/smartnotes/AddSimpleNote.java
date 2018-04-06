@@ -32,9 +32,6 @@ public class AddSimpleNote extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.iconFillColor));
-        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
-
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.iconFillColor));
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
@@ -47,7 +44,6 @@ public class AddSimpleNote extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent.hasExtra(Intent.EXTRA_TEXT)){
             mIsEditing = true;
-            collapsingToolbarLayout.setTitle(getString(R.string.edit_simple_note));
             mNoteId = intent.getLongExtra(Intent.EXTRA_TEXT, 0);
             if(mNoteId > 0){
                 Cursor cursor = getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI,
@@ -63,7 +59,6 @@ public class AddSimpleNote extends AppCompatActivity {
                 }
             }
         } else {
-            collapsingToolbarLayout.setTitle(getString(R.string.add_simple_note));
             mIsEditing = false;
         }
     }

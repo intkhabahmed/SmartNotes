@@ -30,8 +30,6 @@ public class NoteDetailActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.iconFillColor));
-        CollapsingToolbarLayout collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
-        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(R.color.iconFillColor));
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
@@ -65,8 +63,6 @@ public class NoteDetailActivity extends AppCompatActivity {
                 }
             });
 
-            collapsingToolbarLayout.setTitle(getString(R.string.simple_note));
-
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
             simpleNotesDetailFragment.setNoteId(mNoteId);
             getSupportFragmentManager().beginTransaction()
@@ -74,7 +70,6 @@ public class NoteDetailActivity extends AppCompatActivity {
                     .commit();
         } else if(mNoteType.equals(getString(R.string.image_note))) {
             editButton.setVisibility(View.GONE);
-            collapsingToolbarLayout.setTitle(getString(R.string.image_note));
             ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
             imageNotesDetailFragment.setNoteId(mNoteId);
             getSupportFragmentManager().beginTransaction()

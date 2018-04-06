@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AddAndEditChecklist">
 
-    <include
-        layout="@layout/app_bar_layout" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize"
+        android:background="@color/colorPrimary"
+        app:contentInsetStart="72dp"
+        app:titleTextColor="@color/iconFillColor"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_marginTop="?android:actionBarSize">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/add_checklist_container"
@@ -94,4 +100,4 @@
         </android.support.v4.widget.NestedScrollView>
     </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>
