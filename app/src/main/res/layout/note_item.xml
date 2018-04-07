@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/note_create_date"
@@ -44,20 +44,19 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintBaseline_toBaselineOf="@+id/note_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintBottom_toTopOf="@+id/note_title"
         app:layout_constraintEnd_toStartOf="@+id/item_menu_button"
         app:layout_constraintStart_toEndOf="@+id/note_title"
+        app:layout_constraintTop_toBottomOf="@+id/note_title"
         tools:text="@tools:sample/date/ddmmyy" />
 
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/colorAccent"
+        android:background="@color/greyHighlight"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/note_description" />
@@ -65,13 +64,15 @@
     <ImageButton
         android:id="@+id/item_menu_button"
         android:layout_width="24dp"
-        android:layout_height="56dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@color/iconFillColor"
-        app:layout_constraintBottom_toTopOf="@+id/note_create_date"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/view"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_more_vert_black_24dp" />
 
 </android.support.constraint.ConstraintLayout>

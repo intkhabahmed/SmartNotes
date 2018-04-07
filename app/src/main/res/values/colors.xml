@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="iconFillColor">#FFFFFF</color>
-    <color name="greyHighlight">#EEEEEE</color>
+    <color name="greyHighlight">#eeeeee</color>
 </resources>

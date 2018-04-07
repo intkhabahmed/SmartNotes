@@ -39,7 +39,6 @@ public class HomePageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_page_layout, container, false);
-        setHasOptionsMenu(true);
         ViewPager viewPager = view.findViewById(R.id.view_pager);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         mNotesFragmentPagerAdapter = new NotesFragmentPagerAdapter(getChildFragmentManager(), getActivity());
@@ -86,6 +85,12 @@ public class HomePageFragment extends Fragment {
         buttonSubMenu.setVisibility(View.GONE);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
