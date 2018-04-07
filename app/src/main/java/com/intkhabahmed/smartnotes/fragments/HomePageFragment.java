@@ -38,6 +38,7 @@ public class HomePageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.home_page_layout, container, false);
         ViewPager viewPager = view.findViewById(R.id.view_pager);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
@@ -88,12 +89,6 @@ public class HomePageFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         mAddButton.setRotation(0);
@@ -106,7 +101,7 @@ public class HomePageFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         getActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
         int subMenuOrder = mSharedPreferences.getInt(getString(R.string.sort_criteria_id), 3);
-        menu.getItem(0).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
+        menu.getItem(1).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
     }
 
     @Override
