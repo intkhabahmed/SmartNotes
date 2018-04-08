@@ -37,4 +37,7 @@
     <string name="home">Home</string>
     <string name="note_type">Note Type</string>
     <string name="search">Search</string>
+    <string name="trash_enpty_view_description">No Item in trash....</string>
+    <string name="delete_forever">Delete Forever</string>
+    <string name="restore">Restore Note</string>
 </resources>

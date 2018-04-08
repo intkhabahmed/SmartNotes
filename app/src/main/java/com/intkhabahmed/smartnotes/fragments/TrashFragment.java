@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,22 +24,18 @@ import android.widget.Toast;
 
 import com.intkhabahmed.smartnotes.NoteDetailActivity;
 import com.intkhabahmed.smartnotes.NotesAdapter;
-import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 
-/**
- * Created by INTKHAB on 23-03-2018.
- */
+public class TrashFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NotesAdapter.OnItemClickListener {
 
-public class SimpleNotesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NotesAdapter.OnItemClickListener {
-
+    private static final int TRASH_FRAGMENT_LOADER_ID = 3;
     private NotesAdapter mNotesAdapter;
     private RecyclerView mRecyclerView;
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
-    private static final int SIMPLE_NOTE_FRAGMENT_LOADER_ID = 0;
 
-    public SimpleNotesFragment() {
+    public TrashFragment() {
     }
 
     @Nullable
@@ -49,7 +44,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         View rootView = inflater.inflate(R.layout.notes_recycler_view, container, false);
 
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
-        mEmptyView = rootView.findViewById(R.id.empty_view);
+        mEmptyView = rootView.findViewById(R.id.trash_empty_view);
         mProgressBar = rootView.findViewById(R.id.progress_bar);
 
         mNotesAdapter = new NotesAdapter(getActivity(),null, this, false);
@@ -57,7 +52,6 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-
         return rootView;
     }
 
@@ -70,17 +64,16 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                getLoaderManager().initLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, SimpleNotesFragment.this);
+                getLoaderManager().initLoader(TRASH_FRAGMENT_LOADER_ID, null, TrashFragment.this);
             }
         },500);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selection = NotesContract.NotesEntry.COLUMN_TYPE +"=? AND " + NotesContract.NotesEntry.COLUMN_TRASH + "=?";
-        String[] selectionArgs = {getString(R.string.simple_note), "0"};
-        String sortOrder = PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .getString(getString(R.string.sort_criteria), NotesContract.NotesEntry.COLUMN_DATE_CREATED + " desc");
+        String selection = NotesContract.NotesEntry.COLUMN_TRASH + "=?";
+        String[] selectionArgs = {"1"};
+        String sortOrder = NotesContract.NotesEntry.COLUMN_DATE_MODIFIED + " desc";
         return new CursorLoader(getActivity(), NotesContract.NotesEntry.CONTENT_URI, null,
                 selection, selectionArgs, sortOrder);
     }
@@ -112,17 +105,13 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         mEmptyView.setVisibility(View.INVISIBLE);
     }
 
-
-    public void updateSimpleNotesFragment(){
-        getLoaderManager().restartLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, this);
-    }
-
     @Override
     public void onItemClick(int adapterPosition, Cursor cursor) {
         cursor.moveToPosition(adapterPosition);
         Intent detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
         detailActivityIntent.putExtra(Intent.EXTRA_TEXT, cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID)));
-        detailActivityIntent.putExtra(getString(R.string.note_type), getString(R.string.simple_note));
+        detailActivityIntent.putExtra(getString(R.string.note_type),
+                cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE)));
         startActivity(detailActivityIntent);
     }
 
@@ -131,33 +120,26 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
 
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
+        popupMenu.getMenu().getItem(0).setTitle(getString(R.string.delete_forever));
+        popupMenu.getMenu().getItem(1).setTitle(getString(R.string.restore));
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
-                        ContentValues values = new ContentValues();
-                        values.put(NotesContract.NotesEntry.COLUMN_TRASH, 1);
-                        values.put(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED, System.currentTimeMillis());
-                        getActivity().getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
+                        getActivity().getContentResolver().delete(NotesContract.NotesEntry.CONTENT_URI,
                                 NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
-                        Toast.makeText(getActivity(), "Note has been moved to trash ", Toast.LENGTH_LONG).show();
-                        getLoaderManager().restartLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, SimpleNotesFragment.this);
+                        Toast.makeText(getActivity(), "Note has been permanently deleted!!", Toast.LENGTH_LONG).show();
+                        getLoaderManager().restartLoader(TRASH_FRAGMENT_LOADER_ID, null, TrashFragment.this);
                         break;
                     case R.id.share_note:
-                        Cursor cursor = getActivity().getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI, new String[]{NotesContract.NotesEntry.COLUMN_DESCRIPTION},
-                                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)}, null);
-                        if(cursor != null) {
-                            cursor.moveToFirst();
-                            String noteDescription = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
-                            cursor.close();
-                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                            shareIntent.setType("text/plain");
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, noteDescription);
-                            if (shareIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                startActivity(shareIntent);
-                            }
+                        ContentValues values = new ContentValues();
+                        values.put(NotesContract.NotesEntry.COLUMN_TRASH, 0);
+                        int rowsUpdated = getActivity().getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
+                                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
+                        if(rowsUpdated > 0){
+                            Toast.makeText(getActivity(), "Note has been restored!", Toast.LENGTH_LONG).show();
                         }
                         break;
                 }
@@ -167,4 +149,3 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         popupMenu.show();
     }
 }
-

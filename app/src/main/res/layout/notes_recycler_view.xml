@@ -17,10 +17,10 @@
     <LinearLayout
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_margin="16dp">
         <ImageView
             android:layout_width="96dp"
@@ -35,10 +35,30 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/trash_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible">
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            app:srcCompat="@drawable/ic_empty_trash_black_24dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/trash_enpty_view_description"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            />
+    </LinearLayout>
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="72dp" />
+        android:layout_gravity="center" />
 </FrameLayout>

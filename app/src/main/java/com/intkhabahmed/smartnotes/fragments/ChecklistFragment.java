@@ -135,6 +135,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
                     case R.id.delete_note:
                         ContentValues values = new ContentValues();
                         values.put(NotesContract.NotesEntry.COLUMN_TRASH, 1);
+
                         getActivity().getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
                                 NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
                         Toast.makeText(getActivity(), "Note has been moved to trash ", Toast.LENGTH_LONG).show();

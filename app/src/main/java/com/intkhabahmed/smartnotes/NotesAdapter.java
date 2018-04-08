@@ -70,51 +70,58 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mCursor.moveToPosition(position);
         switch (holder.getItemViewType()) {
             case 0:
+                int trashed = mCursor.getInt(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TRASH));
                 TextNotesViewHolder textNotesViewHolder = (TextNotesViewHolder) holder;
-                String noteType = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
                 String title = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
-                textNotesViewHolder.noteDescriptionTextView.setText("");
-                if (noteType.equals(mContext.getString(R.string.simple_note))) {
-                    StringBuilder description = new StringBuilder(mCursor.getString(mCursor
-                            .getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION)));
-                    if (description.length() > 30) {
-                        description.delete(30, description.length());
-                        description.append(" ...");
-                    }
-                    textNotesViewHolder.noteDescriptionTextView.setText(description);
-                } else if (noteType.equals(mContext.getString(R.string.checklist))) {
-                    String description = mCursor.getString(mCursor
-                            .getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
-                    try {
-                        JSONObject checklistObjects = new JSONObject(description);
-                        JSONArray jsonArrays = checklistObjects.getJSONArray(mContext.getString(R.string.checklist));
-                        int noOfItems = jsonArrays.length() >= 2 ? 2 : 1;
-                        for (int i = 0; i < noOfItems; i++) {
-                            try {
-                                JSONObject jsonObject = jsonArrays.getJSONObject(i);
-                                String task = String.valueOf(jsonObject.get(AddAndEditChecklist.LIST_TITLE));
-                                boolean isCompleted = jsonObject.getBoolean(AddAndEditChecklist.IS_LIST_CHECKED);
-                                if (isCompleted) {
-                                    textNotesViewHolder.noteDescriptionTextView.append(task);
-                                    textNotesViewHolder.noteDescriptionTextView.append(" " +
-                                            mContext.getString(R.string.checkmark_unicode));
-                                } else {
-                                    textNotesViewHolder.noteDescriptionTextView.append(task);
+
+                if(trashed == 0){
+                    String noteType = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
+                    textNotesViewHolder.noteDescriptionTextView.setText("");
+                    if (noteType.equals(mContext.getString(R.string.simple_note))) {
+                        StringBuilder description = new StringBuilder(mCursor.getString(mCursor
+                                .getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION)));
+                        if (description.length() > 30) {
+                            description.delete(30, description.length());
+                            description.append(" ...");
+                        }
+                        textNotesViewHolder.noteDescriptionTextView.setText(description);
+                    } else if (noteType.equals(mContext.getString(R.string.checklist))) {
+                        String description = mCursor.getString(mCursor
+                                .getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
+                        try {
+                            JSONObject checklistObjects = new JSONObject(description);
+                            JSONArray jsonArrays = checklistObjects.getJSONArray(mContext.getString(R.string.checklist));
+                            int noOfItems = jsonArrays.length() >= 2 ? 2 : 1;
+                            for (int i = 0; i < noOfItems; i++) {
+                                try {
+                                    JSONObject jsonObject = jsonArrays.getJSONObject(i);
+                                    String task = String.valueOf(jsonObject.get(AddAndEditChecklist.LIST_TITLE));
+                                    boolean isCompleted = jsonObject.getBoolean(AddAndEditChecklist.IS_LIST_CHECKED);
+                                    if (isCompleted) {
+                                        textNotesViewHolder.noteDescriptionTextView.append(task);
+                                        textNotesViewHolder.noteDescriptionTextView.append(" " +
+                                                mContext.getString(R.string.checkmark_unicode));
+                                    } else {
+                                        textNotesViewHolder.noteDescriptionTextView.append(task);
+                                    }
+                                    textNotesViewHolder.noteDescriptionTextView.append("\n");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                                textNotesViewHolder.noteDescriptionTextView.append("\n");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
                             }
+                            if (jsonArrays.length() > 2) {
+                                textNotesViewHolder.noteDescriptionTextView.append("...");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        if (jsonArrays.length() > 2) {
-                            textNotesViewHolder.noteDescriptionTextView.append("...");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+
                     }
-
+                }else{
+                    textNotesViewHolder.noteDescriptionTextView.setVisibility(View.GONE);
+                    textNotesViewHolder.noteTitleTextView.setOnClickListener(null);
+                    textNotesViewHolder.noteCreateDateTextView.setOnClickListener(null);
                 }
-
                 long time = mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DATE_CREATED));
                 textNotesViewHolder.noteTitleTextView.setText(title);
                 textNotesViewHolder.noteCreateDateTextView.setText(NotesDateUtil.getFormattedTime(time, System.currentTimeMillis()));
@@ -169,10 +176,10 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             noteDescriptionTextView = itemView.findViewById(R.id.note_description);
             noteCreateDateTextView = itemView.findViewById(R.id.note_create_date);
             itemMenuButton = itemView.findViewById(R.id.item_menu_button);
-            itemMenuButton.setOnClickListener(this);
             noteTitleTextView.setOnClickListener(this);
             noteDescriptionTextView.setOnClickListener(this);
             noteCreateDateTextView.setOnClickListener(this);
+            itemMenuButton.setOnClickListener(this);
         }
 
         @Override
@@ -185,8 +192,6 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Cursor cursor = mCursor;
                 mOnItemClickListener.onItemClick(getAdapterPosition(), cursor);
             }
-
-
         }
 
     }
@@ -203,10 +208,10 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             noteImageView = itemView.findViewById(R.id.note_image_view);
             noteCreateDateTextView = itemView.findViewById(R.id.tv_note_date_created);
             itemMenuButton = itemView.findViewById(R.id.note_menu_button);
-            itemMenuButton.setOnClickListener(this);
             noteTitleTextView.setOnClickListener(this);
             noteImageView.setOnClickListener(this);
             noteCreateDateTextView.setOnClickListener(this);
+            itemMenuButton.setOnClickListener(this);
         }
 
         @Override

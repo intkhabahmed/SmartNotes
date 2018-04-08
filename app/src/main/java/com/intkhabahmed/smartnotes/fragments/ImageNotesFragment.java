@@ -35,7 +35,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     private RecyclerView mRecyclerView;
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
-    private static final int IMAGE_NOTE_FRAGMENT_LOADER_ID = 0;
+    private static final int IMAGE_NOTE_FRAGMENT_LOADER_ID = 2;
 
     public ImageNotesFragment() {
     }
@@ -137,6 +137,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
                     case R.id.delete_note:
                         ContentValues values = new ContentValues();
                         values.put(NotesContract.NotesEntry.COLUMN_TRASH, 1);
+                        values.put(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED, System.currentTimeMillis());
                         getActivity().getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
                                 NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
                         Toast.makeText(getActivity(), "Note has been moved to trash ", Toast.LENGTH_LONG).show();

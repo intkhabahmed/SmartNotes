@@ -1,28 +1,28 @@
 package com.intkhabahmed.smartnotes;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.intkhabahmed.smartnotes.fragments.HomePageFragment;
-import com.intkhabahmed.smartnotes.notesdata.NotesContract;
+import com.intkhabahmed.smartnotes.fragments.TrashFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String BUNDLE_EXTRA = "bundle-extra";
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
+    private static int mFragmentNumber = 1;
+    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
-
+        mFragmentManager = getSupportFragmentManager();
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -51,9 +51,17 @@ public class MainActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 switch (id) {
                     case R.id.home_page:
+                        item.setChecked(true);
                         HomePageFragment homePageFragment = new HomePageFragment();
-                        getSupportFragmentManager().beginTransaction()
+                        mFragmentManager.beginTransaction()
                                 .replace(R.id.fragment_layout, homePageFragment)
+                                .commit();
+                        break;
+                    case R.id.trash:
+                        item.setChecked(true);
+                        TrashFragment trashFragment = new TrashFragment();
+                        mFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_layout, trashFragment)
                                 .commit();
                         break;
                 }
@@ -61,12 +69,13 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        if(savedInstanceState == null){
+            HomePageFragment homePageFragment = new HomePageFragment();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_layout, homePageFragment)
+                    .commit();
+        }
 
-        HomePageFragment homePageFragment = new HomePageFragment();
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_layout, homePageFragment)
-                .commit();
     }
 
     @Override
@@ -81,5 +90,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    public Fragment getFragmentByNumber(int fragmentNumber){
+        switch (fragmentNumber) {
+            case 1:
+                return new HomePageFragment();
+            case 2:
+                return new TrashFragment();
+                default:
+                    return null;
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(BUNDLE_EXTRA, mFragmentNumber);
     }
 }
