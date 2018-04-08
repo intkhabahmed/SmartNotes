@@ -40,4 +40,8 @@
     <string name="trash_enpty_view_description">No Item in trash....</string>
     <string name="delete_forever">Delete Forever</string>
     <string name="restore">Restore Note</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="dark_theme_key">dark_theme_key</string>
+    <string name="disabled">Disabled</string>
+    <string name="enabled">Enabled</string>
 </resources>

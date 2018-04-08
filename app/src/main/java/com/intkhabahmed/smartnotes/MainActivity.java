@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.intkhabahmed.smartnotes.fragments.HomePageFragment;
+import com.intkhabahmed.smartnotes.fragments.SettingsFragment;
 import com.intkhabahmed.smartnotes.fragments.TrashFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.iconFillColor));
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
@@ -58,12 +59,22 @@ public class MainActivity extends AppCompatActivity {
                                 .commit();
                         break;
                     case R.id.trash:
+                        actionBar.setTitle(getString(R.string.trash));
                         item.setChecked(true);
                         TrashFragment trashFragment = new TrashFragment();
                         mFragmentManager.beginTransaction()
                                 .replace(R.id.fragment_layout, trashFragment)
                                 .commit();
                         break;
+                    case R.id.settings:
+                        actionBar.setTitle(getString(R.string.settings));
+                        item.setChecked(true);
+                        SettingsFragment settingsFragment = new SettingsFragment();
+                        mFragmentManager.beginTransaction()
+                                .replace(R.id.fragment_layout, settingsFragment)
+                                .commit();
+                        break;
+
                 }
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 return false;
@@ -90,17 +101,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    public Fragment getFragmentByNumber(int fragmentNumber){
-        switch (fragmentNumber) {
-            case 1:
-                return new HomePageFragment();
-            case 2:
-                return new TrashFragment();
-                default:
-                    return null;
-        }
     }
 
     @Override
