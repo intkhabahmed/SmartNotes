@@ -44,4 +44,7 @@
     <string name="dark_theme_key">dark_theme_key</string>
     <string name="disabled">Disabled</string>
     <string name="enabled">Enabled</string>
+    <string name="font_size_key">font_size_key</string>
+    <string name="font_size">Font Size</string>
+    <string name="default_font_size">16</string>
 </resources>

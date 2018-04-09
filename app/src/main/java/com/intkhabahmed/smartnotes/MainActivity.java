@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 switch (id) {
                     case R.id.home_page:
+                        actionBar.setTitle(getString(R.string.app_name));
                         item.setChecked(true);
                         HomePageFragment homePageFragment = new HomePageFragment();
                         mFragmentManager.beginTransaction()
@@ -96,11 +97,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override
