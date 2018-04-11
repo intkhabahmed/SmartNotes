@@ -37,6 +37,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         if(!(preference instanceof SwitchPreferenceCompat)) {
             preference.setSummary(sharedPreferences.getString(preference.getKey(),
                     getActivity().getString(R.string.default_font_size)));
+        } else {
+            getActivity().recreate();
         }
     }
 

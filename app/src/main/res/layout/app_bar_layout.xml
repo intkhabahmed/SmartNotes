@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"
             app:contentInsetStart="72dp"
-            app:titleTextColor="@color/iconFillColor"
+            app:titleTextColor="@android:color/white"
             app:layout_collapseMode="pin" />
     </android.support.design.widget.CollapsingToolbarLayout>
 </android.support.design.widget.AppBarLayout>

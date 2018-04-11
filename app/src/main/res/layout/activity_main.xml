@@ -16,9 +16,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         app:contentInsetStart="72dp"
-        app:titleTextColor="@color/iconFillColor"
+        app:titleTextColor="@android:color/white"
         />
 
             <FrameLayout
@@ -39,6 +39,8 @@
         android:layout_gravity="start"
         app:menu="@menu/navigation_view_menu"
         app:headerLayout="@layout/navigation_header"
+        android:background="?attr/backgroundColor"
+        app:itemBackground="@drawable/navigation_drawer_item_selector"
         app:itemTextAppearance="@style/TextAppearance.AppCompat.Menu"
-        app:itemBackground="@drawable/navigation_drawer_item_selector"/>
+        app:itemTextColor="?attr/primaryTextColor" />
 </android.support.v4.widget.DrawerLayout>

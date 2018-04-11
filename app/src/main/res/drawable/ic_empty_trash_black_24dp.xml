@@ -4,37 +4,37 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
   <path
-      android:fillColor="#FF000000"
+      android:fillColor="@color/iconColorModeInverse"
       android:pathData="M4.272,7.329h15.751v0.978h-15.751z"
       android:strokeWidth="1"
-      android:strokeColor="#000000"/>
+      android:strokeColor="@color/iconColorModeInverse"/>
   <path
-      android:fillColor="#FF000000"
+      android:fillColor="@color/iconColorModeInverse"
       android:pathData="M19.521,8.242l-2.573,14.362l-9.587,0l-2.574,-14.362"
       android:strokeWidth="2"
-      android:strokeColor="#000000"/>
+      android:strokeColor="@color/iconColorModeInverse"/>
   <path
-      android:fillColor="#FF000000"
+      android:fillColor="@color/iconColorModeInverse"
       android:pathData="M7,22.361h10.295v0.639h-10.295z"
       android:strokeWidth="1"
-      android:strokeColor="#000000"/>
+      android:strokeColor="@color/iconColorModeInverse"/>
   <path
-      android:fillColor="#FF000000"
+      android:fillColor="@color/iconColorModeInverse"
       android:pathData="M5.0616,0.9997l15.2013,4.1268l-0.2565,0.9448l-15.2013,-4.1268z"
       android:strokeWidth="1"
-      android:strokeColor="#000000"/>
+      android:strokeColor="@color/iconColorModeInverse"/>
   <path
-      android:fillColor="#FF000000"
+      android:fillColor="@color/iconColorModeInverse"
       android:pathData="M14.253,2.866c-0.06,0.255 -0.315,0.413 -0.571,0.351l-2.26,-0.535c-0.254,-0.061 -0.412,-0.316 -0.351,-0.571l0,0c0.061,-0.255 0.316,-0.412 0.57,-0.351l2.26,0.536C14.156,2.357 14.313,2.612 14.253,2.866L14.253,2.866z"
       android:strokeWidth="1"
-      android:strokeColor="#000000"/>
+      android:strokeColor="@color/iconColorModeInverse"/>
   <path
-      android:fillColor="#FFFFFF"
+      android:fillColor="@color/iconColorMode"
       android:pathData="M7.76,10.583h1.25v8.75h-1.25z"/>
   <path
-      android:fillColor="#FFFFFF"
+      android:fillColor="@color/iconColorMode"
       android:pathData="M11.375,10.583h1.25v8.75h-1.25z"/>
   <path
-      android:fillColor="#FFFFFF"
+      android:fillColor="@color/iconColorMode"
       android:pathData="M15.059,10.583h1.25v8.75h-1.25z"/>
 </vector>

@@ -9,9 +9,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         app:contentInsetStart="72dp"
-        app:titleTextColor="@color/iconFillColor"
+        app:titleTextColor="@android:color/white"
         />
 
     <android.support.v4.widget.NestedScrollView

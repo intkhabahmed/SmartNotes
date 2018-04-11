@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:text="@string/enpty_view_description"
             android:textAlignment="center"
+            android:textColor="?attr/primaryTextColor"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             />
     </LinearLayout>
@@ -52,6 +53,7 @@
             android:layout_height="wrap_content"
             android:text="@string/trash_enpty_view_description"
             android:textAlignment="center"
+            android:textColor="?attr/primaryTextColor"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             />
     </LinearLayout>

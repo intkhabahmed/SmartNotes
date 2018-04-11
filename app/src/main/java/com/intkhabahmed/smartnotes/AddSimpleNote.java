@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,11 +29,18 @@ public class AddSimpleNote extends AppCompatActivity {
     private long mNoteId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(getString(R.string.dark_theme_key), false);
+        if(isDarkThemeEnabled){
+            this.setTheme(R.style.ActivityTheme_Primary_Base_Dark);
+            getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dark_theme_window_background));
+        } else {
+            this.setTheme(R.style.ActivityTheme_Primary_Base_Light);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_simple_note);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.iconFillColor));
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {

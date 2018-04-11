@@ -10,9 +10,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         app:contentInsetStart="72dp"
-        app:titleTextColor="@color/iconFillColor"
+        app:titleTextColor="@android:color/white"
         />
 
     <android.support.constraint.ConstraintLayout
@@ -30,6 +30,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/title"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="?attr/primaryTextColor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,6 +44,7 @@
             android:layout_marginRight="16dp"
             android:ems="10"
             android:hint="@string/title_hint"
+            android:textColor="?attr/primaryTextColor"
             android:inputType="text|textPersonName"
             app:layout_constraintBaseline_toBaselineOf="@+id/tv_note_title_label"
             app:layout_constraintEnd_toEndOf="parent"
@@ -55,6 +57,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/image"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="?attr/primaryTextColor"
             app:layout_constraintStart_toStartOf="@+id/tv_note_title_label"
             app:layout_constraintTop_toBottomOf="@+id/tv_note_title_label" />
 
@@ -109,7 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/change"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/tv_note_description_label"
             app:layout_constraintStart_toStartOf="@+id/note_title_input"
             app:layout_constraintTop_toBottomOf="@+id/tv_note_description_label"

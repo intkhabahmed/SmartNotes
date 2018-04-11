@@ -10,9 +10,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         app:contentInsetStart="72dp"
-        app:titleTextColor="@color/iconFillColor"
+        app:titleTextColor="@android:color/white"
         />
 
     <RelativeLayout
@@ -63,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="?attr/primaryTextColor"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -75,6 +76,7 @@
                 android:ems="10"
                 android:hint="@string/add_checklist_title_hint"
                 android:inputType="textPersonName"
+                android:textColor="?attr/primaryTextColor"
                 app:layout_constraintBottom_toTopOf="@+id/tv_checklist_title_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.31"
