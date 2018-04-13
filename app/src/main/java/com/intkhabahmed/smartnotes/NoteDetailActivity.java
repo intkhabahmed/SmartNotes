@@ -36,6 +36,7 @@ public class NoteDetailActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
         }
 
         FloatingActionButton editButton = findViewById(R.id.edit_note_button);

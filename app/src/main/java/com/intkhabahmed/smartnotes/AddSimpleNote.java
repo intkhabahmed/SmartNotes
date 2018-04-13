@@ -38,6 +38,7 @@ public class AddSimpleNote extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
         }
 
         mNoteTitleEditText = findViewById(R.id.note_title_input);

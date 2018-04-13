@@ -56,6 +56,7 @@ public class AddImageNote extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
         }
 
         mCaptureImageButton = findViewById(R.id.capture_image_button);
