@@ -100,7 +100,7 @@ public class HomePageFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         getActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
-        int subMenuOrder = mSharedPreferences.getInt(getString(R.string.sort_criteria_id), 3);
+        int subMenuOrder = mSharedPreferences.getInt(getString(R.string.sort_criteria_id), 4);
         menu.getItem(1).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
     }
 
@@ -120,6 +120,10 @@ public class HomePageFragment extends Fragment {
                 item.setChecked(true);
                 changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
                 break;
+            case R.id.sort_title_descending:
+                item.setChecked(true);
+                changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -129,8 +133,10 @@ public class HomePageFragment extends Fragment {
             case 1:
                 return NotesContract.NotesEntry.COLUMN_TITLE + " ASC";
             case 2:
-                return NotesContract.NotesEntry.COLUMN_DATE_CREATED + " ASC";
+                return NotesContract.NotesEntry.COLUMN_TITLE + " DESC";
             case 3:
+                return NotesContract.NotesEntry.COLUMN_DATE_CREATED + " ASC";
+            case 4:
                 return NotesContract.NotesEntry.COLUMN_DATE_CREATED + " DESC";
             default:
                 return null;

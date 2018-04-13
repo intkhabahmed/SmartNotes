@@ -19,12 +19,16 @@
                     android:orderInCategory="1"
                     android:title="@string/title_ascending"
                     app:showAsAction="never"/>
-                <item android:id="@+id/sort_date_created_acsending"
+                <item android:id="@+id/sort_title_descending"
                     android:orderInCategory="2"
+                    android:title="@string/title_descending"
+                    app:showAsAction="never"/>
+                <item android:id="@+id/sort_date_created_acsending"
+                    android:orderInCategory="3"
                     android:title="@string/date_created_ascending"
                     app:showAsAction="never"/>
                 <item android:id="@+id/sort_date_created_descending"
-                    android:orderInCategory="3"
+                    android:orderInCategory="4"
                     android:title="@string/date_created_descending"
                     app:showAsAction="never"/>
             </group>
