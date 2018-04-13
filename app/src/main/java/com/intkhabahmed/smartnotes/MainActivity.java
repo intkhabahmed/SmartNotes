@@ -1,5 +1,6 @@
 package com.intkhabahmed.smartnotes;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -30,14 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.dark_theme_key), false);
-        if(isDarkThemeEnabled){
-            this.setTheme(R.style.ActivityTheme_Primary_Base_Dark);
-            getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dark_theme_window_background));
-        } else {
-            this.setTheme(R.style.ActivityTheme_Primary_Base_Light);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -47,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         mToggle.syncState();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        //toolbar.setTitleTextColor(getResources().getColor(R.color.iconFillColor));
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
@@ -99,6 +91,19 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        Resources.Theme theme =  super.getTheme();
+        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(getString(R.string.dark_theme_key), false);
+        if(isDarkThemeEnabled){
+            theme.applyStyle(R.style.AppThemeDark, true);
+        } else {
+            theme.applyStyle(R.style.AppThemeLight, true);
+        }
+        return theme;
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -47,14 +48,6 @@ public class AddImageNote extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.dark_theme_key), false);
-        if(isDarkThemeEnabled){
-            this.setTheme(R.style.ActivityTheme_Primary_Base_Dark);
-            getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dark_theme_window_background));
-        } else {
-            this.setTheme(R.style.ActivityTheme_Primary_Base_Light);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_image_note);
 
@@ -85,6 +78,19 @@ public class AddImageNote extends AppCompatActivity {
         });
         mImageView.setVisibility(View.GONE);
         mChangeImageButton.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        Resources.Theme theme =  super.getTheme();
+        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(getString(R.string.dark_theme_key), false);
+        if(isDarkThemeEnabled){
+            theme.applyStyle(R.style.AppThemeDark, true);
+        } else {
+            theme.applyStyle(R.style.AppThemeLight, true);
+        }
+        return theme;
     }
 
     private void checkCameraPermission() {

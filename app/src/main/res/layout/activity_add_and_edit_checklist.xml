@@ -37,6 +37,7 @@
                 android:layout_marginBottom="8dp"
                 android:hint="@string/add_checklist_hint"
                 android:inputType="textPersonName"
+                android:textColor="?attr/primaryTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/add_checklist_button"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -96,6 +97,7 @@
                 android:id="@+id/checklist_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/cardBackground"
                 android:orientation="vertical"
                 android:paddingBottom="16dp">
             </LinearLayout>

@@ -24,7 +24,7 @@
         <ImageView
             android:layout_width="96dp"
             android:layout_height="96dp"
-            app:srcCompat="@drawable/ic_note_add_black_24dp"
+            app:srcCompat="@drawable/ic_note_add_24dp"
             />
         <TextView
             android:layout_width="match_parent"

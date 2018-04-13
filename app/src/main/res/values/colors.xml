@@ -3,10 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="greyHighlight">#EEEEEE</color>
-    <color name="NightColorPrimary">#333333</color>
-    <color name="NightColorPrimaryDark">#000000</color>
-    <color name="NightColorAccent">#5EFF6B</color>
+    <color name="greyHighlight">#818181</color>
+    <color name="nightColorPrimary">#333333</color>
+    <color name="nightColorPrimaryDark">#000000</color>
+    <color name="nightColorAccent">#5EFF6B</color>
     <color name="primaryTextColor">#33343B</color>
     <color name="secondaryTextColor">#8033343B</color>
     <color name="nightPrimaryTextColor">#F4F4F6</color>
@@ -14,4 +14,6 @@
     <color name="cadBackgroundColor">#555555</color>
     <color name="iconColorModeInverse">?attr/iconPlaceHolder</color>
     <color name="iconColorMode">?attr/iconColor</color>
+    <color name="primaryColorMode">?attr/colorPrimary</color>
+    <color name="accentColorMode">?attr/colorAccent</color>
 </resources>

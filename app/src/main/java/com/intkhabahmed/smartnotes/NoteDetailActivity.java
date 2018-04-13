@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes;
 
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,14 +28,6 @@ public class NoteDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.dark_theme_key), false);
-        if(isDarkThemeEnabled){
-            this.setTheme(R.style.ActivityTheme_Primary_Base_Dark);
-            getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dark_theme_window_background));
-        } else {
-            this.setTheme(R.style.ActivityTheme_Primary_Base_Light);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_detail);
 
@@ -86,6 +79,19 @@ public class NoteDetailActivity extends AppCompatActivity {
                     .commit();
         }
 
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        Resources.Theme theme =  super.getTheme();
+        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(getString(R.string.dark_theme_key), false);
+        if(isDarkThemeEnabled){
+            theme.applyStyle(R.style.AppThemeDark, true);
+        } else {
+            theme.applyStyle(R.style.AppThemeLight, true);
+        }
+        return theme;
     }
 
     @Override

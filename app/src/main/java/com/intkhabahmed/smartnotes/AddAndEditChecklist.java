@@ -2,12 +2,12 @@ package com.intkhabahmed.smartnotes;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -47,14 +48,6 @@ public class AddAndEditChecklist extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.dark_theme_key), false);
-        if(isDarkThemeEnabled){
-            this.setTheme(R.style.ActivityTheme_Primary_Base_Dark);
-            getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.dark_theme_window_background));
-        } else {
-            this.setTheme(R.style.ActivityTheme_Primary_Base_Light);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_and_edit_checklist);
 
@@ -99,6 +92,8 @@ public class AddAndEditChecklist extends AppCompatActivity {
         }
     }
 
+
+
     private void addChecklist(final String checklistItem, boolean checked) {
         if(TextUtils.isEmpty(checklistItem)){
             Toast.makeText(this, "Task cannot be empty", Toast.LENGTH_LONG).show();
@@ -109,10 +104,11 @@ public class AddAndEditChecklist extends AppCompatActivity {
         checkBoxContainer.setContentDescription(checklistItem);
 
         ImageButton removeButton = new ImageButton(this);
-        removeButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_clear_black_24dp));
+        removeButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_clear_24dp));
         removeButton.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
 
         final CheckBox checkBox = new CheckBox(this);
+        checkBox.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         checkBox.setText(checklistItem);
         checkBox.setChecked(checked);
         checkBoxContainer.addView(removeButton, 0);
@@ -155,6 +151,19 @@ public class AddAndEditChecklist extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        Resources.Theme theme =  super.getTheme();
+        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(getString(R.string.dark_theme_key), false);
+        if(isDarkThemeEnabled){
+            theme.applyStyle(R.style.AppThemeDark, true);
+        } else {
+            theme.applyStyle(R.style.AppThemeLight, true);
+        }
+        return theme;
     }
 
     @Override
