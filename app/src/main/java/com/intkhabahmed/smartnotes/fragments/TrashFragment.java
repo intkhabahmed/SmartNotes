@@ -26,6 +26,7 @@ import com.intkhabahmed.smartnotes.NoteDetailActivity;
 import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
+import com.intkhabahmed.smartnotes.utils.BitmapUtils;
 
 public class TrashFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NotesAdapter.OnItemClickListener {
 
@@ -128,6 +129,15 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
+                        Cursor cursor = getActivity().getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI,
+                                new String[]{NotesContract.NotesEntry.COLUMN_DESCRIPTION},
+                                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)}, null);
+                        if (cursor != null) {
+                            cursor.moveToFirst();
+                            String imagePath = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
+                            cursor.close();
+                            BitmapUtils.deleteImageFile(getActivity(), imagePath);
+                        }
                         getActivity().getContentResolver().delete(NotesContract.NotesEntry.CONTENT_URI,
                                 NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
                         Toast.makeText(getActivity(), "Note has been permanently deleted!!", Toast.LENGTH_LONG).show();
