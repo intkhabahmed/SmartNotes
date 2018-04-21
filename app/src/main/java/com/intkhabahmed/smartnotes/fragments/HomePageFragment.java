@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -9,13 +10,18 @@ import android.support.constraint.Group;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.intkhabahmed.smartnotes.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.AddImageNote;
@@ -24,7 +30,7 @@ import com.intkhabahmed.smartnotes.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 
-public class HomePageFragment extends Fragment {
+public class HomePageFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     public HomePageFragment() {
     }
@@ -102,6 +108,15 @@ public class HomePageFragment extends Fragment {
         getActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
         int subMenuOrder = mSharedPreferences.getInt(getString(R.string.sort_criteria_id), 4);
         menu.getItem(1).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
+
+        SearchView searchView = (SearchView) menu.findItem(R.id.search_menu).getActionView();
+        searchView.setQueryHint(getString(R.string.search_hint));
+        EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchEditText.setHintTextColor(Color.WHITE);
+        searchEditText.setTextColor(Color.BLACK);
+        ImageView closedBtn = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        closedBtn.setColorFilter(Color.WHITE);
+        searchView.setOnQueryTextListener(this);
     }
 
     @Override
@@ -149,5 +164,18 @@ public class HomePageFragment extends Fragment {
         editor.putInt(getString(R.string.sort_criteria_id), subMenuOrder);
         editor.apply();
         mNotesFragmentPagerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        String filterText = TextUtils.isEmpty(query) ? null : query;
+        mNotesFragmentPagerAdapter.setSearchText(filterText);
+        mNotesFragmentPagerAdapter.notifyDataSetChanged();
+        return true;
     }
 }

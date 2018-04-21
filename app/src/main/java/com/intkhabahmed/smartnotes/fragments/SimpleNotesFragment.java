@@ -1,8 +1,10 @@
 package com.intkhabahmed.smartnotes.fragments;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -14,6 +16,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +42,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
     private static final int SIMPLE_NOTE_FRAGMENT_LOADER_ID = 0;
+    private String mFilterText;
 
     public SimpleNotesFragment() {
     }
@@ -77,11 +81,13 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Uri contentUri = TextUtils.isEmpty(mFilterText) ? NotesContract.NotesEntry.CONTENT_URI
+                : NotesContract.NotesEntry.CONTENT_URI.buildUpon().appendPath(mFilterText).build();
         String selection = NotesContract.NotesEntry.COLUMN_TYPE +"=? AND " + NotesContract.NotesEntry.COLUMN_TRASH + "=?";
         String[] selectionArgs = {getString(R.string.simple_note), "0"};
         String sortOrder = PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getString(getString(R.string.sort_criteria), NotesContract.NotesEntry.COLUMN_DATE_CREATED + " desc");
-        return new CursorLoader(getActivity(), NotesContract.NotesEntry.CONTENT_URI, null,
+        return new CursorLoader(getActivity(),contentUri , null,
                 selection, selectionArgs, sortOrder);
     }
 
@@ -113,7 +119,8 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     }
 
 
-    public void updateSimpleNotesFragment(){
+    public void updateSimpleNotesFragment(String filterText){
+        mFilterText = filterText;
         getLoaderManager().restartLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, this);
     }
 
