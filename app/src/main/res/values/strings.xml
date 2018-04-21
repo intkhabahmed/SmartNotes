@@ -16,7 +16,7 @@
     <string name="description">Description</string>
     <string name="description_hint">Enter Description of note</string>
     <string name="save">Save</string>
-    <string name="sort">Filter</string>
+    <string name="sort">Sort</string>
     <string name="date_created_ascending">Date Created (Old first)</string>
     <string name="date_created_descending">Date Created (New First)</string>
     <string name="title_ascending">Title (Ascending)</string>
@@ -49,4 +49,5 @@
     <string name="default_font_size">16</string>
     <string name="appearance">Appearance</string>
     <string name="title_descending">Title (Descending)</string>
+    <string name="search_hint">Search here</string>
 </resources>

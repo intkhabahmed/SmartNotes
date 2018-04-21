@@ -56,8 +56,8 @@ public class NotesProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
             case PATH_NOTE_TITLE:
-                selection = NotesContract.NotesEntry.COLUMN_TITLE + "like %?%";
-                selectionArgs = new String[]{uri.getLastPathSegment()};
+                selection = NotesContract.NotesEntry.COLUMN_TITLE + " LIKE ?";
+                selectionArgs = new String[]{"%" + uri.getLastPathSegment() + "%"};
                 retCursor = db.query(NotesContract.NotesEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
