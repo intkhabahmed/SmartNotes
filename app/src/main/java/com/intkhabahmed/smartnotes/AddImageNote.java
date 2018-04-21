@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -56,7 +55,7 @@ public class AddImageNote extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_white_black_24dp);
         }
 
         mCaptureImageButton = findViewById(R.id.capture_image_button);
@@ -194,9 +193,16 @@ public class AddImageNote extends AppCompatActivity {
 
     private void insertImageNote() {
         String noteTitle = mNoteTitleEditText.getText().toString().trim();
-
+        if(!noteTitle.matches("[A-Za-z0-9]+") || noteTitle.matches("[0-9]+")){
+            Toast.makeText(this, "Title can only contain characters and numbers", Toast.LENGTH_LONG).show();
+            return;
+        }
         if(TextUtils.isEmpty(noteTitle)){
             Toast.makeText(this, "Please enter a title of your note", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if(mResultBitmap == null){
+            Toast.makeText(this, "Please select an image for your note", Toast.LENGTH_LONG).show();
             return;
         }
         ContentValues values = new ContentValues();
