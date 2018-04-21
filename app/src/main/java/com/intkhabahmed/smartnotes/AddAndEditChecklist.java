@@ -56,7 +56,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_white_black_24dp);
         }
 
         ImageButton addChecklistItemButton = findViewById(R.id.add_checklist_button);

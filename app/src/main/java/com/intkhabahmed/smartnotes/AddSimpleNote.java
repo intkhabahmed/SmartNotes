@@ -6,8 +6,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,8 +16,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.intkhabahmed.smartnotes.fragments.SimpleNotesDetailFragment;
-import com.intkhabahmed.smartnotes.fragments.SimpleNotesFragment;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 
 public class AddSimpleNote extends AppCompatActivity {
@@ -38,7 +34,7 @@ public class AddSimpleNote extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_white_black_24dp);
         }
 
         mNoteTitleEditText = findViewById(R.id.note_title_input);
