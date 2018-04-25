@@ -36,7 +36,29 @@
             />
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/trash_empty_view"
+    android:id="@+id/trash_empty_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="invisible">
+    <ImageView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        app:srcCompat="@drawable/ic_empty_trash_black_24dp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/trash_empty_view_description"
+        android:textAlignment="center"
+        android:textColor="?attr/primaryTextColor"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        />
+</LinearLayout>
+    <LinearLayout
+        android:id="@+id/search_error_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="16dp"
@@ -46,12 +68,12 @@
         <ImageView
             android:layout_width="96dp"
             android:layout_height="96dp"
-            app:srcCompat="@drawable/ic_empty_trash_black_24dp"
+            app:srcCompat="@drawable/ic_error_24dp"
             />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/trash_enpty_view_description"
+            android:text="@string/search_error_view_description"
             android:textAlignment="center"
             android:textColor="?attr/primaryTextColor"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"

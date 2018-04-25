@@ -27,7 +27,7 @@ public class NotesProvider extends ContentProvider {
         uriMatcher.addURI(NotesContract.CONTENT_AUTHORITY, NotesContract.NOTES_PATH, PATH_NOTES);
         //PATH_NOTE_ID_TRASH : "com.intkhabahmed.smartnotes/notes/id/isTrashed
         uriMatcher.addURI(NotesContract.CONTENT_AUTHORITY, NotesContract.NOTES_PATH + "/#/#", PATH_NOTE_ID_TRASH);
-        uriMatcher.addURI(NotesContract.CONTENT_AUTHORITY, NotesContract.NOTES_PATH + "/*", PATH_NOTE_TITLE);
+        uriMatcher.addURI(NotesContract.CONTENT_AUTHORITY, NotesContract.NOTES_PATH + "/#/*", PATH_NOTE_TITLE);
         return uriMatcher;
     }
 
@@ -56,8 +56,8 @@ public class NotesProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
             case PATH_NOTE_TITLE:
-                selection = NotesContract.NotesEntry.COLUMN_TITLE + " LIKE ?";
-                selectionArgs = new String[]{"%" + uri.getLastPathSegment() + "%"};
+                selection = NotesContract.NotesEntry.COLUMN_TRASH + "=? AND " + NotesContract.NotesEntry.COLUMN_TITLE + " LIKE ?";
+                selectionArgs = new String[]{uri.getPathSegments().get(1), "%" + uri.getLastPathSegment() + "%"};
                 retCursor = db.query(NotesContract.NotesEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
