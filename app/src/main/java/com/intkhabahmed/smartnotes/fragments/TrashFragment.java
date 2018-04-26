@@ -61,13 +61,7 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onActivityCreated(savedInstanceState);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getLoaderManager().initLoader(TRASH_FRAGMENT_LOADER_ID, null, TrashFragment.this);
-            }
-        },500);
+        getLoaderManager().initLoader(TRASH_FRAGMENT_LOADER_ID, null, TrashFragment.this);
     }
 
     @Override
@@ -88,7 +82,6 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
             hideEmptyView();
             mNotesAdapter.swapCursor(data);
         }
-
     }
 
     @Override

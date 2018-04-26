@@ -50,20 +50,10 @@ public class NoteDetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(NoteDetailActivity.this, AddSimpleNote.class);
-                    Uri singleNoteUri = ContentUris.withAppendedId(NotesContract.NotesEntry.CONTENT_URI, mNoteId)
-                            .buildUpon().appendPath("0").build();
-                    Cursor cursor =  getContentResolver().query(singleNoteUri, null,
-                            null, null, null);
-                    if(cursor != null){
-                        cursor.moveToFirst();
-                        long noteId = cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID));
-                        intent.putExtra(Intent.EXTRA_TEXT, noteId);
-                        cursor.close();
-                        startActivity(intent);
-                    }
+                    intent.putExtra(Intent.EXTRA_TEXT, mNoteId);
+                    startActivity(intent);
                 }
             });
-
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
             simpleNotesDetailFragment.setNoteId(mNoteId);
             getSupportFragmentManager().beginTransaction()
@@ -77,7 +67,6 @@ public class NoteDetailActivity extends AppCompatActivity {
                     .add(R.id.detail_activity_container,imageNotesDetailFragment)
                     .commit();
         }
-
     }
 
     @Override

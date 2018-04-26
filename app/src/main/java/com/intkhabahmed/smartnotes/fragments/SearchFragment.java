@@ -8,13 +8,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.intkhabahmed.smartnotes.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.NoteDetailActivity;
 import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
@@ -81,7 +85,19 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         closedBtn.setColorFilter(Color.WHITE);
         mSearchView.setMaxWidth(4000);
         mSearchView.setOnQueryTextListener(this);
+        searchViewItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                return false;
+            }
 
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                mSearchView.setQuery("", false);
+                getActivity().getSupportFragmentManager().popBackStack("HomePageFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -174,9 +190,15 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     @Override
     public void onItemClick(int adapterPosition, Cursor cursor) {
         cursor.moveToPosition(adapterPosition);
-        Intent detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
+        String noteType = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
+        Intent detailActivityIntent;
+        if(noteType.equals(getString(R.string.checklist))){
+            detailActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
+        } else {
+            detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
+            detailActivityIntent.putExtra(getString(R.string.note_type), noteType);
+        }
         detailActivityIntent.putExtra(Intent.EXTRA_TEXT, cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID)));
-        detailActivityIntent.putExtra(getString(R.string.note_type), getString(R.string.simple_note));
         startActivity(detailActivityIntent);
     }
 }

@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -28,25 +25,37 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
     private static int mFragmentNumber = 1;
     private FragmentManager mFragmentManager;
+    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        mActionBar = getSupportActionBar();
+        if(mActionBar != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
         mFragmentManager = getSupportFragmentManager();
+
+        if(savedInstanceState == null){
+            HomePageFragment homePageFragment = new HomePageFragment();
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_layout, homePageFragment)
+                    .commit();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -55,42 +64,31 @@ public class MainActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 switch (id) {
                     case R.id.home_page:
-                        actionBar.setTitle(getString(R.string.app_name));
+                        mActionBar.setTitle(getString(R.string.app_name));
                         item.setChecked(true);
-                        HomePageFragment homePageFragment = new HomePageFragment();
                         mFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_layout, homePageFragment)
+                                .replace(R.id.fragment_layout, new HomePageFragment())
                                 .commit();
                         break;
                     case R.id.trash:
-                        actionBar.setTitle(getString(R.string.trash));
+                        mActionBar.setTitle(getString(R.string.trash));
                         item.setChecked(true);
-                        TrashFragment trashFragment = new TrashFragment();
                         mFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_layout, trashFragment)
+                                .replace(R.id.fragment_layout, new TrashFragment())
                                 .commit();
                         break;
                     case R.id.settings:
-                        actionBar.setTitle(getString(R.string.settings));
+                        mActionBar.setTitle(getString(R.string.settings));
                         item.setChecked(true);
-                        SettingsFragment settingsFragment = new SettingsFragment();
                         mFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_layout, settingsFragment)
+                                .replace(R.id.fragment_layout, new SettingsFragment())
                                 .commit();
                         break;
-
                 }
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 return false;
             }
         });
-        if(savedInstanceState == null){
-            HomePageFragment homePageFragment = new HomePageFragment();
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_layout, homePageFragment)
-                    .commit();
-        }
-
     }
 
     @Override
