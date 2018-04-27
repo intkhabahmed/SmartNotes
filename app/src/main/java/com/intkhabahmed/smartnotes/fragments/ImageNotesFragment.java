@@ -47,7 +47,6 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.notes_recycler_view, container, false);
-
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
         mEmptyView = rootView.findViewById(R.id.empty_view);
         mProgressBar = rootView.findViewById(R.id.progress_bar);
@@ -57,7 +56,6 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-
         return rootView;
     }
 
@@ -66,13 +64,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         super.onActivityCreated(savedInstanceState);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getLoaderManager().initLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
-            }
-        }, 500);
+        getLoaderManager().initLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
     }
 
     @NonNull
@@ -97,7 +89,6 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
             hideEmptyView();
             mNotesAdapter.swapCursor(data);
         }
-
     }
 
     @Override

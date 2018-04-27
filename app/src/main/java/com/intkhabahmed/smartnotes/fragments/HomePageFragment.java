@@ -10,6 +10,7 @@ import android.support.constraint.Group;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
@@ -30,7 +31,7 @@ import com.intkhabahmed.smartnotes.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 
-public class HomePageFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class HomePageFragment extends Fragment{
 
     public HomePageFragment() {
     }
@@ -44,8 +45,13 @@ public class HomePageFragment extends Fragment implements SearchView.OnQueryText
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.home_page_layout, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.home_page_layout, container, false);
+        super.onViewCreated(view, savedInstanceState);
         ViewPager viewPager = view.findViewById(R.id.view_pager);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
         mNotesFragmentPagerAdapter = new NotesFragmentPagerAdapter(getChildFragmentManager(), getActivity());
@@ -91,7 +97,6 @@ public class HomePageFragment extends Fragment implements SearchView.OnQueryText
         });
         buttonSubMenu.setVisibility(View.GONE);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return view;
     }
 
     @Override
@@ -104,25 +109,21 @@ public class HomePageFragment extends Fragment implements SearchView.OnQueryText
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
         getActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
         int subMenuOrder = mSharedPreferences.getInt(getString(R.string.sort_criteria_id), 4);
         menu.getItem(1).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
-
-        SearchView searchView = (SearchView) menu.findItem(R.id.search_menu).getActionView();
-        searchView.setQueryHint(getString(R.string.search_hint));
-        EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchEditText.setHintTextColor(Color.WHITE);
-        searchEditText.setTextColor(Color.BLACK);
-        ImageView closedBtn = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
-        closedBtn.setColorFilter(Color.WHITE);
-        searchView.setOnQueryTextListener(this);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
+            case R.id.search_menu:
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .addToBackStack("HomePageFragment").replace(R.id.fragment_layout, new SearchFragment())
+                        .commit();
+                break;
             case R.id.sort_date_created_acsending:
                 item.setChecked(true);
                 changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
@@ -164,18 +165,5 @@ public class HomePageFragment extends Fragment implements SearchView.OnQueryText
         editor.putInt(getString(R.string.sort_criteria_id), subMenuOrder);
         editor.apply();
         mNotesFragmentPagerAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String query) {
-        String filterText = TextUtils.isEmpty(query) ? null : query;
-        mNotesFragmentPagerAdapter.setSearchText(filterText);
-        mNotesFragmentPagerAdapter.notifyDataSetChanged();
-        return true;
     }
 }

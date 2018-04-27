@@ -70,13 +70,8 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         super.onActivityCreated(savedInstanceState);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getLoaderManager().initLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, SimpleNotesFragment.this);
-            }
-        },500);
+        getLoaderManager().initLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, SimpleNotesFragment.this);
+
     }
 
     @Override
@@ -135,7 +130,6 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onMenuItemClick(View view, final long noteId) {
-
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

@@ -53,7 +53,6 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.notes_recycler_view, container, false);
-
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
         mEmptyView = rootView.findViewById(R.id.empty_view);
         mProgressBar = rootView.findViewById(R.id.progress_bar);
@@ -63,7 +62,6 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-
         return rootView;
     }
 
@@ -72,13 +70,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
         super.onActivityCreated(savedInstanceState);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getLoaderManager().initLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, ChecklistFragment.this);
-            }
-        },500);
+        getLoaderManager().initLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, ChecklistFragment.this);
     }
 
     @Override
@@ -102,7 +94,6 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
             hideEmptyView();
             mNotesAdapter.swapCursor(data);
         }
-
     }
 
     @Override
