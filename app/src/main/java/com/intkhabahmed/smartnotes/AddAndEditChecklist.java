@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -87,7 +88,13 @@ public class AddAndEditChecklist extends AppCompatActivity {
         if(intent.hasExtra(Intent.EXTRA_TEXT)){
             mNoteId = intent.getLongExtra(Intent.EXTRA_TEXT, 0);
             mIsEditing = true;
-            populateChecklist();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    populateChecklist();
+                }
+            },50);
         } else {
             mIsEditing = false;
         }
@@ -241,7 +248,6 @@ public class AddAndEditChecklist extends AppCompatActivity {
         for (final JSONObject obj : objs) {
             ja.put(obj);
         }
-
         return ja;
     }
     public static List<JSONObject> asList(final JSONArray ja) {

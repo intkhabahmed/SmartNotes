@@ -38,7 +38,6 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
     private static final int IMAGE_NOTE_FRAGMENT_LOADER_ID = 2;
-    private String mFilterText;
 
     public ImageNotesFragment() {
     }
@@ -70,13 +69,11 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri contentUri = TextUtils.isEmpty(mFilterText) ? NotesContract.NotesEntry.CONTENT_URI
-                : NotesContract.NotesEntry.CONTENT_URI.buildUpon().appendPath(mFilterText).build();
         String selection = NotesContract.NotesEntry.COLUMN_TYPE + "=? AND " + NotesContract.NotesEntry.COLUMN_TRASH + "=?";
         String[] selectionArgs = {getString(R.string.image_note), "0"};
         String sortOrder = PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getString(getString(R.string.sort_criteria), NotesContract.NotesEntry.COLUMN_DATE_CREATED + " desc");
-        return new CursorLoader(getActivity(), contentUri, null,
+        return new CursorLoader(getActivity(), NotesContract.NotesEntry.CONTENT_URI, null,
                 selection, selectionArgs, sortOrder);
     }
 
@@ -107,8 +104,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     }
 
 
-    public void updateImageNotesFragment(String filterText) {
-        mFilterText = filterText;
+    public void updateImageNotesFragment() {
         getLoaderManager().restartLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, this);
     }
 
