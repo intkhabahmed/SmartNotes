@@ -44,7 +44,6 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
     private RecyclerView mRecyclerView;
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
-    private String mFilterText;
 
     public ChecklistFragment() {
     }
@@ -56,7 +55,6 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
         mEmptyView = rootView.findViewById(R.id.empty_view);
         mProgressBar = rootView.findViewById(R.id.progress_bar);
-
         mNotesAdapter = new NotesAdapter(getActivity(),null, this, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,  false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -75,13 +73,11 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri contentUri = TextUtils.isEmpty(mFilterText) ? NotesContract.NotesEntry.CONTENT_URI
-                : NotesContract.NotesEntry.CONTENT_URI.buildUpon().appendPath(mFilterText).build();
         String selection = NotesContract.NotesEntry.COLUMN_TYPE +"=? AND " + NotesContract.NotesEntry.COLUMN_TRASH + "=?";
         String[] selectionArgs = {getString(R.string.checklist), "0"};
         String sortOrder = PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getString(getString(R.string.sort_criteria), NotesContract.NotesEntry.COLUMN_DATE_CREATED + " desc");
-        return new CursorLoader(getActivity(), contentUri, null,
+        return new CursorLoader(getActivity(), NotesContract.NotesEntry.CONTENT_URI, null,
                 selection, selectionArgs, sortOrder);
     }
 
@@ -179,8 +175,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
         popupMenu.show();
     }
 
-    public void updateCheckListFragment(String filterText) {
-        mFilterText = filterText;
+    public void updateCheckListFragment() {
         getLoaderManager().restartLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, this);
     }
 }

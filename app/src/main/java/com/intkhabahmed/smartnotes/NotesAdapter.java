@@ -45,7 +45,6 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public interface OnItemClickListener {
         void onMenuItemClick(View view, long noteId);
-
         void onItemClick(int adapterPosition, Cursor cursor);
     }
 
@@ -62,7 +61,6 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             default:
                 throw new IllegalArgumentException("Unknown ViewType");
         }
-
     }
 
     @Override

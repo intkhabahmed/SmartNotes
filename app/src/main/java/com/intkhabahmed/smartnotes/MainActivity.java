@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -20,19 +21,18 @@ import com.intkhabahmed.smartnotes.fragments.TrashFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String BUNDLE_EXTRA = "bundle-extra";
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
-    private static int mFragmentNumber = 1;
     private FragmentManager mFragmentManager;
     private ActionBar mActionBar;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -43,58 +43,66 @@ public class MainActivity extends AppCompatActivity {
             mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
         mFragmentManager = getSupportFragmentManager();
-
+        handler = new Handler();
         if(savedInstanceState == null){
-            HomePageFragment homePageFragment = new HomePageFragment();
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_layout, homePageFragment)
-                    .commit();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mFragmentManager.beginTransaction()
+                                    .replace(R.id.fragment_layout, new HomePageFragment())
+                                    .commit();
+                }
+            }, 1);
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        navigationView.getMenu().getItem(0).setChecked(true);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        handler.postDelayed(new Runnable() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.home_page:
-                        mActionBar.setTitle(getString(R.string.app_name));
-                        item.setChecked(true);
-                        mFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_layout, new HomePageFragment())
-                                .commit();
-                        break;
-                    case R.id.trash:
-                        mActionBar.setTitle(getString(R.string.trash));
-                        item.setChecked(true);
-                        mFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_layout, new TrashFragment())
-                                .commit();
-                        break;
-                    case R.id.settings:
-                        mActionBar.setTitle(getString(R.string.settings));
-                        item.setChecked(true);
-                        mFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_layout, new SettingsFragment())
-                                .commit();
-                        break;
-                }
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-                return false;
+            public void run() {
+                NavigationView navigationView = findViewById(R.id.navigation_view);
+                navigationView.getMenu().getItem(0).setChecked(true);
+                navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        int id = item.getItemId();
+                        switch (id) {
+                            case R.id.home_page:
+                                mActionBar.setTitle(getString(R.string.app_name));
+                                item.setChecked(true);
+                                mFragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_layout, new HomePageFragment())
+                                        .commit();
+                                break;
+                            case R.id.trash:
+                                mActionBar.setTitle(getString(R.string.trash));
+                                item.setChecked(true);
+                                mFragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_layout, new TrashFragment())
+                                        .commit();
+                                break;
+                            case R.id.settings:
+                                mActionBar.setTitle(getString(R.string.settings));
+                                item.setChecked(true);
+                                mFragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_layout, new SettingsFragment())
+                                        .commit();
+                                break;
+                        }
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        return false;
+                    }
+                });
             }
-        });
+        }, 100);
     }
 
     @Override
     public Resources.Theme getTheme() {
-        Resources.Theme theme =  super.getTheme();
-        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
+        final Resources.Theme theme =  super.getTheme();
+        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
                 .getBoolean(getString(R.string.dark_theme_key), false);
         if(isDarkThemeEnabled){
             theme.applyStyle(R.style.AppThemeDark, true);
@@ -125,6 +133,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(BUNDLE_EXTRA, mFragmentNumber);
+        outState.putInt("bundle-extra", 1);
     }
 }

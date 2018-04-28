@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.constraint.Group;
@@ -65,12 +66,12 @@ public class HomePageFragment extends Fragment{
             public void onClick(View view) {
                 if(!isSubmenuShown){
                     isSubmenuShown = true;
-                    mAddButton.setRotation(45);
+                    mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_clear_24dp));
                     buttonSubMenu.setVisibility(View.VISIBLE);
                 } else {
                     isSubmenuShown = false;
                     buttonSubMenu.setVisibility(View.GONE);
-                    mAddButton.setRotation(0);
+                    mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_add_black_24dp));
                 }
             }
         });
@@ -102,16 +103,22 @@ public class HomePageFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        mAddButton.setRotation(0);
+        mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_add_black_24dp));
         buttonSubMenu.setVisibility(View.GONE);
         mNotesFragmentPagerAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
-        int subMenuOrder = mSharedPreferences.getInt(getString(R.string.sort_criteria_id), 4);
-        menu.getItem(1).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int subMenuOrder = mSharedPreferences.getInt(getString(R.string.sort_criteria_id), 4);
+                menu.getItem(1).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
+            }
+        }, 300);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

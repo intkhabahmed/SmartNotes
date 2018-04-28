@@ -42,7 +42,6 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
     private static final int SIMPLE_NOTE_FRAGMENT_LOADER_ID = 0;
-    private String mFilterText;
 
     public SimpleNotesFragment() {
     }
@@ -51,17 +50,14 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.notes_recycler_view, container, false);
-
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
         mEmptyView = rootView.findViewById(R.id.empty_view);
         mProgressBar = rootView.findViewById(R.id.progress_bar);
-
         mNotesAdapter = new NotesAdapter(getActivity(),null, this, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,  false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-
         return rootView;
     }
 
@@ -71,18 +67,15 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
         getLoaderManager().initLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, SimpleNotesFragment.this);
-
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri contentUri = TextUtils.isEmpty(mFilterText) ? NotesContract.NotesEntry.CONTENT_URI
-                : NotesContract.NotesEntry.CONTENT_URI.buildUpon().appendPath(mFilterText).build();
         String selection = NotesContract.NotesEntry.COLUMN_TYPE +"=? AND " + NotesContract.NotesEntry.COLUMN_TRASH + "=?";
         String[] selectionArgs = {getString(R.string.simple_note), "0"};
         String sortOrder = PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getString(getString(R.string.sort_criteria), NotesContract.NotesEntry.COLUMN_DATE_CREATED + " desc");
-        return new CursorLoader(getActivity(),contentUri , null,
+        return new CursorLoader(getActivity(),NotesContract.NotesEntry.CONTENT_URI , null,
                 selection, selectionArgs, sortOrder);
     }
 
@@ -95,7 +88,6 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
             hideEmptyView();
             mNotesAdapter.swapCursor(data);
         }
-
     }
 
     @Override
@@ -114,8 +106,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     }
 
 
-    public void updateSimpleNotesFragment(String filterText){
-        mFilterText = filterText;
+    public void updateSimpleNotesFragment(){
         getLoaderManager().restartLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, this);
     }
 
