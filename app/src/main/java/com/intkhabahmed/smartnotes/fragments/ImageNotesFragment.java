@@ -115,6 +115,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         detailActivityIntent.putExtra(Intent.EXTRA_TEXT, cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID)));
         detailActivityIntent.putExtra(getString(R.string.note_type), getString(R.string.image_note));
         startActivity(detailActivityIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

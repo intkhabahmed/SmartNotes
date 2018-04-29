@@ -47,7 +47,7 @@
             android:name=".AddAndEditChecklist"
             android:screenOrientation="portrait" android:theme="@style/AppThemeLight" />
         <activity android:name=".NoteDetailActivity" android:theme="@style/AppThemeLight"/>
-        <activity android:name=".AddImageNote" android:screenOrientation="portrait" android:theme="@style/AppThemeLight"></activity>
+        <activity android:name=".AddImageNote" android:screenOrientation="portrait" android:theme="@style/AppThemeLight"/>
     </application>
 
 </manifest>

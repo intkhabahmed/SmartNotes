@@ -113,6 +113,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
         Intent editChecklistActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
         editChecklistActivityIntent.putExtra(Intent.EXTRA_TEXT, cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID)));
         startActivity(editChecklistActivityIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

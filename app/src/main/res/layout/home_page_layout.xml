@@ -30,4 +30,10 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="8dp"
         android:layout_alignParentRight="true" />
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_centerInParent="true"
+        />
 </RelativeLayout>

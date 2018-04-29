@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.transition.Fade;
+import android.support.transition.Transition;
+import android.support.transition.TransitionInflater;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -52,22 +55,25 @@ public class MainActivity extends AppCompatActivity {
                                     .replace(R.id.fragment_layout, new HomePageFragment())
                                     .commit();
                 }
-            }, 1);
+            }, 300);
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+
                 NavigationView navigationView = findViewById(R.id.navigation_view);
                 navigationView.getMenu().getItem(0).setChecked(true);
                 navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
                         int id = item.getItemId();
+
                         switch (id) {
                             case R.id.home_page:
                                 mActionBar.setTitle(getString(R.string.app_name));
@@ -91,12 +97,12 @@ public class MainActivity extends AppCompatActivity {
                                         .commit();
                                 break;
                         }
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                            }
+                        }, 300);
                         return false;
                     }
                 });
-            }
-        }, 100);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

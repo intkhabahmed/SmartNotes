@@ -95,7 +95,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                 mSearchView.setQuery("", false);
                 getActivity().getSupportFragmentManager().popBackStack("HomePageFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                return false;
+                return true;
             }
         });
     }

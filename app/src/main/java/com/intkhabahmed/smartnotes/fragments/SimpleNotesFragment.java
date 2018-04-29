@@ -117,6 +117,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         detailActivityIntent.putExtra(Intent.EXTRA_TEXT, cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID)));
         detailActivityIntent.putExtra(getString(R.string.note_type), getString(R.string.simple_note));
         startActivity(detailActivityIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override
