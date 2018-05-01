@@ -53,12 +53,12 @@ public class HomePageFragment extends Fragment{
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mProgressBar = view.findViewById(R.id.progress_bar);
         buttonSubMenu = view.findViewById(R.id.button_sub_menu);
         mAddButton = view.findViewById(R.id.add_button);
         mNotesFragmentPagerAdapter = new NotesFragmentPagerAdapter(getChildFragmentManager(), getActivity());
         setHasOptionsMenu(true);
-        super.onViewCreated(view, savedInstanceState);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -128,7 +128,6 @@ public class HomePageFragment extends Fragment{
         isSubmenuShown = false;
         mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_add_black_24dp));
         buttonSubMenu.setVisibility(View.GONE);
-        mNotesFragmentPagerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -151,27 +150,23 @@ public class HomePageFragment extends Fragment{
         switch (itemId) {
             case R.id.search_menu:
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .addToBackStack("HomePageFragment").replace(R.id.fragment_layout, new SearchFragment())
+                        .addToBackStack(HomePageFragment.class.getName()).replace(R.id.fragment_layout, new SearchFragment())
                         .commit();
-                break;
+                return true;
             case R.id.sort_date_created_acsending:
-                item.setChecked(true);
-                changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
-                break;
             case R.id.sort_date_created_descending:
-                item.setChecked(true);
-                changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
-                break;
             case R.id.sort_title_ascending:
-                item.setChecked(true);
-                changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
-                break;
             case R.id.sort_title_descending:
-                item.setChecked(true);
-                changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
-                break;
+                if(item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
+                }
+                return true;
+                default:
+                    return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private String getCriteriaString(int order){
