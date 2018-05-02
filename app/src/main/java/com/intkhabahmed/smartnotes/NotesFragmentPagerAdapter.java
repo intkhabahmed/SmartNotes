@@ -16,15 +16,10 @@ import com.intkhabahmed.smartnotes.fragments.SimpleNotesFragment;
 public class NotesFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private Context mContext;
-    private String mSearchText;
 
     public NotesFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         mContext = context;
-    }
-
-    public void setSearchText(String searchText) {
-        mSearchText = searchText;
     }
 
     @Override
@@ -63,11 +58,11 @@ public class NotesFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getItemPosition(Object object) {
         if(object instanceof SimpleNotesFragment){
-            ((SimpleNotesFragment)object).updateSimpleNotesFragment(mSearchText);
+            ((SimpleNotesFragment)object).updateSimpleNotesFragment();
         } else if(object instanceof ChecklistFragment){
-            ((ChecklistFragment)object).updateCheckListFragment(mSearchText);
+            ((ChecklistFragment)object).updateCheckListFragment();
         } else if (object instanceof ImageNotesFragment){
-            ((ImageNotesFragment)object).updateImageNotesFragment(mSearchText);
+            ((ImageNotesFragment)object).updateImageNotesFragment();
         }
         return super.getItemPosition(object);
     }

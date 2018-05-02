@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
-        <activity android:name=".MainActivity" android:theme="@style/AppThemeLight">
+        <activity android:name=".MainActivity" android:theme="@style/AppThemeLight" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,7 +47,7 @@
             android:name=".AddAndEditChecklist"
             android:screenOrientation="portrait" android:theme="@style/AppThemeLight" />
         <activity android:name=".NoteDetailActivity" android:theme="@style/AppThemeLight"/>
-        <activity android:name=".AddImageNote" android:screenOrientation="portrait" android:theme="@style/AppThemeLight"></activity>
+        <activity android:name=".AddImageNote" android:screenOrientation="portrait" android:theme="@style/AppThemeLight"/>
     </application>
 
 </manifest>

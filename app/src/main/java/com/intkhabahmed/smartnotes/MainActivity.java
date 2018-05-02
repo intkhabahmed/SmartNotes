@@ -2,13 +2,14 @@ package com.intkhabahmed.smartnotes;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
+import android.support.transition.Fade;
+import android.support.transition.Transition;
+import android.support.transition.TransitionInflater;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -23,80 +24,91 @@ import com.intkhabahmed.smartnotes.fragments.TrashFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String BUNDLE_EXTRA = "bundle-extra";
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
-    private static int mFragmentNumber = 1;
     private FragmentManager mFragmentManager;
+    private ActionBar mActionBar;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        mToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open, R.string.close);
+        mToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        mActionBar = getSupportActionBar();
+        if(mActionBar != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
         mFragmentManager = getSupportFragmentManager();
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        navigationView.getMenu().getItem(0).setChecked(true);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.home_page:
-                        actionBar.setTitle(getString(R.string.app_name));
-                        item.setChecked(true);
-                        HomePageFragment homePageFragment = new HomePageFragment();
-                        mFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_layout, homePageFragment)
-                                .commit();
-                        break;
-                    case R.id.trash:
-                        actionBar.setTitle(getString(R.string.trash));
-                        item.setChecked(true);
-                        TrashFragment trashFragment = new TrashFragment();
-                        mFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_layout, trashFragment)
-                                .commit();
-                        break;
-                    case R.id.settings:
-                        actionBar.setTitle(getString(R.string.settings));
-                        item.setChecked(true);
-                        SettingsFragment settingsFragment = new SettingsFragment();
-                        mFragmentManager.beginTransaction()
-                                .replace(R.id.fragment_layout, settingsFragment)
-                                .commit();
-                        break;
-
-                }
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-                return false;
-            }
-        });
+        handler = new Handler();
         if(savedInstanceState == null){
-            HomePageFragment homePageFragment = new HomePageFragment();
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_layout, homePageFragment)
-                    .commit();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mFragmentManager.beginTransaction()
+                                    .replace(R.id.fragment_layout, new HomePageFragment())
+                                    .commit();
+                }
+            }, 300);
         }
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+                NavigationView navigationView = findViewById(R.id.navigation_view);
+                navigationView.getMenu().getItem(0).setChecked(true);
+                navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                        int id = item.getItemId();
+
+                        switch (id) {
+                            case R.id.home_page:
+                                mActionBar.setTitle(getString(R.string.app_name));
+                                item.setChecked(true);
+                                mFragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_layout, new HomePageFragment())
+                                        .commit();
+                                break;
+                            case R.id.trash:
+                                mActionBar.setTitle(getString(R.string.trash));
+                                item.setChecked(true);
+                                mFragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_layout, new TrashFragment())
+                                        .commit();
+                                break;
+                            case R.id.settings:
+                                mActionBar.setTitle(getString(R.string.settings));
+                                item.setChecked(true);
+                                mFragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_layout, new SettingsFragment())
+                                        .commit();
+                                break;
+                        }
+                            }
+                        }, 300);
+                        return false;
+                    }
+                });
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override
     public Resources.Theme getTheme() {
-        Resources.Theme theme =  super.getTheme();
-        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
+        final Resources.Theme theme =  super.getTheme();
+        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
                 .getBoolean(getString(R.string.dark_theme_key), false);
         if(isDarkThemeEnabled){
             theme.applyStyle(R.style.AppThemeDark, true);
@@ -127,6 +139,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(BUNDLE_EXTRA, mFragmentNumber);
+        outState.putInt("bundle-extra", 1);
     }
 }

@@ -37,7 +37,7 @@
     <string name="home">Home</string>
     <string name="note_type">Note Type</string>
     <string name="search">Search</string>
-    <string name="trash_enpty_view_description">No Item in trash....</string>
+    <string name="trash_empty_view_description">No Item in trash....</string>
     <string name="delete_forever">Delete Forever</string>
     <string name="restore">Restore Note</string>
     <string name="dark_theme">Dark Theme</string>
@@ -50,4 +50,5 @@
     <string name="appearance">Appearance</string>
     <string name="title_descending">Title (Descending)</string>
     <string name="search_hint">Search here</string>
+    <string name="search_error_view_description">No result found for the given query</string>
 </resources>

@@ -61,13 +61,7 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
         super.onActivityCreated(savedInstanceState);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getLoaderManager().initLoader(TRASH_FRAGMENT_LOADER_ID, null, TrashFragment.this);
-            }
-        },500);
+        getLoaderManager().initLoader(TRASH_FRAGMENT_LOADER_ID, null, TrashFragment.this);
     }
 
     @Override
@@ -88,7 +82,6 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
             hideEmptyView();
             mNotesAdapter.swapCursor(data);
         }
-
     }
 
     @Override
@@ -114,6 +107,7 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
         detailActivityIntent.putExtra(getString(R.string.note_type),
                 cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE)));
         startActivity(detailActivityIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

@@ -45,7 +45,6 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public interface OnItemClickListener {
         void onMenuItemClick(View view, long noteId);
-
         void onItemClick(int adapterPosition, Cursor cursor);
     }
 
@@ -62,7 +61,6 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             default:
                 throw new IllegalArgumentException("Unknown ViewType");
         }
-
     }
 
     @Override
@@ -97,12 +95,10 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                     JSONObject jsonObject = jsonArrays.getJSONObject(i);
                                     String task = String.valueOf(jsonObject.get(AddAndEditChecklist.LIST_TITLE));
                                     boolean isCompleted = jsonObject.getBoolean(AddAndEditChecklist.IS_LIST_CHECKED);
+                                    textNotesViewHolder.noteDescriptionTextView.append(task);
                                     if (isCompleted) {
-                                        textNotesViewHolder.noteDescriptionTextView.append(task);
                                         textNotesViewHolder.noteDescriptionTextView.append(" " +
                                                 mContext.getString(R.string.checkmark_unicode));
-                                    } else {
-                                        textNotesViewHolder.noteDescriptionTextView.append(task);
                                     }
                                     textNotesViewHolder.noteDescriptionTextView.append("\n");
                                 } catch (JSONException e) {
@@ -115,7 +111,6 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }else{
                     textNotesViewHolder.noteDescriptionTextView.setVisibility(View.GONE);
@@ -193,7 +188,6 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 mOnItemClickListener.onItemClick(getAdapterPosition(), cursor);
             }
         }
-
     }
 
     public class ImageNotesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -224,9 +218,6 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 Cursor cursor = mCursor;
                 mOnItemClickListener.onItemClick(getAdapterPosition(), cursor);
             }
-
-
         }
-
     }
 }

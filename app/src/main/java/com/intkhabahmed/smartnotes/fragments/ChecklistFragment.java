@@ -28,6 +28,7 @@ import com.intkhabahmed.smartnotes.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +45,6 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
     private RecyclerView mRecyclerView;
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
-    private String mFilterText;
 
     public ChecklistFragment() {
     }
@@ -52,44 +52,34 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.notes_recycler_view, container, false);
+        return inflater.inflate(R.layout.notes_recycler_view, container, false);
+    }
 
-        mRecyclerView = rootView.findViewById(R.id.recycler_view);
-        mEmptyView = rootView.findViewById(R.id.empty_view);
-        mProgressBar = rootView.findViewById(R.id.progress_bar);
-
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
+        mEmptyView = view.findViewById(R.id.empty_view);
+        mProgressBar = view.findViewById(R.id.progress_bar);
         mNotesAdapter = new NotesAdapter(getActivity(),null, this, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,  false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-
-        return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getLoaderManager().initLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, ChecklistFragment.this);
-            }
-        },500);
+        if(getLoaderManager().getLoader(CHECKLIST_FRAGMENT_LOADER_ID) == null) {
+            getLoaderManager().initLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, ChecklistFragment.this);
+        }
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri contentUri = TextUtils.isEmpty(mFilterText) ? NotesContract.NotesEntry.CONTENT_URI
-                : NotesContract.NotesEntry.CONTENT_URI.buildUpon().appendPath(mFilterText).build();
         String selection = NotesContract.NotesEntry.COLUMN_TYPE +"=? AND " + NotesContract.NotesEntry.COLUMN_TRASH + "=?";
         String[] selectionArgs = {getString(R.string.checklist), "0"};
         String sortOrder = PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getString(getString(R.string.sort_criteria), NotesContract.NotesEntry.COLUMN_DATE_CREATED + " desc");
-        return new CursorLoader(getActivity(), contentUri, null,
+        return new CursorLoader(getActivity(), NotesContract.NotesEntry.CONTENT_URI, null,
                 selection, selectionArgs, sortOrder);
     }
 
@@ -97,27 +87,16 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mProgressBar.setVisibility(View.GONE);
         if(data != null && data.getCount()==0){
-            showEmptyView();
+            ViewUtils.showEmptyView(mRecyclerView, mEmptyView);
         } else {
-            hideEmptyView();
+            ViewUtils.hideEmptyView(mRecyclerView, mEmptyView);
             mNotesAdapter.swapCursor(data);
         }
-
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mNotesAdapter.swapCursor(null);
-    }
-
-    private void showEmptyView(){
-        mRecyclerView.setVisibility(View.INVISIBLE);
-        mEmptyView.setVisibility(View.VISIBLE);
-    }
-
-    private void hideEmptyView(){
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mEmptyView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -126,6 +105,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
         Intent editChecklistActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
         editChecklistActivityIntent.putExtra(Intent.EXTRA_TEXT, cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID)));
         startActivity(editChecklistActivityIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override
@@ -188,8 +168,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
         popupMenu.show();
     }
 
-    public void updateCheckListFragment(String filterText) {
-        mFilterText = filterText;
+    public void updateCheckListFragment() {
         getLoaderManager().restartLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, this);
     }
 }

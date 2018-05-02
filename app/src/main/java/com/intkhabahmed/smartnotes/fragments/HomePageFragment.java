@@ -2,26 +2,29 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.constraint.Group;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.transition.ChangeBounds;
+import android.support.transition.Transition;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.SearchView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.view.animation.OvershootInterpolator;
+import android.widget.ProgressBar;
 
 import com.intkhabahmed.smartnotes.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.AddImageNote;
@@ -30,7 +33,7 @@ import com.intkhabahmed.smartnotes.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 
-public class HomePageFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class HomePageFragment extends Fragment{
 
     public HomePageFragment() {
     }
@@ -40,107 +43,130 @@ public class HomePageFragment extends Fragment implements SearchView.OnQueryText
     private FloatingActionButton mAddButton;
     private boolean isSubmenuShown;
     private SharedPreferences mSharedPreferences;
+    private ProgressBar mProgressBar;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.home_page_layout, container, false);
-        ViewPager viewPager = view.findViewById(R.id.view_pager);
-        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
-        mNotesFragmentPagerAdapter = new NotesFragmentPagerAdapter(getChildFragmentManager(), getActivity());
-        viewPager.setAdapter(mNotesFragmentPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager, true);
+        return inflater.inflate(R.layout.home_page_layout, container, false);
+    }
 
+    @Override
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mProgressBar = view.findViewById(R.id.progress_bar);
         buttonSubMenu = view.findViewById(R.id.button_sub_menu);
         mAddButton = view.findViewById(R.id.add_button);
-        mAddButton.setOnClickListener(new View.OnClickListener() {
+        mNotesFragmentPagerAdapter = new NotesFragmentPagerAdapter(getChildFragmentManager(), getActivity());
+        setHasOptionsMenu(true);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onClick(View view) {
-                if(!isSubmenuShown){
-                    isSubmenuShown = true;
-                    mAddButton.setRotation(45);
-                    buttonSubMenu.setVisibility(View.VISIBLE);
-                } else {
-                    isSubmenuShown = false;
-                    buttonSubMenu.setVisibility(View.GONE);
-                    mAddButton.setRotation(0);
-                }
+            public void run() {
+                ViewPager viewPager = view.findViewById(R.id.view_pager);
+                TabLayout tabLayout = view.findViewById(R.id.tab_layout);
+                viewPager.setAdapter(mNotesFragmentPagerAdapter);
+                tabLayout.setupWithViewPager(viewPager, true);
+                final ConstraintSet constraintSet2 = new ConstraintSet();
+                constraintSet2.clone(getActivity(),R.layout.button_sub_menu_1);
+                final ConstraintLayout constraintLayout = view.findViewById(R.id.button_constraint_layout);
+                final ConstraintSet constraintSet1 = new ConstraintSet();
+                constraintSet1.clone(constraintLayout);
+
+                mAddButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Transition transition = new ChangeBounds();
+                        transition.setInterpolator(new OvershootInterpolator());
+                        TransitionManager.beginDelayedTransition(constraintLayout, transition);
+                        if(!isSubmenuShown){
+                            isSubmenuShown = true;
+                            constraintSet2.applyTo(constraintLayout);
+                            mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_clear_24dp));
+                            buttonSubMenu.setVisibility(View.VISIBLE);
+                        } else {
+                            isSubmenuShown = false;
+                            constraintSet1.applyTo(constraintLayout);
+                            buttonSubMenu.setVisibility(View.GONE);
+                            mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_add_black_24dp));
+                        }
+                    }
+                });
+                view.findViewById(R.id.add_simple_note_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), AddSimpleNote.class);
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    }
+                });
+                view.findViewById(R.id.add_checklist_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), AddAndEditChecklist.class);
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    }
+                });
+                view.findViewById(R.id.add_image_note_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), AddImageNote.class);
+                        startActivity(intent);
+                        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    }
+                });
+                mProgressBar.setVisibility(View.INVISIBLE);
             }
-        });
-        view.findViewById(R.id.add_simple_note_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddSimpleNote.class);
-                startActivity(intent);
-            }
-        });
-        view.findViewById(R.id.add_checklist_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddAndEditChecklist.class);
-                startActivity(intent);
-            }
-        });
-        view.findViewById(R.id.add_image_note_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddImageNote.class);
-                startActivity(intent);
-            }
-        });
-        buttonSubMenu.setVisibility(View.GONE);
+        },100);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mAddButton.setRotation(0);
+        isSubmenuShown = false;
+        mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_add_black_24dp));
         buttonSubMenu.setVisibility(View.GONE);
-        mNotesFragmentPagerAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
-        int subMenuOrder = mSharedPreferences.getInt(getString(R.string.sort_criteria_id), 4);
-        menu.getItem(1).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
-
-        SearchView searchView = (SearchView) menu.findItem(R.id.search_menu).getActionView();
-        searchView.setQueryHint(getString(R.string.search_hint));
-        EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchEditText.setHintTextColor(Color.WHITE);
-        searchEditText.setTextColor(Color.BLACK);
-        ImageView closedBtn = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
-        closedBtn.setColorFilter(Color.WHITE);
-        searchView.setOnQueryTextListener(this);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                int subMenuOrder = mSharedPreferences.getInt(getString(R.string.sort_criteria_id), 4);
+                menu.getItem(1).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
+            }
+        }, 0);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch (itemId) {
+            case R.id.search_menu:
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .addToBackStack(HomePageFragment.class.getName()).replace(R.id.fragment_layout, new SearchFragment())
+                        .commit();
+                return true;
             case R.id.sort_date_created_acsending:
-                item.setChecked(true);
-                changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
-                break;
             case R.id.sort_date_created_descending:
-                item.setChecked(true);
-                changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
-                break;
             case R.id.sort_title_ascending:
-                item.setChecked(true);
-                changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
-                break;
             case R.id.sort_title_descending:
-                item.setChecked(true);
-                changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
-                break;
+                if(item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
+                }
+                return true;
+                default:
+                    return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private String getCriteriaString(int order){
@@ -164,18 +190,5 @@ public class HomePageFragment extends Fragment implements SearchView.OnQueryText
         editor.putInt(getString(R.string.sort_criteria_id), subMenuOrder);
         editor.apply();
         mNotesFragmentPagerAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String query) {
-        String filterText = TextUtils.isEmpty(query) ? null : query;
-        mNotesFragmentPagerAdapter.setSearchText(filterText);
-        mNotesFragmentPagerAdapter.notifyDataSetChanged();
-        return true;
     }
 }
