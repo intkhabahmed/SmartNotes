@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.transition.Transition;
+import android.support.transition.TransitionInflater;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;

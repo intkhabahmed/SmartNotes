@@ -31,6 +31,7 @@ import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
+import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 public class ImageNotesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NotesAdapter.OnItemClickListener {
     private NotesAdapter mNotesAdapter;
@@ -45,25 +46,25 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.notes_recycler_view, container, false);
-        mRecyclerView = rootView.findViewById(R.id.recycler_view);
-        mEmptyView = rootView.findViewById(R.id.empty_view);
-        mProgressBar = rootView.findViewById(R.id.progress_bar);
+        return inflater.inflate(R.layout.notes_recycler_view, container, false);
+    }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
+        mEmptyView = view.findViewById(R.id.empty_view);
+        mProgressBar = view.findViewById(R.id.progress_bar);
         mNotesAdapter = new NotesAdapter(getActivity(), null, this, true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-        return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        getLoaderManager().initLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
+        if(getLoaderManager().getLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID) == null) {
+            getLoaderManager().initLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
+        }
     }
 
     @NonNull
@@ -81,9 +82,9 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mProgressBar.setVisibility(View.GONE);
         if (data != null && data.getCount() == 0) {
-            showEmptyView();
+            ViewUtils.showEmptyView(mRecyclerView, mEmptyView);
         } else {
-            hideEmptyView();
+            ViewUtils.hideEmptyView(mRecyclerView, mEmptyView);
             mNotesAdapter.swapCursor(data);
         }
     }
@@ -91,16 +92,6 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mNotesAdapter.swapCursor(null);
-    }
-
-    private void showEmptyView() {
-        mRecyclerView.setVisibility(View.INVISIBLE);
-        mEmptyView.setVisibility(View.VISIBLE);
-    }
-
-    private void hideEmptyView() {
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mEmptyView.setVisibility(View.INVISIBLE);
     }
 
 
@@ -115,6 +106,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         detailActivityIntent.putExtra(Intent.EXTRA_TEXT, cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID)));
         detailActivityIntent.putExtra(getString(R.string.note_type), getString(R.string.image_note));
         startActivity(detailActivityIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

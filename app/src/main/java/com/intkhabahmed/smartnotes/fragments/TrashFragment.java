@@ -107,6 +107,7 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
         detailActivityIntent.putExtra(getString(R.string.note_type),
                 cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE)));
         startActivity(detailActivityIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

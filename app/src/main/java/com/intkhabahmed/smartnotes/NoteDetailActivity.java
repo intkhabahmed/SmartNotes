@@ -52,6 +52,7 @@ public class NoteDetailActivity extends AppCompatActivity {
                     Intent intent = new Intent(NoteDetailActivity.this, AddSimpleNote.class);
                     intent.putExtra(Intent.EXTRA_TEXT, mNoteId);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
             });
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
