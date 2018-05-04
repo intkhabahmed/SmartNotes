@@ -14,7 +14,7 @@ public class NotesDBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "smartNotes";
 
-    public NotesDBHelper(Context context) {
+    NotesDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
