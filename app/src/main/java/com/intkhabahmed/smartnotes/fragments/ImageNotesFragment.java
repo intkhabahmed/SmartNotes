@@ -62,9 +62,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         mRecyclerView.setHasFixedSize(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        if(getLoaderManager().getLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID) == null) {
-            getLoaderManager().initLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
-        }
+        getLoaderManager().initLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
     }
 
     @NonNull

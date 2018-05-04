@@ -68,9 +68,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView.setHasFixedSize(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        if(getLoaderManager().getLoader(CHECKLIST_FRAGMENT_LOADER_ID) == null) {
-            getLoaderManager().initLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, ChecklistFragment.this);
-        }
+        getLoaderManager().initLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, ChecklistFragment.this);
     }
 
     @Override

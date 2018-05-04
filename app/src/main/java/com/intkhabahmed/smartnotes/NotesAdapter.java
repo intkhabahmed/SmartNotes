@@ -45,6 +45,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public interface OnItemClickListener {
         void onMenuItemClick(View view, long noteId);
+
         void onItemClick(int adapterPosition, Cursor cursor);
     }
 
@@ -72,7 +73,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 TextNotesViewHolder textNotesViewHolder = (TextNotesViewHolder) holder;
                 String title = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
 
-                if(trashed == 0){
+                if (trashed == 0) {
                     String noteType = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
                     textNotesViewHolder.noteDescriptionTextView.setText("");
                     if (noteType.equals(mContext.getString(R.string.simple_note))) {
@@ -112,7 +113,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             e.printStackTrace();
                         }
                     }
-                }else{
+                } else {
                     textNotesViewHolder.noteDescriptionTextView.setVisibility(View.GONE);
                     textNotesViewHolder.noteTitleTextView.setOnClickListener(null);
                     textNotesViewHolder.noteCreateDateTextView.setOnClickListener(null);
@@ -128,7 +129,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 String imagePath = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
 
                 File imageFile = new File(imagePath);
-                if(imageFile.exists()){
+                if (imageFile.exists()) {
                     Glide.with(mContext).asDrawable().load(Uri.fromFile(imageFile)).into(imageNotesViewHolder.noteImageView);
                 }
                 imageNotesViewHolder.noteTitleTextView.setText(imageNoteTitle);

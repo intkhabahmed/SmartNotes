@@ -137,7 +137,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     private void showEmptyView() {
         mRecyclerView.setVisibility(View.INVISIBLE);
-        if(!TextUtils.isEmpty(mFilterText)) {
+        if (!TextUtils.isEmpty(mFilterText)) {
             mEmptyView.setVisibility(View.VISIBLE);
         }
     }
@@ -168,7 +168,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
                     case R.id.share_note:
                         Cursor cursor = getActivity().getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI, new String[]{NotesContract.NotesEntry.COLUMN_DESCRIPTION},
                                 NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)}, null);
-                        if(cursor != null) {
+                        if (cursor != null) {
                             cursor.moveToFirst();
                             String noteDescription = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
                             cursor.close();
@@ -192,7 +192,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         cursor.moveToPosition(adapterPosition);
         String noteType = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
         Intent detailActivityIntent;
-        if(noteType.equals(getString(R.string.checklist))){
+        if (noteType.equals(getString(R.string.checklist))) {
             detailActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
         } else {
             detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);

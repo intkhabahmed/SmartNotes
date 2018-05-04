@@ -50,8 +50,8 @@ public class NotesProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
             case PATH_NOTE_ID_TRASH:
-                selection = NotesContract.NotesEntry._ID + "=? AND "+ NotesContract.NotesEntry.COLUMN_TRASH + "=?";
-                selectionArgs = new String[]{String.valueOf(uri.getPathSegments().get(1)),String.valueOf(uri.getPathSegments().get(2))};
+                selection = NotesContract.NotesEntry._ID + "=? AND " + NotesContract.NotesEntry.COLUMN_TRASH + "=?";
+                selectionArgs = new String[]{String.valueOf(uri.getPathSegments().get(1)), String.valueOf(uri.getPathSegments().get(2))};
                 retCursor = db.query(NotesContract.NotesEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
@@ -62,9 +62,9 @@ public class NotesProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown Uri "+ uri);
+                throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
-        retCursor.setNotificationUri(getContext().getContentResolver(),uri);
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
 
     }
@@ -84,12 +84,12 @@ public class NotesProvider extends ContentProvider {
         switch (match) {
             case PATH_NOTES:
                 long rowId = db.insert(NotesContract.NotesEntry.TABLE_NAME, null, contentValues);
-                if(rowId > 0){
+                if (rowId > 0) {
                     returnUri = ContentUris.withAppendedId(NotesContract.NotesEntry.CONTENT_URI, rowId);
                 }
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown Uri "+ uri);
+                throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
@@ -111,9 +111,9 @@ public class NotesProvider extends ContentProvider {
                 rowsDeleted = db.delete(NotesContract.NotesEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown Uri "+ uri);
+                throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
-        if(rowsDeleted > 0){
+        if (rowsDeleted > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
@@ -135,9 +135,9 @@ public class NotesProvider extends ContentProvider {
                 rowsUpdated = db.delete(NotesContract.NotesEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown Uri "+ uri);
+                throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
-        if(rowsUpdated > 0){
+        if (rowsUpdated > 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;

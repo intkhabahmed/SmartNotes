@@ -20,7 +20,7 @@ public class NotesDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_TABLE = "CREATE TABLE "+ TABLE_NAME + " ( "
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ( "
                 + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_TITLE + " TEXT NOT NULL, "
                 + COLUMN_DESCRIPTION + " TEXT NOT NULL, "
@@ -33,7 +33,7 @@ public class NotesDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 }

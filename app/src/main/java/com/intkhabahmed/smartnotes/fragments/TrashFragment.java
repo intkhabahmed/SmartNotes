@@ -48,8 +48,8 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
         mEmptyView = rootView.findViewById(R.id.trash_empty_view);
         mProgressBar = rootView.findViewById(R.id.progress_bar);
 
-        mNotesAdapter = new NotesAdapter(getActivity(),null, this, false);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,  false);
+        mNotesAdapter = new NotesAdapter(getActivity(), null, this, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
@@ -76,7 +76,7 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mProgressBar.setVisibility(View.GONE);
-        if(data != null && data.getCount()==0){
+        if (data != null && data.getCount() == 0) {
             showEmptyView();
         } else {
             hideEmptyView();
@@ -89,12 +89,12 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
         mNotesAdapter.swapCursor(null);
     }
 
-    private void showEmptyView(){
+    private void showEmptyView() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mEmptyView.setVisibility(View.VISIBLE);
     }
 
-    private void hideEmptyView(){
+    private void hideEmptyView() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
     }
@@ -142,7 +142,7 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
                         values.put(NotesContract.NotesEntry.COLUMN_TRASH, 0);
                         int rowsUpdated = getActivity().getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
                                 NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
-                        if(rowsUpdated > 0){
+                        if (rowsUpdated > 0) {
                             Toast.makeText(getActivity(), "Note has been restored!", Toast.LENGTH_LONG).show();
                         }
                         break;

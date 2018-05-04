@@ -28,8 +28,8 @@ public class SimpleNotesDetailFragment extends Fragment {
     public SimpleNotesDetailFragment() {
     }
 
-    public void setNoteId(long noteId){
-       mNoteId = noteId;
+    public void setNoteId(long noteId) {
+        mNoteId = noteId;
 
     }
 
@@ -43,7 +43,7 @@ public class SimpleNotesDetailFragment extends Fragment {
         TextView noteDescriptionTextView = rootView.findViewById(R.id.tv_note_desciption);
         TextView noteCreatedDateTextView = rootView.findViewById(R.id.tv_date_created);
         TextView noteModifiedDateTextView = rootView.findViewById(R.id.tv_date_modified);
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mNoteId = savedInstanceState.getLong(BUNDLE_DATA);
         }
 
@@ -65,7 +65,7 @@ public class SimpleNotesDetailFragment extends Fragment {
         cursor.close();
     }
 
-    private Cursor getNoteDataById(){
+    private Cursor getNoteDataById() {
         Uri singleNoteUri = ContentUris.withAppendedId(NotesContract.NotesEntry.CONTENT_URI, mNoteId).buildUpon().appendPath("0").build();
         return getActivity().getContentResolver().query(singleNoteUri, null,
                 null, null, null);

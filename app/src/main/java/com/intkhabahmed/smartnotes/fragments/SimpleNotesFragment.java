@@ -67,9 +67,8 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         mRecyclerView.setHasFixedSize(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        if(getLoaderManager().getLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID) == null) {
-            getLoaderManager().initLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, SimpleNotesFragment.this);
-        }
+        getLoaderManager().initLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, SimpleNotesFragment.this);
+
     }
 
     @Override

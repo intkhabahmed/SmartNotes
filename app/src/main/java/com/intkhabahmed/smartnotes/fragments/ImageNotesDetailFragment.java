@@ -34,7 +34,7 @@ public class ImageNotesDetailFragment extends Fragment {
     public ImageNotesDetailFragment() {
     }
 
-    public void setNoteId(long noteId){
+    public void setNoteId(long noteId) {
         mNoteId = noteId;
 
     }
@@ -52,13 +52,13 @@ public class ImageNotesDetailFragment extends Fragment {
         TextView noteModifiedDateTextView = rootView.findViewById(R.id.tv_date_modified);
         noteImageView = rootView.findViewById(R.id.image_note_view);
         noteImageView.setVisibility(View.VISIBLE);
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             mNoteId = savedInstanceState.getLong(BUNDLE_DATA);
         }
 
         handleCursorData();
         File imageFile = new File(imagePath);
-        if(imageFile.exists()){
+        if (imageFile.exists()) {
             Glide.with(getActivity()).load(Uri.fromFile(imageFile)).into(noteImageView);
         }
         noteTitleTextView.setText(noteTitle);
@@ -77,7 +77,7 @@ public class ImageNotesDetailFragment extends Fragment {
         cursor.close();
     }
 
-    private Cursor getNoteDataById(){
+    private Cursor getNoteDataById() {
         Uri singleNoteUri = ContentUris.withAppendedId(NotesContract.NotesEntry.CONTENT_URI, mNoteId).buildUpon().appendPath("0").build();
         return getActivity().getContentResolver().query(singleNoteUri, null,
                 null, null, null);

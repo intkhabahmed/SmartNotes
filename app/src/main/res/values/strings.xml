@@ -51,4 +51,9 @@
     <string name="title_descending">Title (Descending)</string>
     <string name="search_hint">Search here</string>
     <string name="search_error_view_description">No result found for the given query</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+    <string name="unsaved_changes_dialog_message">Discard your changes and quit editing?</string>
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="add_checklist_button">Add Checklist Button</string>
 </resources>

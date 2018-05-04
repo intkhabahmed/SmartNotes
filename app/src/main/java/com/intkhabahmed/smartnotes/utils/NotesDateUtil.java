@@ -12,11 +12,11 @@ import java.util.Locale;
 
 public class NotesDateUtil {
 
-    public static String getFormattedTime(long timeInMillis, long currentTime){
+    public static String getFormattedTime(long timeInMillis, long currentTime) {
         return DateUtils.getRelativeTimeSpanString(timeInMillis, currentTime, DateUtils.MINUTE_IN_MILLIS).toString();
     }
 
-    public static String getFormattedTime(long timeInMillis){
+    public static String getFormattedTime(long timeInMillis) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/YYYY", Locale.US);
         return formatter.format(new Date(timeInMillis));
     }
