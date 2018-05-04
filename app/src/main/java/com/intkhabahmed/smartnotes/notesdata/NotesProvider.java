@@ -43,7 +43,7 @@ public class NotesProvider extends ContentProvider {
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase db = mNotesDBHelper.getReadableDatabase();
         int match = sUriMatcher.match(uri);
-        Cursor retCursor = null;
+        Cursor retCursor;
         switch (match) {
             case PATH_NOTES:
                 retCursor = db.query(NotesContract.NotesEntry.TABLE_NAME, projection, selection, selectionArgs,
@@ -64,7 +64,9 @@ public class NotesProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
-        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        if (getContext() != null) {
+            retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        }
         return retCursor;
 
     }
@@ -92,7 +94,9 @@ public class NotesProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
 
-        getContext().getContentResolver().notifyChange(uri, null);
+        if (getContext() != null) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
         return returnUri;
     }
 
@@ -114,7 +118,9 @@ public class NotesProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
         if (rowsDeleted > 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            if (getContext() != null) {
+                getContext().getContentResolver().notifyChange(uri, null);
+            }
         }
         return rowsDeleted;
     }
@@ -138,7 +144,9 @@ public class NotesProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
         if (rowsUpdated > 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            if (getContext() != null) {
+                getContext().getContentResolver().notifyChange(uri, null);
+            }
         }
         return rowsUpdated;
     }
