@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
 
 public class NotesContract {
     public static final String CONTENT_AUTHORITY = "com.intkhabahmed.smartnotes";
-    public static final Uri BASE_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String NOTES_PATH = "notes";
 
     public static class NotesEntry implements BaseColumns {
