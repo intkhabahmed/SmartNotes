@@ -42,6 +42,7 @@ public class AddSimpleNote extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_white_black_24dp);
+            actionBar.setTitle(R.string.simple_note);
         }
 
         TextWatcher textWatcher = new TextWatcher() {

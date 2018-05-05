@@ -3,7 +3,10 @@ package com.intkhabahmed.smartnotes.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.support.annotation.ColorInt;
 import android.support.v7.app.AlertDialog;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.intkhabahmed.smartnotes.R;
@@ -38,5 +41,13 @@ public class ViewUtils {
         dialogBuilder.setTitle(context.getString(R.string.unsaved_changes));
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
+    }
+
+    public static int getColorFromAttribute(Context context) {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = context.getTheme();
+        theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+        @ColorInt int color = typedValue.data;
+        return color;
     }
 }

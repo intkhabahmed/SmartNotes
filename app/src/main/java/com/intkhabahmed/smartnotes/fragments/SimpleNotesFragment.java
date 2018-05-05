@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,15 +24,19 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.intkhabahmed.smartnotes.MainActivity;
 import com.intkhabahmed.smartnotes.NoteDetailActivity;
 import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.utils.DBUtils;
+import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 /**
@@ -44,6 +50,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
     private static final int SIMPLE_NOTE_FRAGMENT_LOADER_ID = 0;
+    private FrameLayout mRootFrameLayout;
 
     public SimpleNotesFragment() {
     }
@@ -57,6 +64,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mRootFrameLayout = view.findViewById(R.id.root_frame_layout);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
@@ -118,7 +126,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onMenuItemClick(View view, final long noteId) {
+    public void onMenuItemClick(View view, final int noteId) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -127,13 +135,8 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
-                        ContentValues values = new ContentValues();
-                        values.put(NotesContract.NotesEntry.COLUMN_TRASH, 1);
-                        values.put(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED, System.currentTimeMillis());
-                        getActivity().getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
-                                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
-                        Toast.makeText(getActivity(), "Note has been moved to trash ", Toast.LENGTH_LONG).show();
-                        getLoaderManager().restartLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, SimpleNotesFragment.this);
+                        DBUtils.moveToTrash(getActivity(), noteId);
+                        showSnackBar(noteId);
                         break;
                     case R.id.share_note:
                         Cursor cursor = getActivity().getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI, new String[]{NotesContract.NotesEntry.COLUMN_DESCRIPTION},
@@ -142,12 +145,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
                             cursor.moveToFirst();
                             String noteDescription = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
                             cursor.close();
-                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                            shareIntent.setType("text/plain");
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, noteDescription);
-                            if (shareIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                startActivity(shareIntent);
-                            }
+                            NoteUtils.shareNote(getActivity(), noteDescription);
                         }
                         break;
                 }
@@ -156,5 +154,17 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         });
         popupMenu.show();
     }
-}
 
+    private void showSnackBar(final int noteId) {
+        Snackbar snackbar = Snackbar.make(mRootFrameLayout, "Note has been moved to trash", Snackbar.LENGTH_LONG);
+        snackbar.setAction("Undo", new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                DBUtils.restoreFromTrash(getActivity(), noteId);
+                Snackbar.make(mRootFrameLayout, "Note Restored", Snackbar.LENGTH_LONG).show();
+            }
+        });
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity()));
+        snackbar.show();
+    }
+}

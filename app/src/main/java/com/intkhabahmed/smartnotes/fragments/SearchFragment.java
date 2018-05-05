@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -25,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -35,6 +37,8 @@ import com.intkhabahmed.smartnotes.NoteDetailActivity;
 import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
+import com.intkhabahmed.smartnotes.utils.DBUtils;
+import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 public class SearchFragment extends Fragment implements NotesAdapter.OnItemClickListener, SearchView.OnQueryTextListener,
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -45,6 +49,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     private LinearLayout mEmptyView;
     private SearchView mSearchView;
     private String mFilterText;
+    private FrameLayout mRootFrameLayout;
 
     public SearchFragment() {
     }
@@ -58,6 +63,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        mRootFrameLayout = view.findViewById(R.id.root_frame_layout);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.search_error_view);
 
@@ -148,7 +154,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     }
 
     @Override
-    public void onMenuItemClick(View view, final long noteId) {
+    public void onMenuItemClick(View view, final int noteId) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -157,12 +163,8 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
-                        ContentValues values = new ContentValues();
-                        values.put(NotesContract.NotesEntry.COLUMN_TRASH, 1);
-                        values.put(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED, System.currentTimeMillis());
-                        getActivity().getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
-                                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
-                        Toast.makeText(getActivity(), "Note has been moved to trash ", Toast.LENGTH_LONG).show();
+                        DBUtils.moveToTrash(getActivity(), noteId);
+                        showSnackBar(noteId);
                         getLoaderManager().restartLoader(SEARCH_NOTE_FRAGMENT_LOADER_ID, null, SearchFragment.this);
                         break;
                     case R.id.share_note:
@@ -200,5 +202,19 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         }
         detailActivityIntent.putExtra(Intent.EXTRA_TEXT, cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID)));
         startActivity(detailActivityIntent);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    private void showSnackBar(final int noteId) {
+        Snackbar snackbar = Snackbar.make(mRootFrameLayout, "Note has been moved to trash", Snackbar.LENGTH_LONG);
+        snackbar.setAction("Undo", new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                DBUtils.restoreFromTrash(getActivity(), noteId);
+                Snackbar.make(mRootFrameLayout, "Note Restored", Snackbar.LENGTH_LONG).show();
+            }
+        });
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity()));
+        snackbar.show();
     }
 }

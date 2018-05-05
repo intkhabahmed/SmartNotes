@@ -33,7 +33,7 @@ import com.intkhabahmed.smartnotes.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 
-public class HomePageFragment extends Fragment {
+public class HomePageFragment extends Fragment{
 
     public HomePageFragment() {
     }
@@ -68,7 +68,7 @@ public class HomePageFragment extends Fragment {
                 viewPager.setAdapter(mNotesFragmentPagerAdapter);
                 tabLayout.setupWithViewPager(viewPager, true);
                 final ConstraintSet constraintSet2 = new ConstraintSet();
-                constraintSet2.clone(getActivity(), R.layout.button_sub_menu_1);
+                constraintSet2.clone(getActivity(),R.layout.button_sub_menu_1);
                 final ConstraintLayout constraintLayout = view.findViewById(R.id.button_constraint_layout);
                 final ConstraintSet constraintSet1 = new ConstraintSet();
                 constraintSet1.clone(constraintLayout);
@@ -79,16 +79,16 @@ public class HomePageFragment extends Fragment {
                         Transition transition = new ChangeBounds();
                         transition.setInterpolator(new OvershootInterpolator());
                         TransitionManager.beginDelayedTransition(constraintLayout, transition);
-                        if (!isSubmenuShown) {
+                        if(!isSubmenuShown){
                             isSubmenuShown = true;
                             constraintSet2.applyTo(constraintLayout);
-                            mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_clear_24dp));
+                            mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_clear_24dp));
                             buttonSubMenu.setVisibility(View.VISIBLE);
                         } else {
                             isSubmenuShown = false;
                             constraintSet1.applyTo(constraintLayout);
                             buttonSubMenu.setVisibility(View.GONE);
-                            mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_add_black_24dp));
+                            mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_add_black_24dp));
                         }
                     }
                 });
@@ -118,7 +118,7 @@ public class HomePageFragment extends Fragment {
                 });
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
-        }, 100);
+        },100);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     }
 
@@ -126,7 +126,7 @@ public class HomePageFragment extends Fragment {
     public void onResume() {
         super.onResume();
         isSubmenuShown = false;
-        mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_add_black_24dp));
+        mAddButton.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.ic_add_black_24dp));
         buttonSubMenu.setVisibility(View.GONE);
     }
 
@@ -138,7 +138,7 @@ public class HomePageFragment extends Fragment {
             @Override
             public void run() {
                 int subMenuOrder = mSharedPreferences.getInt(getString(R.string.sort_criteria_id), 4);
-                menu.getItem(1).getSubMenu().getItem(subMenuOrder - 1).setChecked(true);
+                menu.getItem(1).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
             }
         }, 0);
         super.onCreateOptionsMenu(menu, inflater);
@@ -157,19 +157,19 @@ public class HomePageFragment extends Fragment {
             case R.id.sort_date_created_descending:
             case R.id.sort_title_ascending:
             case R.id.sort_title_descending:
-                if (item.isChecked()) {
+                if(item.isChecked()) {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
                     changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
                 }
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
+                default:
+                    return super.onOptionsItemSelected(item);
         }
     }
 
-    private String getCriteriaString(int order) {
+    private String getCriteriaString(int order){
         switch (order) {
             case 1:
                 return NotesContract.NotesEntry.COLUMN_TITLE + " ASC";
@@ -184,7 +184,7 @@ public class HomePageFragment extends Fragment {
         }
     }
 
-    private void changeSortCriteria(String criteria, int subMenuOrder) {
+    private void changeSortCriteria(String criteria, int subMenuOrder){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(getString(R.string.sort_criteria), criteria);
         editor.putInt(getString(R.string.sort_criteria_id), subMenuOrder);

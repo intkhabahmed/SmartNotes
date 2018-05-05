@@ -62,6 +62,7 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_white_black_24dp);
+            actionBar.setTitle(R.string.image_note);
         }
 
         TextWatcher textWatcher = new TextWatcher() {

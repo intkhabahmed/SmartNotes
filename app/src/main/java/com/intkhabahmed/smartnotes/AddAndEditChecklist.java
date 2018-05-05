@@ -52,6 +52,9 @@ public class AddAndEditChecklist extends AppCompatActivity {
     private long mNoteId;
     private HashSet<String> mUniqueChecklist;
     private boolean mIsChanged;
+    private int mTrashed;
+    private ImageButton mAddChecklistItemButton;
+    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_white_black_24dp);
+            actionBar.setTitle(R.string.checklist);
         }
 
         TextWatcher textWatcher = new TextWatcher() {
@@ -74,8 +78,10 @@ public class AddAndEditChecklist extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mIsChanged = !TextUtils.isEmpty(mChecklistEditText.getText().toString().trim())
-                        || !TextUtils.isEmpty(mChecklistTitleEditText.getText().toString().trim());
+                if(mTrashed == 0) {
+                    mIsChanged = !TextUtils.isEmpty(mChecklistEditText.getText().toString().trim())
+                            || !TextUtils.isEmpty(mChecklistTitleEditText.getText().toString().trim());
+                }
             }
 
             @Override
@@ -84,13 +90,13 @@ public class AddAndEditChecklist extends AppCompatActivity {
             }
         };
 
-        ImageButton addChecklistItemButton = findViewById(R.id.add_checklist_button);
+        mAddChecklistItemButton = findViewById(R.id.add_checklist_button);
         mChecklistEditText = findViewById(R.id.checklist_item);
         mChecklistContainer = findViewById(R.id.checklist_container);
         mChecklistTitleEditText = findViewById(R.id.checklist_title);
         mChecklistTitleEditText.addTextChangedListener(textWatcher);
 
-        addChecklistItemButton.setOnClickListener(new View.OnClickListener() {
+        mAddChecklistItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String checklistItem = mChecklistEditText.getText().toString().trim().toLowerCase();
@@ -159,38 +165,47 @@ public class AddAndEditChecklist extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                checklistObject.remove(IS_LIST_CHECKED);
-                mIsChanged = true;
-                try {
-                    checklistObject.put(IS_LIST_CHECKED, b);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        if(mTrashed == 0) {
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    checklistObject.remove(IS_LIST_CHECKED);
+                    mIsChanged = true;
+                    try {
+                        checklistObject.put(IS_LIST_CHECKED, b);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            checkBox.setEnabled(false);
+        }
         mChecklistArray.put(checklistObject);
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (int i = 1; i <= mChecklistContainer.getChildCount(); i++) {
-                    View childView = mChecklistContainer.getChildAt(i - 1);
-                    if (childView != null) {
-                        if (childView.getContentDescription().equals(checklistItem)) {
-                            mChecklistArray = remove(i - 1, mChecklistArray);
+                if(mTrashed == 0) {
+                    for (int i = 1; i <= mChecklistContainer.getChildCount(); i++) {
+                        View childView = mChecklistContainer.getChildAt(i - 1);
+                        if (childView != null) {
+                            if (childView.getContentDescription().equals(checklistItem)) {
+                                mChecklistArray = remove(i - 1, mChecklistArray);
+                            }
                         }
                     }
-                }
-                mUniqueChecklist.remove(checklistItem);
-                mChecklistContainer.removeView(checkBoxContainer);
-                if (mUniqueChecklist.size() == 0) {
-                    mIsChanged = false;
+                    mUniqueChecklist.remove(checklistItem);
+                    mIsChanged = true;
+                    mChecklistContainer.removeView(checkBoxContainer);
+                    if (mUniqueChecklist.size() == 0 && !mIsEditing) {
+                        mIsChanged = false;
+                    }
                 }
             }
         });
-
+        if(mTrashed == 1) {
+            removeButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -209,6 +224,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_note_menu, menu);
+        menuItem = menu.findItem(R.id.save_action);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -301,13 +317,22 @@ public class AddAndEditChecklist extends AppCompatActivity {
 
     public void populateChecklist() {
         Cursor cursor = getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI,
-                new String[]{NotesContract.NotesEntry.COLUMN_TITLE, NotesContract.NotesEntry.COLUMN_DESCRIPTION},
+                new String[]{NotesContract.NotesEntry.COLUMN_TITLE, NotesContract.NotesEntry.COLUMN_DESCRIPTION,
+                        NotesContract.NotesEntry.COLUMN_TRASH},
                 NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(mNoteId)}, null);
         if (cursor != null) {
             cursor.moveToFirst();
+            mTrashed = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TRASH));
+            if(mTrashed == 1){
+                mChecklistTitleEditText.setEnabled(false);
+                mChecklistEditText.setVisibility(View.GONE);
+                mAddChecklistItemButton.setVisibility(View.GONE);
+                menuItem.setVisible(false);
+            }
             String title = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
             mChecklistTitleEditText.setText(title);
             String description = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
+
             try {
                 JSONObject checklistObjects = new JSONObject(description);
                 JSONArray jsonArrays = checklistObjects.getJSONArray(getString(R.string.checklist));

@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
-import com.intkhabahmed.smartnotes.utils.NotesDateUtil;
+import com.intkhabahmed.smartnotes.utils.NoteUtils;
 
 public class SimpleNotesDetailFragment extends Fragment {
 
@@ -60,8 +60,8 @@ public class SimpleNotesDetailFragment extends Fragment {
         cursor.moveToFirst();
         noteTitle = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
         noteDescription = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
-        noteCreatedDate = NotesDateUtil.getFormattedTime(cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DATE_CREATED)));
-        noteModifiedDate = NotesDateUtil.getFormattedTime(cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED)));
+        noteCreatedDate = NoteUtils.getFormattedTime(cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DATE_CREATED)));
+        noteModifiedDate = NoteUtils.getFormattedTime(cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED)));
         cursor.close();
     }
 
