@@ -43,7 +43,8 @@ import com.intkhabahmed.smartnotes.utils.ViewUtils;
  * Created by INTKHAB on 23-03-2018.
  */
 
-public class SimpleNotesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NotesAdapter.OnItemClickListener {
+public class SimpleNotesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        NotesAdapter.OnItemClickListener {
 
     private NotesAdapter mNotesAdapter;
     private RecyclerView mRecyclerView;
@@ -68,7 +69,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
-        mNotesAdapter = new NotesAdapter(getActivity(),null, this, false);
+        mNotesAdapter = new NotesAdapter(getActivity(),null, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,  false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);

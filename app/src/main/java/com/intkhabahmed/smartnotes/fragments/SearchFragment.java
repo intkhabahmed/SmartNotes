@@ -67,7 +67,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.search_error_view);
 
-        mNotesAdapter = new NotesAdapter(getActivity(), null, this, false);
+        mNotesAdapter = new NotesAdapter(getActivity(), null, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);

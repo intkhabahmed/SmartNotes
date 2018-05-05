@@ -4,6 +4,7 @@ package com.intkhabahmed.smartnotes.fragments;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,8 +61,18 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
-        mNotesAdapter = new NotesAdapter(getActivity(), null, this, true);
+        mNotesAdapter = new NotesAdapter(getActivity(), null, this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                outRect.bottom = 8;
+                outRect.top = 8;
+                if(parent.getChildLayoutPosition(view) % 2 != 0){
+                    outRect.left = 8;
+                }
+            }
+        });
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);

@@ -67,7 +67,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
-        mNotesAdapter = new NotesAdapter(getActivity(),null, this, false);
+        mNotesAdapter = new NotesAdapter(getActivity(),null, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,  false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);

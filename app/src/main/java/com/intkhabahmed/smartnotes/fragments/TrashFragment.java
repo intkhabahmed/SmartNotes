@@ -54,7 +54,7 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
         mEmptyView = view.findViewById(R.id.trash_empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
 
-        mNotesAdapter = new NotesAdapter(getActivity(), null, this, false);
+        mNotesAdapter = new NotesAdapter(getActivity(), null, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
