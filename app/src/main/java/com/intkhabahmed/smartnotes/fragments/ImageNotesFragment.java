@@ -66,15 +66,6 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         mProgressBar = view.findViewById(R.id.progress_bar);
         mNotesAdapter = new NotesAdapter(getActivity(), null, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        /*mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                outRect.bottom = 8;
-                if(parent.getChildLayoutPosition(view) == 0){
-                    outRect.top = 8;
-                }
-            }
-        });*/
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
