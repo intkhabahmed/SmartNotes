@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -22,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -31,6 +33,7 @@ import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
+import com.intkhabahmed.smartnotes.utils.DBUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 public class ImageNotesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NotesAdapter.OnItemClickListener {
@@ -39,6 +42,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
     private static final int IMAGE_NOTE_FRAGMENT_LOADER_ID = 2;
+    private FrameLayout mRootFrameLayout;
 
     public ImageNotesFragment() {
     }
@@ -52,6 +56,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mRootFrameLayout = view.findViewById(R.id.root_frame_layout);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
@@ -62,9 +67,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         mRecyclerView.setHasFixedSize(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        if(getLoaderManager().getLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID) == null) {
-            getLoaderManager().initLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
-        }
+        getLoaderManager().initLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
     }
 
     @NonNull
@@ -110,7 +113,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     }
 
     @Override
-    public void onMenuItemClick(View view, final long noteId) {
+    public void onMenuItemClick(View view, final int noteId) {
 
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
@@ -120,13 +123,8 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
-                        ContentValues values = new ContentValues();
-                        values.put(NotesContract.NotesEntry.COLUMN_TRASH, 1);
-                        values.put(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED, System.currentTimeMillis());
-                        getActivity().getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
-                                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
-                        Toast.makeText(getActivity(), "Note has been moved to trash ", Toast.LENGTH_LONG).show();
-                        getLoaderManager().restartLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
+                        DBUtils.moveToTrash(getActivity(), noteId);
+                        showSnackBar(noteId);
                         break;
                     case R.id.share_note:
                         Cursor cursor = getActivity().getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI,
@@ -144,5 +142,18 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
             }
         });
         popupMenu.show();
+    }
+
+    private void showSnackBar(final int noteId) {
+        Snackbar snackbar = Snackbar.make(mRootFrameLayout, "Note has been moved to trash", Snackbar.LENGTH_LONG);
+        snackbar.setAction("Undo", new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                DBUtils.restoreFromTrash(getActivity(), noteId);
+                Snackbar.make(mRootFrameLayout, "Note Restored", Snackbar.LENGTH_LONG).show();
+            }
+        });
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity()));
+        snackbar.show();
     }
 }

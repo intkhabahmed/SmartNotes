@@ -10,7 +10,6 @@
     <string name="close">Close</string>
     <string name="enpty_view_description">No notes to show, click on add button to add a new note</string>
     <string name="image_note">Image Note</string>
-    <string name="add_simple_note">Add Simple Note</string>
     <string name="title">Title</string>
     <string name="title_hint">Enter Note Title</string>
     <string name="description">Description</string>
@@ -26,7 +25,6 @@
     <string name="add_checklist">Add</string>
     <string name="delete_note">Delete Note</string>
     <string name="share_note">Share Note</string>
-    <string name="edit_simple_note">Edit Note</string>
     <string name="date_created">Date Created</string>
     <string name="date_modified">Date Modified</string>
     <string name="add_checklist_title_hint">Enter Checklist Title</string>
@@ -51,4 +49,11 @@
     <string name="title_descending">Title (Descending)</string>
     <string name="search_hint">Search here</string>
     <string name="search_error_view_description">No result found for the given query</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+    <string name="unsaved_changes_dialog_message">Discard your changes and quit editing?</string>
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="add_checklist_button">Add Checklist Button</string>
+    <string name="chooser_title">Share Note with</string>
+    <string name="share_type_text">text/plain</string>
 </resources>

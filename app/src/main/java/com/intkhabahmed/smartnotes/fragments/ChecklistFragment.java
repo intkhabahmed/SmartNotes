@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
@@ -28,6 +30,8 @@ import com.intkhabahmed.smartnotes.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.utils.DBUtils;
+import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 import org.json.JSONArray;
@@ -45,6 +49,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
     private RecyclerView mRecyclerView;
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
+    private FrameLayout mRootFrameLayout;
 
     public ChecklistFragment() {
     }
@@ -58,6 +63,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mRootFrameLayout = view.findViewById(R.id.root_frame_layout);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
@@ -68,9 +74,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView.setHasFixedSize(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
-        if(getLoaderManager().getLoader(CHECKLIST_FRAGMENT_LOADER_ID) == null) {
-            getLoaderManager().initLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, ChecklistFragment.this);
-        }
+        getLoaderManager().initLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, ChecklistFragment.this);
     }
 
     @Override
@@ -109,7 +113,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onMenuItemClick(View view, final long noteId) {
+    public void onMenuItemClick(View view, final int noteId) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -118,13 +122,8 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
-                        ContentValues values = new ContentValues();
-                        values.put(NotesContract.NotesEntry.COLUMN_TRASH, 1);
-
-                        getActivity().getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
-                                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
-                        Toast.makeText(getActivity(), "Note has been moved to trash ", Toast.LENGTH_LONG).show();
-                        getLoaderManager().restartLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, ChecklistFragment.this);
+                        DBUtils.moveToTrash(getActivity(), noteId);
+                        showSnackBar(noteId);
                         break;
                     case R.id.share_note:
                         Cursor cursor = getActivity().getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI,
@@ -153,12 +152,7 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                            shareIntent.setType("text/plain");
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, tasks.toString());
-                            if (shareIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                startActivity(shareIntent);
-                            }
+                            NoteUtils.shareNote(getActivity(), tasks.toString());
                         }
                         break;
                 }
@@ -170,6 +164,19 @@ public class ChecklistFragment extends Fragment implements LoaderManager.LoaderC
 
     public void updateCheckListFragment() {
         getLoaderManager().restartLoader(CHECKLIST_FRAGMENT_LOADER_ID, null, this);
+    }
+
+    private void showSnackBar(final int noteId) {
+        Snackbar snackbar = Snackbar.make(mRootFrameLayout, "Note has been moved to trash", Snackbar.LENGTH_LONG);
+        snackbar.setAction("Undo", new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                DBUtils.restoreFromTrash(getActivity(), noteId);
+                Snackbar.make(mRootFrameLayout, "Note Restored", Snackbar.LENGTH_LONG).show();
+            }
+        });
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity()));
+        snackbar.show();
     }
 }
 
