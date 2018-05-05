@@ -16,10 +16,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,18 +65,17 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
         mNotesAdapter = new NotesAdapter(getActivity(), null, this);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        /*mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 outRect.bottom = 8;
-                outRect.top = 8;
-                if(parent.getChildLayoutPosition(view) % 2 != 0){
-                    outRect.left = 8;
+                if(parent.getChildLayoutPosition(view) == 0){
+                    outRect.top = 8;
                 }
             }
-        });
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        });*/
+        mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
         mProgressBar.setVisibility(View.VISIBLE);

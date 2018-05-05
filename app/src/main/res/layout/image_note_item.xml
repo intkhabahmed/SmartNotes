@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/rectangle_border">
+    android:layout_height="wrap_content">
 
     <FrameLayout
+        android:id="@+id/image_note_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -37,7 +37,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                android:textColor="?attr/primaryTextColor"
+                android:textColor="@color/nightPrimaryTextColor"
                 app:layout_constraintBottom_toTopOf="@+id/tv_note_date_created"
                 app:layout_constraintEnd_toStartOf="@+id/note_menu_button"
                 app:layout_constraintStart_toStartOf="parent"
@@ -51,6 +51,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="@color/nightSecondaryTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/note_menu_button"
                 app:layout_constraintStart_toStartOf="@+id/tv_note_title"
@@ -64,8 +65,17 @@
                 android:background="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:tint="@android:color/white"
                 app:layout_constraintTop_toTopOf="@+id/tv_note_title"
                 app:srcCompat="@drawable/ic_more_vert_black_24dp" />
         </android.support.constraint.ConstraintLayout>
     </FrameLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/greyHighlight"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_note_container" />
 </android.support.constraint.ConstraintLayout>
