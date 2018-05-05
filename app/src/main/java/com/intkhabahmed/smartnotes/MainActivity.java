@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.transition.Fade;
 import android.support.transition.Transition;
 import android.support.transition.TransitionInflater;
@@ -41,19 +42,19 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mActionBar = getSupportActionBar();
-        if(mActionBar != null) {
+        if (mActionBar != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);
             mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
         mFragmentManager = getSupportFragmentManager();
         handler = new Handler();
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mFragmentManager.beginTransaction()
-                                    .replace(R.id.fragment_layout, new HomePageFragment())
-                                    .commit();
+                            .replace(R.id.fragment_layout, new HomePageFragment())
+                            .commit();
                 }
             }, 300);
         }
@@ -62,16 +63,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-                NavigationView navigationView = findViewById(R.id.navigation_view);
-                navigationView.getMenu().getItem(0).setChecked(true);
-                navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.getMenu().getItem(0).setChecked(true);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                handler.postDelayed(new Runnable() {
                     @Override
-                    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
+                    public void run() {
                         int id = item.getItemId();
 
                         switch (id) {
@@ -97,20 +97,20 @@ public class MainActivity extends AppCompatActivity {
                                         .commit();
                                 break;
                         }
-                            }
-                        }, 300);
-                        return false;
                     }
-                });
+                }, 300);
+                return false;
+            }
+        });
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override
     public Resources.Theme getTheme() {
-        final Resources.Theme theme =  super.getTheme();
+        final Resources.Theme theme = super.getTheme();
         boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
                 .getBoolean(getString(R.string.dark_theme_key), false);
-        if(isDarkThemeEnabled){
+        if (isDarkThemeEnabled) {
             theme.applyStyle(R.style.AppThemeDark, true);
         } else {
             theme.applyStyle(R.style.AppThemeLight, true);
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(mToggle.onOptionsItemSelected(item)){
+        if (mToggle.onOptionsItemSelected(item)) {
             mDrawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
             return;
         }
