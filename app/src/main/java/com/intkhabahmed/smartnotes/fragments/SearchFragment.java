@@ -50,6 +50,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     private SearchView mSearchView;
     private String mFilterText;
     private FrameLayout mRootFrameLayout;
+    private static final String BUNDLE_EXTRA = "search-query";
 
     public SearchFragment() {
     }
@@ -73,6 +74,9 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
         getLoaderManager().initLoader(SEARCH_NOTE_FRAGMENT_LOADER_ID, null, SearchFragment.this);
+        if(savedInstanceState != null) {
+            mFilterText = savedInstanceState.getString(BUNDLE_EXTRA);
+        }
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -91,6 +95,9 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         closedBtn.setColorFilter(Color.WHITE);
         mSearchView.setMaxWidth(4000);
         mSearchView.setOnQueryTextListener(this);
+        if(!TextUtils.isEmpty(mFilterText)) {
+            mSearchView.setQuery(mFilterText, false);
+        }
         searchViewItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
@@ -132,8 +139,8 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
             showEmptyView();
         } else {
             hideEmptyView();
-            mNotesAdapter.swapCursor(data);
         }
+        mNotesAdapter.swapCursor(data);
     }
 
     @Override
@@ -216,5 +223,11 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         });
         snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity()));
         snackbar.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(BUNDLE_EXTRA, mFilterText);
+        super.onSaveInstanceState(outState);
     }
 }
