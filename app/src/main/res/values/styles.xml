@@ -32,7 +32,7 @@
         <item name="secondaryTextColor">@color/nightSecondaryTextColor</item>
         <item name="backgroundColor">@android:color/black</item>
         <item name="iconColor">@android:color/black</item>
-        <item name="cardBackground">@color/cadBackgroundColor</item>
+        <item name="cardBackground">@color/cardBackgroundColor</item>
         <item name="iconPlaceHolder">@android:color/white</item>
         <item name="preferenceTheme">@style/PreferenceThemeDark</item>
         <item name="editTextColor">@android:color/white</item>

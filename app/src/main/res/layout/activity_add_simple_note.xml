@@ -12,12 +12,11 @@
         android:layout_height="?android:actionBarSize"
         android:background="?attr/colorPrimary"
         app:contentInsetStart="72dp"
-        app:titleTextColor="@android:color/white"
-        />
+        app:titleTextColor="@android:color/white" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="?android:actionBarSize">
 
         <TextView
@@ -35,15 +34,18 @@
 
         <EditText
             android:id="@+id/note_title_input"
-            android:layout_width="wrap_content"
-            android:layout_height="41dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/edit_text_background"
             android:ems="10"
             android:hint="@string/title_hint"
             android:inputType="text|textPersonName"
+            android:padding="8dp"
+            android:textColorHint="@color/secondaryTextColor"
             app:layout_constraintBaseline_toBaselineOf="@+id/tv_note_title_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_note_title_label" />
@@ -62,14 +64,21 @@
         <EditText
             android:id="@+id/note_description_input"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_gravity="start"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:background="@drawable/edit_text_background"
             android:ems="10"
+            android:gravity="top|start"
             android:hint="@string/description_hint"
-            android:textColor="?attr/primaryTextColor"
-            android:inputType="textAutoComplete|textMultiLine"
+            android:inputType="textAutoComplete|textMultiLine|textLongMessage"
+            android:padding="8dp"
+            android:textAlignment="textStart"
+            android:textColorHint="@color/secondaryTextColor"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_note_description_label" />

@@ -11,7 +11,7 @@
     <color name="secondaryTextColor">#8033343B</color>
     <color name="nightPrimaryTextColor">#F4F4F6</color>
     <color name="nightSecondaryTextColor">#96F4F4F6</color>
-    <color name="cadBackgroundColor">#555555</color>
+    <color name="cardBackgroundColor">#555555</color>
     <color name="iconColorModeInverse">?attr/iconPlaceHolder</color>
     <color name="iconColorMode">?attr/iconColor</color>
     <color name="primaryColorMode">?attr/colorPrimary</color>

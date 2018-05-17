@@ -24,7 +24,7 @@
             android:id="@+id/add_checklist_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp">
+            android:layout_margin="8dp">
 
             <EditText
                 android:id="@+id/checklist_item"
@@ -34,9 +34,11 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="16dp"
+                android:background="@drawable/edit_text_background"
                 android:hint="@string/add_checklist_hint"
                 android:inputType="textPersonName"
-                android:textColor="?attr/primaryTextColor"
+                android:padding="8dp"
+                android:textColorHint="@color/secondaryTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/add_checklist_button"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -74,10 +76,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/edit_text_background"
                 android:ems="10"
                 android:hint="@string/add_checklist_title_hint"
                 android:inputType="textPersonName"
-                android:textColor="?attr/primaryTextColor"
+                android:padding="8dp"
+                android:textColorHint="@color/secondaryTextColor"
                 app:layout_constraintBottom_toTopOf="@+id/tv_checklist_title_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.31"
@@ -100,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/cardBackground"
                 android:orientation="vertical"
-                android:paddingBottom="16dp"></LinearLayout>
+                android:paddingBottom="16dp"/>
         </android.support.v4.widget.NestedScrollView>
     </RelativeLayout>
 
