@@ -56,4 +56,7 @@
     <string name="add_checklist_button">Add Checklist Button</string>
     <string name="chooser_title">Share Note with</string>
     <string name="share_type_text">text/plain</string>
+    <string name="delete_dialog_message">Do you want to delete it?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

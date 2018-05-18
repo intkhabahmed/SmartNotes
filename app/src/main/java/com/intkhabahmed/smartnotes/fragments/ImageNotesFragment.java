@@ -1,6 +1,7 @@
 package com.intkhabahmed.smartnotes.fragments;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -63,6 +64,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
         mAddButton = view.findViewById(R.id.add_button);
+        mAddButton.setVisibility(View.VISIBLE);
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,6 +74,12 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
             }
         });
         getLoaderManager().initLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAddButton.setVisibility(View.VISIBLE);
     }
 
     @NonNull
@@ -127,8 +135,14 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
-                        DBUtils.moveToTrash(getActivity(), noteId);
-                        showSnackBar(noteId);
+                        DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                DBUtils.moveToTrash(getActivity(), noteId);
+                                showSnackBar(noteId);
+                            }
+                        };
+                        ViewUtils.showDeleteConfirmationDialog(getActivity(), deleteListener);
                         break;
                     case R.id.share_note:
                         Cursor cursor = getActivity().getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI,
@@ -150,7 +164,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
 
     private void showSnackBar(final int noteId) {
         Snackbar snackbar = Snackbar.make(mAddButton, "Note has been moved to trash", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener(){
+        snackbar.setAction("Undo", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DBUtils.restoreFromTrash(getActivity(), noteId);

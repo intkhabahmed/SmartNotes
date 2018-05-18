@@ -1,5 +1,6 @@
 package com.intkhabahmed.smartnotes.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -62,14 +63,15 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
-        mNotesAdapter = new NotesAdapter(getActivity(),null, this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,  false);
+        mNotesAdapter = new NotesAdapter(getActivity(), null, this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
         mAddButton = view.findViewById(R.id.add_button);
+        mAddButton.setVisibility(View.VISIBLE);
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,24 +85,25 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onResume() {
+        super.onResume();
+        mAddButton.setVisibility(View.VISIBLE);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selection = NotesContract.NotesEntry.COLUMN_TYPE +"=? AND " + NotesContract.NotesEntry.COLUMN_TRASH + "=?";
+        String selection = NotesContract.NotesEntry.COLUMN_TYPE + "=? AND " + NotesContract.NotesEntry.COLUMN_TRASH + "=?";
         String[] selectionArgs = {getString(R.string.simple_note), "0"};
         String sortOrder = PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .getString(getString(R.string.sort_criteria), NotesContract.NotesEntry.COLUMN_DATE_CREATED + " desc");
-        return new CursorLoader(getActivity(),NotesContract.NotesEntry.CONTENT_URI , null,
+        return new CursorLoader(getActivity(), NotesContract.NotesEntry.CONTENT_URI, null,
                 selection, selectionArgs, sortOrder);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mProgressBar.setVisibility(View.GONE);
-        if(data != null && data.getCount()==0){
+        if (data != null && data.getCount() == 0) {
             ViewUtils.showEmptyView(mRecyclerView, mEmptyView);
         } else {
             ViewUtils.hideEmptyView(mRecyclerView, mEmptyView);
@@ -114,7 +117,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     }
 
 
-    public void updateSimpleNotesFragment(){
+    public void updateSimpleNotesFragment() {
         getLoaderManager().restartLoader(SIMPLE_NOTE_FRAGMENT_LOADER_ID, null, this);
     }
 
@@ -138,13 +141,19 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
-                        DBUtils.moveToTrash(getActivity(), noteId);
-                        showSnackBar(noteId);
+                        DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                DBUtils.moveToTrash(getActivity(), noteId);
+                                showSnackBar(noteId);
+                            }
+                        };
+                        ViewUtils.showDeleteConfirmationDialog(getActivity(), deleteListener);
                         break;
                     case R.id.share_note:
                         Cursor cursor = getActivity().getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI, new String[]{NotesContract.NotesEntry.COLUMN_DESCRIPTION},
                                 NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)}, null);
-                        if(cursor != null) {
+                        if (cursor != null) {
                             cursor.moveToFirst();
                             String noteDescription = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
                             cursor.close();
@@ -160,7 +169,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
 
     private void showSnackBar(final int noteId) {
         Snackbar snackbar = Snackbar.make(mAddButton, "Note has been moved to trash", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener(){
+        snackbar.setAction("Undo", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DBUtils.restoreFromTrash(getActivity(), noteId);

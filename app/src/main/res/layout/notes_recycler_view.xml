@@ -1,93 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
-<FrameLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView android:id="@+id/recycler_view"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:layoutAnimation="@anim/layout_slide_in_bottom" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <LinearLayout
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="invisible"
-        android:layout_margin="16dp">
-        <ImageView
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            app:srcCompat="@drawable/ic_note_add_24dp"
-            />
-        <TextView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/enpty_view_description"
-            android:textAlignment="center"
-            android:textColor="?attr/primaryTextColor"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            />
-    </LinearLayout>
-    <LinearLayout
-    android:id="@+id/trash_empty_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:visibility="invisible">
-    <ImageView
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        app:srcCompat="@drawable/ic_empty_trash_black_24dp"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/trash_empty_view_description"
-        android:textAlignment="center"
-        android:textColor="?attr/primaryTextColor"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        />
-</LinearLayout>
-    <LinearLayout
-        android:id="@+id/search_error_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="invisible">
-        <ImageView
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            app:srcCompat="@drawable/ic_error_24dp"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/search_error_view_description"
-            android:textAlignment="center"
-            android:textColor="?attr/primaryTextColor"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            />
-    </LinearLayout>
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center"
-        android:visibility="gone"/>
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:layoutAnimation="@anim/layout_slide_in_bottom" />
 
-</FrameLayout>
+        <LinearLayout
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                app:srcCompat="@drawable/ic_note_add_24dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/enpty_view_description"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="?attr/primaryTextColor" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/trash_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                app:srcCompat="@drawable/ic_empty_trash_black_24dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trash_empty_view_description"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="?attr/primaryTextColor" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/search_error_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                app:srcCompat="@drawable/ic_error_24dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/search_error_view_description"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="?attr/primaryTextColor" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_button"
         android:layout_width="56dp"
@@ -97,5 +103,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:scaleType="centerCrop"
+        android:visibility="gone"
         app:srcCompat="@drawable/ic_add_black_24dp" />
 </android.support.design.widget.CoordinatorLayout>

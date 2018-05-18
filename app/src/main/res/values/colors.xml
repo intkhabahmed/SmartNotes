@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="greyHighlight">#818181</color>
-    <color name="nightColorPrimary">#333333</color>
-    <color name="nightColorPrimaryDark">#000000</color>
-    <color name="nightColorAccent">#5EFF6B</color>
-    <color name="primaryTextColor">#33343B</color>
-    <color name="secondaryTextColor">#8033343B</color>
-    <color name="nightPrimaryTextColor">#F4F4F6</color>
-    <color name="nightSecondaryTextColor">#96F4F4F6</color>
+    <color name="colorPrimary">#0a3761</color>
+    <color name="colorPrimaryDark">#041d35</color>
+    <color name="colorAccent">#ff1744</color>
+    <color name="greyHighlight">#757575</color>
+    <color name="nightColorPrimary">#032139</color>
+    <color name="windowBackground">#010b13</color>
+    <color name="nightColorPrimaryDark">#010b13</color>
+    <color name="nightColorAccent">#4db6ac</color>
+    <color name="primaryTextColor">#263238</color>
+    <color name="secondaryTextColor">#f6455a64</color>
+    <color name="nightPrimaryTextColor">#e0e0e0</color>
+    <color name="nightSecondaryTextColor">#b7f4f4f6</color>
     <color name="cardBackgroundColor">#555555</color>
     <color name="iconColorModeInverse">?attr/iconPlaceHolder</color>
     <color name="iconColorMode">?attr/iconColor</color>
