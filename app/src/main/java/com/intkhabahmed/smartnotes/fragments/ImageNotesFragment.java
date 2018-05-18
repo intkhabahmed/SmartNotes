@@ -1,37 +1,29 @@
 package com.intkhabahmed.smartnotes.fragments;
 
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.intkhabahmed.smartnotes.AddImageNote;
 import com.intkhabahmed.smartnotes.NoteDetailActivity;
 import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
@@ -45,8 +37,8 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     private RecyclerView mRecyclerView;
     private LinearLayout mEmptyView;
     private ProgressBar mProgressBar;
+    private FloatingActionButton mAddButton;
     private static final int IMAGE_NOTE_FRAGMENT_LOADER_ID = 2;
-    private FrameLayout mRootFrameLayout;
 
     public ImageNotesFragment() {
     }
@@ -60,7 +52,6 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRootFrameLayout = view.findViewById(R.id.root_frame_layout);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
@@ -71,6 +62,15 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
         mRecyclerView.setHasFixedSize(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
+        mAddButton = view.findViewById(R.id.add_button);
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AddImageNote.class);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
         getLoaderManager().initLoader(IMAGE_NOTE_FRAGMENT_LOADER_ID, null, ImageNotesFragment.this);
     }
 
@@ -149,12 +149,12 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
     }
 
     private void showSnackBar(final int noteId) {
-        Snackbar snackbar = Snackbar.make(mRootFrameLayout, "Note has been moved to trash", Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(mAddButton, "Note has been moved to trash", Snackbar.LENGTH_LONG);
         snackbar.setAction("Undo", new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 DBUtils.restoreFromTrash(getActivity(), noteId);
-                Snackbar.make(mRootFrameLayout, "Note Restored", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mAddButton, "Note Restored", Snackbar.LENGTH_LONG).show();
             }
         });
         snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity()));

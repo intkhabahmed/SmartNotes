@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<FrameLayout android:layout_height="match_parent"
-    android:layout_width="match_parent"
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_frame_layout"
-    >
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+<FrameLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <android.support.v7.widget.RecyclerView android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layoutAnimation="@anim/layout_slide_in_bottom" />
 
     <LinearLayout
@@ -86,4 +86,16 @@
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:visibility="gone"/>
+
 </FrameLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_button"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ic_add_black_24dp" />
+</android.support.design.widget.CoordinatorLayout>
