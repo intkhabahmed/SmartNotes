@@ -1,10 +1,7 @@
 package com.intkhabahmed.smartnotes;
 
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -17,7 +14,6 @@ import android.view.View;
 
 import com.intkhabahmed.smartnotes.fragments.ImageNotesDetailFragment;
 import com.intkhabahmed.smartnotes.fragments.SimpleNotesDetailFragment;
-import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 
 public class NoteDetailActivity extends AppCompatActivity {
 

@@ -16,10 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -78,7 +76,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(mTrashed == 0) {
+                if (mTrashed == 0) {
                     mIsChanged = !TextUtils.isEmpty(mChecklistEditText.getText().toString().trim())
                             || !TextUtils.isEmpty(mChecklistTitleEditText.getText().toString().trim());
                 }
@@ -165,7 +163,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(mTrashed == 0) {
+        if (mTrashed == 0) {
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -185,7 +183,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mTrashed == 0) {
+                if (mTrashed == 0) {
                     for (int i = 1; i <= mChecklistContainer.getChildCount(); i++) {
                         View childView = mChecklistContainer.getChildAt(i - 1);
                         if (childView != null) {
@@ -203,7 +201,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
                 }
             }
         });
-        if(mTrashed == 1) {
+        if (mTrashed == 1) {
             removeButton.setVisibility(View.GONE);
         }
     }
@@ -320,7 +318,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
         if (cursor != null) {
             cursor.moveToFirst();
             mTrashed = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TRASH));
-            if(mTrashed == 1){
+            if (mTrashed == 1) {
                 mChecklistTitleEditText.setEnabled(false);
                 mChecklistEditText.setVisibility(View.GONE);
                 mAddChecklistItemButton.setVisibility(View.GONE);
@@ -355,9 +353,9 @@ public class AddAndEditChecklist extends AppCompatActivity {
     public void onBackPressed() {
         if (mIsChanged) {
             ViewUtils.showUnsavedChangesDialog(this);
-            return;
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

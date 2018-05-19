@@ -2,7 +2,6 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -65,6 +64,7 @@ public class SimpleNotesDetailFragment extends Fragment {
         mNoteModifiedDate = NoteUtils.getFormattedTime(cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED)));
         cursor.close();
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putLong(BUNDLE_DATA, mNoteId);

@@ -1,6 +1,5 @@
 package com.intkhabahmed.smartnotes.fragments;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -13,12 +12,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +27,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import com.intkhabahmed.smartnotes.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.NoteDetailActivity;
@@ -74,7 +70,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
         getLoaderManager().initLoader(SEARCH_NOTE_FRAGMENT_LOADER_ID, null, SearchFragment.this);
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(BUNDLE_EXTRA);
         }
         super.onViewCreated(view, savedInstanceState);
@@ -95,7 +91,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         closedBtn.setColorFilter(Color.WHITE);
         mSearchView.setMaxWidth(4000);
         mSearchView.setOnQueryTextListener(this);
-        if(!TextUtils.isEmpty(mFilterText)) {
+        if (!TextUtils.isEmpty(mFilterText)) {
             mSearchView.setQuery(mFilterText, false);
         }
         searchViewItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
@@ -214,7 +210,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     private void showSnackBar(final int noteId) {
         Snackbar snackbar = Snackbar.make(mRootFrameLayout, "Note has been moved to trash", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener(){
+        snackbar.setAction("Undo", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DBUtils.restoreFromTrash(getActivity(), noteId);

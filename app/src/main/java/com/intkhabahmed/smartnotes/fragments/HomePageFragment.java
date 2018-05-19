@@ -20,7 +20,7 @@ import com.intkhabahmed.smartnotes.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 
-public class HomePageFragment extends Fragment{
+public class HomePageFragment extends Fragment {
 
     public HomePageFragment() {
     }
@@ -50,7 +50,7 @@ public class HomePageFragment extends Fragment{
                 tabLayout.setupWithViewPager(viewPager, true);
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
-        },100);
+        }, 100);
         getActivity().setTitle(R.string.app_name);
     }
 
@@ -62,7 +62,7 @@ public class HomePageFragment extends Fragment{
             @Override
             public void run() {
                 int subMenuOrder = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(getString(R.string.sort_criteria_id), 4);
-                menu.getItem(1).getSubMenu().getItem(subMenuOrder-1).setChecked(true);
+                menu.getItem(1).getSubMenu().getItem(subMenuOrder - 1).setChecked(true);
             }
         }, 0);
         super.onCreateOptionsMenu(menu, inflater);
@@ -81,19 +81,19 @@ public class HomePageFragment extends Fragment{
             case R.id.sort_date_created_descending:
             case R.id.sort_title_ascending:
             case R.id.sort_title_descending:
-                if(item.isChecked()) {
+                if (item.isChecked()) {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
                     changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
                 }
                 return true;
-                default:
-                    return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
-    private String getCriteriaString(int order){
+    private String getCriteriaString(int order) {
         switch (order) {
             case 1:
                 return NotesContract.NotesEntry.COLUMN_TITLE + " ASC";
@@ -108,7 +108,7 @@ public class HomePageFragment extends Fragment{
         }
     }
 
-    private void changeSortCriteria(String criteria, int subMenuOrder){
+    private void changeSortCriteria(String criteria, int subMenuOrder) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
         editor.putString(getString(R.string.sort_criteria), criteria);
         editor.putInt(getString(R.string.sort_criteria_id), subMenuOrder);

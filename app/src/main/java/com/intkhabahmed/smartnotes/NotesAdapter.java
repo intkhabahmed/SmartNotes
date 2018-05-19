@@ -135,8 +135,8 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public int getItemViewType(int position) {
         mCursor.moveToPosition(position);
         String noteType = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
-        if(noteType.equals(mContext.getString(R.string.simple_note))
-                || noteType.equals(mContext.getString(R.string.checklist))){
+        if (noteType.equals(mContext.getString(R.string.simple_note))
+                || noteType.equals(mContext.getString(R.string.checklist))) {
             return 0;
         }
         return 1;
