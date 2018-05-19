@@ -27,6 +27,7 @@ public class ViewUtils {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 ((Activity) context).finish();
+                ((Activity)context).overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         };
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);

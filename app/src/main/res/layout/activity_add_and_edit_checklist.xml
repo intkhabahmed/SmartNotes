@@ -14,99 +14,99 @@
         app:contentInsetStart="72dp"
         app:titleTextColor="@android:color/white" />
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/add_checklist_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="?android:actionBarSize"
-        android:orientation="vertical">
+        android:focusableInTouchMode="true">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/add_checklist_container"
-            android:layout_width="match_parent"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/noteItemInputLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            app:hintTextAppearance="?attr/hintColor"
+            app:layout_constraintEnd_toStartOf="@+id/add_checklist_button"
+            app:layout_constraintStart_toStartOf="@+id/titleInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/titleInputLayout">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/checklist_item"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_margin="0dp"
                 android:background="@drawable/edit_text_background"
-                android:hint="@string/add_checklist_hint"
+                android:hint="@string/checklist_item"
                 android:inputType="textPersonName"
-                android:padding="8dp"
-                android:textColorHint="@color/secondaryTextColor"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/add_checklist_button"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_checklist_title_label" />
+                android:padding="16dp"
+                android:textColorHint="@color/secondaryTextColor" />
+        </android.support.design.widget.TextInputLayout>
 
-            <ImageButton
-                android:id="@+id/add_checklist_button"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/circular_shape"
-                android:contentDescription="@string/add_checklist_button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/checklist_item"
-                app:layout_constraintTop_toTopOf="@+id/checklist_item"
-                app:srcCompat="@drawable/ic_add_black_24dp" />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_checklist_button"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/add_checklist_button"
+            app:layout_constraintBottom_toTopOf="@+id/noteItemInputLayout"
+            app:layout_constraintEnd_toEndOf="@+id/titleInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/noteItemInputLayout"
+            app:layout_constraintVertical_bias="0.42000002"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
 
-            <TextView
-                android:id="@+id/tv_checklist_title_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/title"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                android:textColor="?attr/primaryTextColor"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/titleInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:hintTextAppearance="?attr/hintColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/checklist_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="0dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
                 android:background="@drawable/edit_text_background"
                 android:ems="10"
-                android:hint="@string/add_checklist_title_hint"
+                android:hint="@string/checklist_title"
                 android:inputType="textPersonName"
-                android:padding="8dp"
-                android:textColorHint="@color/secondaryTextColor"
-                app:layout_constraintBottom_toTopOf="@+id/tv_checklist_title_label"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.31"
-                app:layout_constraintStart_toEndOf="@+id/tv_checklist_title_label"
-                app:layout_constraintTop_toBottomOf="@+id/tv_checklist_title_label" />
-
-        </android.support.constraint.ConstraintLayout>
+                android:padding="16dp"
+                android:textColorHint="@color/secondaryTextColor" />
+        </android.support.design.widget.TextInputLayout>
 
         <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/add_checklist_container"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:padding="8dp">
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/add_checklist_button"
+            app:layout_constraintStart_toStartOf="@+id/noteItemInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/noteItemInputLayout">
 
             <LinearLayout
                 android:id="@+id/checklist_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="?attr/cardBackground"
                 android:orientation="vertical"
-                android:paddingBottom="16dp"/>
+                android:paddingBottom="16dp" />
         </android.support.v4.widget.NestedScrollView>
-    </RelativeLayout>
-
+    </android.support.constraint.ConstraintLayout>
 </FrameLayout>

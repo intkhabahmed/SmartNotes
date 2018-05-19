@@ -206,11 +206,7 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                if (mIsChanged) {
-                    ViewUtils.showUnsavedChangesDialog(this);
-                    return true;
-                }
-                finish();
+                onBackPressed();
                 break;
             case R.id.save_action:
                 insertImageNote();
@@ -225,6 +221,7 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
             return;
         }
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     private void insertImageNote() {
@@ -251,6 +248,7 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
         if (uri != null) {
             Toast.makeText(this, "Note created successfully!", Toast.LENGTH_LONG).show();
             finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
     }
 

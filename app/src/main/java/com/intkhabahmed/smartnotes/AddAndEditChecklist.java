@@ -233,11 +233,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                if (mIsChanged) {
-                    ViewUtils.showUnsavedChangesDialog(this);
-                    return true;
-                }
-                finish();
+                onBackPressed();
                 break;
             case R.id.save_action:
                 insertChecklist();
@@ -287,6 +283,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
             Toast.makeText(this, "Note updated successfully!", Toast.LENGTH_LONG).show();
             finish();
         }
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         mChecklistArray = null;
         mUniqueChecklist = null;
 
@@ -361,5 +358,6 @@ public class AddAndEditChecklist extends AppCompatActivity {
             return;
         }
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

@@ -19,7 +19,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.settings_fragment);
-
+        getActivity().setTitle(R.string.settings);
         PreferenceScreen preferenceScreen = getPreferenceScreen();
         mSharedPreferences = preferenceScreen.getSharedPreferences();
         int count = preferenceScreen.getPreferenceCount();

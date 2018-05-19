@@ -9,5 +9,6 @@
         <attr name="iconColor" format="color"/>
         <attr name="cardBackground" format="color"/>
         <attr name="iconPlaceHolder" format="color"/>
+        <attr name="hintColor" format="color"/>
     </declare-styleable>
 </resources>

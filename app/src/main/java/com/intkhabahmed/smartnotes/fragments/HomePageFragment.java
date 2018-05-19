@@ -51,6 +51,7 @@ public class HomePageFragment extends Fragment{
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
         },100);
+        getActivity().setTitle(R.string.app_name);
     }
 
     @Override

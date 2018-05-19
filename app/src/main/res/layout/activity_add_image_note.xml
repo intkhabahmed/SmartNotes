@@ -19,71 +19,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="?android:actionBarSize"
-        tools:layout_editor_absoluteY="152dp">
+        android:focusableInTouchMode="true">
 
-        <TextView
-            android:id="@+id/tv_note_title_label"
-            android:layout_width="wrap_content"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="?attr/primaryTextColor"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/note_title_input"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="24dp"
             android:layout_marginRight="16dp"
-            android:layout_marginStart="24dp"
-            android:background="@drawable/edit_text_background"
-            android:ems="10"
-            android:hint="@string/title_hint"
-            android:inputType="text|textPersonName"
-            android:padding="8dp"
-            android:textColorHint="@color/secondaryTextColor"
-            app:layout_constraintBaseline_toBaselineOf="@+id/tv_note_title_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_note_title_label" />
-
-        <TextView
-            android:id="@+id/tv_note_description_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/image"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="?attr/primaryTextColor"
-            app:layout_constraintStart_toStartOf="@+id/tv_note_title_label"
-            app:layout_constraintTop_toBottomOf="@+id/tv_note_title_label" />
-
-        <!--<android.support.v4.widget.NestedScrollView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            >-->
+            app:hintTextAppearance="?attr/hintColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/note_title_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/edit_text_background"
+                android:ems="10"
+                android:hint="@string/note_title"
+                android:inputType="text|textPersonName"
+                android:padding="16dp"
+                android:textColorHint="@color/secondaryTextColor" />
+        </android.support.design.widget.TextInputLayout>
 
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tv_note_description_label"
             app:layout_constraintTop_toBottomOf="@+id/change_image_button">
 
             <ImageView
@@ -106,19 +80,22 @@
                 tools:layout_editor_absoluteX="24dp"
                 tools:layout_editor_absoluteY="112dp" />
         </FrameLayout>
-        <!-- </android.support.v4.widget.NestedScrollView>-->
 
         <Button
             android:id="@+id/change_image_button"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="@string/change"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/tv_note_description_label"
-            app:layout_constraintStart_toStartOf="@+id/note_title_input"
-            app:layout_constraintTop_toBottomOf="@+id/tv_note_description_label"
-            app:layout_constraintVertical_bias="0.454" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
     </android.support.constraint.ConstraintLayout>
 

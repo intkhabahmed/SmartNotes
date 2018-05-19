@@ -61,6 +61,7 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
         mRecyclerView.setHasFixedSize(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
+        getActivity().setTitle(R.string.trash);
         getLoaderManager().initLoader(TRASH_FRAGMENT_LOADER_ID, null, TrashFragment.this);
     }
 

@@ -45,7 +45,6 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     private ProgressBar mProgressBar;
     private FloatingActionButton mAddButton;
     private static final int SIMPLE_NOTE_FRAGMENT_LOADER_ID = 0;
-    private CoordinatorLayout mRootLayout;
 
     public SimpleNotesFragment() {
     }
@@ -59,7 +58,6 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRootLayout = view.findViewById(R.id.root_frame_layout);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);

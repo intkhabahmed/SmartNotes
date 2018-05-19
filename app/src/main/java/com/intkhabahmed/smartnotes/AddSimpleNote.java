@@ -114,11 +114,7 @@ public class AddSimpleNote extends AppCompatActivity {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home:
-                if (mIsChanged) {
-                    ViewUtils.showUnsavedChangesDialog(this);
-                    return true;
-                }
-                finish();
+                onBackPressed();
                 break;
             case R.id.save_action:
                 if (mIsEditing) {
@@ -149,6 +145,7 @@ public class AddSimpleNote extends AppCompatActivity {
         if (uri != null) {
             Toast.makeText(this, "Note created successfully!", Toast.LENGTH_LONG).show();
             finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
 
     }
@@ -170,6 +167,7 @@ public class AddSimpleNote extends AppCompatActivity {
         if (rowUpdated > 0) {
             Toast.makeText(this, "Note updated successfully!", Toast.LENGTH_LONG).show();
             finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
 
     }
@@ -181,5 +179,6 @@ public class AddSimpleNote extends AppCompatActivity {
             return;
         }
         super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }
