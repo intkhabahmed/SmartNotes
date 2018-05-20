@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,7 +14,6 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
             android:layoutAnimation="@anim/layout_slide_in_bottom" />
 
         <LinearLayout
@@ -23,11 +23,13 @@
             android:layout_margin="16dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="invisible">
+            android:visibility="invisible"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="96dp"
                 android:layout_height="96dp"
+                android:contentDescription="@string/trash_empty_view_description"
                 app:srcCompat="@drawable/ic_note_add_24dp" />
 
             <TextView
@@ -46,11 +48,13 @@
             android:layout_margin="16dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="invisible">
+            android:visibility="invisible"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="96dp"
                 android:layout_height="96dp"
+                android:contentDescription="@string/trash_empty_view_description"
                 app:srcCompat="@drawable/ic_empty_trash_black_24dp" />
 
             <TextView
@@ -69,11 +73,13 @@
             android:layout_margin="16dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="invisible">
+            android:visibility="invisible"
+            tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="96dp"
                 android:layout_height="96dp"
+                android:contentDescription="@string/search_error_view_description"
                 app:srcCompat="@drawable/ic_error_24dp" />
 
             <TextView
@@ -99,9 +105,9 @@
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:scaleType="centerCrop"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_add_black_24dp" />

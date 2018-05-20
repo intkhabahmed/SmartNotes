@@ -1,9 +1,11 @@
 package com.intkhabahmed.smartnotes.fragments;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.intkhabahmed.smartnotes.AddSimpleNote;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 import com.intkhabahmed.smartnotes.utils.DBUtils;
@@ -64,6 +67,16 @@ public class ImageNotesDetailFragment extends Fragment {
         noteTitleTextView.setText(mNoteTitle);
         noteCreatedDateTextView.setText(mNoteCreatedDate);
         noteModifiedDateTextView.setText(mNoteModifiedDate);
+        FloatingActionButton editButton = view.findViewById(R.id.edit_note_button);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), AddSimpleNote.class);
+                intent.putExtra(Intent.EXTRA_TEXT, mNoteId);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
     }
 
     private void handleCursorData() {

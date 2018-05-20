@@ -5,12 +5,10 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.intkhabahmed.smartnotes.fragments.ImageNotesDetailFragment;
 import com.intkhabahmed.smartnotes.fragments.SimpleNotesDetailFragment;
@@ -33,8 +31,6 @@ public class NoteDetailActivity extends AppCompatActivity {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_white_black_24dp);
         }
 
-        FloatingActionButton editButton = findViewById(R.id.edit_note_button);
-
         Intent intent = getIntent();
         if (intent.hasExtra(Intent.EXTRA_TEXT) && intent.hasExtra(getString(R.string.note_type))) {
             mNoteId = intent.getLongExtra(Intent.EXTRA_TEXT, 0);
@@ -42,22 +38,12 @@ public class NoteDetailActivity extends AppCompatActivity {
         }
 
         if (mNoteType.equals(getString(R.string.simple_note))) {
-            editButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(NoteDetailActivity.this, AddSimpleNote.class);
-                    intent.putExtra(Intent.EXTRA_TEXT, mNoteId);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
-            });
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
             simpleNotesDetailFragment.setNoteId(mNoteId);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.detail_activity_container, simpleNotesDetailFragment)
                     .commit();
         } else if (mNoteType.equals(getString(R.string.image_note))) {
-            editButton.setVisibility(View.GONE);
             ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
             imageNotesDetailFragment.setNoteId(mNoteId);
             getSupportFragmentManager().beginTransaction()

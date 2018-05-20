@@ -113,7 +113,7 @@ public class AddSimpleNote extends AppCompatActivity {
         switch (itemId) {
             case android.R.id.home:
                 onBackPressed();
-                break;
+                return true;
             case R.id.save_action:
                 if (mIsEditing) {
                     updateSimpleNote();

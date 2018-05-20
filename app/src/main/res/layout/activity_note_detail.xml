@@ -26,14 +26,4 @@
 
         </FrameLayout>
     </android.support.v4.widget.NestedScrollView>
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/edit_note_button"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_margin="16dp"
-        android:layout_gravity="bottom|end"
-        app:srcCompat="@drawable/ic_edit_black_24dp"/>
-
 </FrameLayout>

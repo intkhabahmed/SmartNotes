@@ -81,24 +81,26 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     try {
                         JSONObject checklistObjects = new JSONObject(description);
                         JSONArray jsonArrays = checklistObjects.getJSONArray(mContext.getString(R.string.checklist));
+                        JSONObject jsonObject;
                         int noOfItems = jsonArrays.length() >= 2 ? 2 : 1;
                         for (int i = 0; i < noOfItems; i++) {
                             try {
-                                JSONObject jsonObject = jsonArrays.getJSONObject(i);
-                                String task = String.valueOf(jsonObject.get(AddAndEditChecklist.LIST_TITLE));
-                                boolean isCompleted = jsonObject.getBoolean(AddAndEditChecklist.IS_LIST_CHECKED);
-                                textNotesViewHolder.noteDescriptionTextView.append(task);
-                                if (isCompleted) {
+                                jsonObject = jsonArrays.getJSONObject(i);
+                                textNotesViewHolder.noteDescriptionTextView
+                                        .append(String.valueOf(jsonObject.get(AddAndEditChecklist.LIST_TITLE)));
+                                if (jsonObject.getBoolean(AddAndEditChecklist.IS_LIST_CHECKED)) {
                                     textNotesViewHolder.noteDescriptionTextView.append(" " +
                                             mContext.getString(R.string.checkmark_unicode));
                                 }
-                                textNotesViewHolder.noteDescriptionTextView.append("\n");
+                                if (i < noOfItems - 1 || noOfItems == 1) {
+                                    textNotesViewHolder.noteDescriptionTextView.append("\n");
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                         if (jsonArrays.length() > 2) {
-                            textNotesViewHolder.noteDescriptionTextView.append("...");
+                            textNotesViewHolder.noteDescriptionTextView.append(" ...");
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable  name="AppThemeAttributes">
-        <attr name="colorPrimary" format="color"/>
-        <attr name="colorAccent" format="color"/>
-        <attr name="primaryTextColor" format="color"/>
-        <attr name="secondaryTextColor" format="color"/>
-        <attr name="backgroundColor" format="color"/>
-        <attr name="iconColor" format="color"/>
-        <attr name="cardBackground" format="color"/>
-        <attr name="iconPlaceHolder" format="color"/>
-        <attr name="hintColor" format="color"/>
+    <declare-styleable name="AppThemeAttributes">
+        <attr name="colorPrimary" format="color" />
+        <attr name="colorAccent" format="color" />
+        <attr name="primaryTextColor" format="color" />
+        <attr name="secondaryTextColor" format="color" />
+        <attr name="backgroundColor" format="color" />
+        <attr name="iconColor" format="color" />
+        <attr name="cardBackground" format="color" />
+        <attr name="iconPlaceHolder" format="color" />
+        <attr name="hintColor" format="color" />
+        <attr name="cardViewBackground" format="color" />
     </declare-styleable>
 </resources>

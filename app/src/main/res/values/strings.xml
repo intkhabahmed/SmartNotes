@@ -25,8 +25,8 @@
     <string name="add_checklist">Add</string>
     <string name="delete_note">Delete Note</string>
     <string name="share_note">Share Note</string>
-    <string name="date_created">Date Created</string>
-    <string name="date_modified">Date Modified</string>
+    <string name="date_created">Created On</string>
+    <string name="date_modified">Modified On</string>
     <string name="checklist_title">Checklist Title</string>
     <string name="checkmark_unicode">\u2714</string>
     <string name="image">Image</string>
@@ -59,4 +59,5 @@
     <string name="delete_dialog_message">Do you want to delete it?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="menu_button">Menu button for extra options</string>
 </resources>
