@@ -60,4 +60,5 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="menu_button">Menu button for extra options</string>
+    <string name="image_capture_button">Button to start image capture</string>
 </resources>

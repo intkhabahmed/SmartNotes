@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.intkhabahmed.smartnotes.AddImageNote;
 import com.intkhabahmed.smartnotes.AddSimpleNote;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
@@ -71,7 +72,7 @@ public class ImageNotesDetailFragment extends Fragment {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddSimpleNote.class);
+                Intent intent = new Intent(getActivity(), AddImageNote.class);
                 intent.putExtra(Intent.EXTRA_TEXT, mNoteId);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

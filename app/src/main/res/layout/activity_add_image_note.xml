@@ -63,10 +63,11 @@
             <ImageView
                 android:id="@+id/iv_image_note"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:scaleType="fitStart"
                 android:visibility="invisible"
+                android:contentDescription="@string/image_note"
                 app:srcCompat="@drawable/ic_insert_photo_black_24dp" />
 
             <ImageButton
@@ -75,6 +76,7 @@
                 android:layout_height="150dp"
                 android:layout_gravity="center"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/image_capture_button"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_add_a_photo_24dp"
                 tools:layout_editor_absoluteX="24dp"
