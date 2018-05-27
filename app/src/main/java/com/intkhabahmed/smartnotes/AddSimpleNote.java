@@ -5,18 +5,16 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -114,12 +112,8 @@ public class AddSimpleNote extends AppCompatActivity {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home:
-                if (mIsChanged) {
-                    ViewUtils.showUnsavedChangesDialog(this);
-                    return true;
-                }
-                finish();
-                break;
+                onBackPressed();
+                return true;
             case R.id.save_action:
                 if (mIsEditing) {
                     updateSimpleNote();
@@ -149,6 +143,7 @@ public class AddSimpleNote extends AppCompatActivity {
         if (uri != null) {
             Toast.makeText(this, "Note created successfully!", Toast.LENGTH_LONG).show();
             finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
 
     }
@@ -170,6 +165,7 @@ public class AddSimpleNote extends AppCompatActivity {
         if (rowUpdated > 0) {
             Toast.makeText(this, "Note updated successfully!", Toast.LENGTH_LONG).show();
             finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
 
     }
@@ -178,8 +174,9 @@ public class AddSimpleNote extends AppCompatActivity {
     public void onBackPressed() {
         if (mIsChanged) {
             ViewUtils.showUnsavedChangesDialog(this);
-            return;
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

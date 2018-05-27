@@ -6,10 +6,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.transition.Fade;
-import android.support.transition.Transition;
-import android.support.transition.TransitionInflater;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -28,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private FragmentManager mFragmentManager;
-    private ActionBar mActionBar;
     private Handler handler;
 
     @Override
@@ -41,10 +36,10 @@ public class MainActivity extends AppCompatActivity {
         mToggle.syncState();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mActionBar = getSupportActionBar();
-        if (mActionBar != null) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
         mFragmentManager = getSupportFragmentManager();
         handler = new Handler();
@@ -76,24 +71,24 @@ public class MainActivity extends AppCompatActivity {
 
                         switch (id) {
                             case R.id.home_page:
-                                mActionBar.setTitle(getString(R.string.app_name));
                                 item.setChecked(true);
+                                mFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                 mFragmentManager.beginTransaction()
                                         .replace(R.id.fragment_layout, new HomePageFragment())
                                         .commit();
                                 break;
                             case R.id.trash:
-                                mActionBar.setTitle(getString(R.string.trash));
                                 item.setChecked(true);
                                 mFragmentManager.beginTransaction()
                                         .replace(R.id.fragment_layout, new TrashFragment())
+                                        .addToBackStack(null)
                                         .commit();
                                 break;
                             case R.id.settings:
-                                mActionBar.setTitle(getString(R.string.settings));
                                 item.setChecked(true);
                                 mFragmentManager.beginTransaction()
                                         .replace(R.id.fragment_layout, new SettingsFragment())
+                                        .addToBackStack(null)
                                         .commit();
                                 break;
                         }
@@ -102,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

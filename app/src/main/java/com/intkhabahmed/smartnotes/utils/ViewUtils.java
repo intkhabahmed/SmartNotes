@@ -27,6 +27,7 @@ public class ViewUtils {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 ((Activity) context).finish();
+                ((Activity) context).overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         };
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
@@ -39,6 +40,21 @@ public class ViewUtils {
         });
         dialogBuilder.setMessage(context.getString(R.string.unsaved_changes_dialog_message));
         dialogBuilder.setTitle(context.getString(R.string.unsaved_changes));
+        AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+    }
+
+    public static void showDeleteConfirmationDialog(final Context context, DialogInterface.OnClickListener deleteButtonListener) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        dialogBuilder.setPositiveButton(context.getString(R.string.yes), deleteButtonListener);
+        dialogBuilder.setNegativeButton(context.getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        dialogBuilder.setMessage(context.getString(R.string.delete_dialog_message));
+        dialogBuilder.setTitle(context.getString(R.string.delete_note));
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
     }

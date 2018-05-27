@@ -5,8 +5,10 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -15,15 +17,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
@@ -38,7 +38,7 @@ import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import java.io.File;
 import java.io.IOException;
 
-public class AddImageNote extends AppCompatActivity implements View.OnTouchListener {
+public class AddImageNote extends AppCompatActivity {
     private static final int RC_STORAGE_PERMISSION = 100;
     private static final String FILEPROVIDER_AUTHORITY = "com.intkhabahmed.fileprovider";
     private static final int RC_CAPTURE_IMAGE = 101;
@@ -50,6 +50,10 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
     private Bitmap mResultBitmap;
     private Button mChangeImageButton;
     private boolean mIsChanged;
+    private long mNoteId;
+    private boolean mIsEditing;
+    private boolean mIsImageChanged;
+    private String mOldDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +106,35 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
                 checkCameraPermission();
             }
         });
-        mImageView.setVisibility(View.GONE);
-        mChangeImageButton.setVisibility(View.INVISIBLE);
+        Intent intent = getIntent();
+        if (intent.hasExtra(Intent.EXTRA_TEXT)) {
+            mIsEditing = true;
+            mNoteId = intent.getLongExtra(Intent.EXTRA_TEXT, 0);
+            if (mNoteId > 0) {
+                Cursor cursor = getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI,
+                        new String[]{NotesContract.NotesEntry.COLUMN_TITLE, NotesContract.NotesEntry.COLUMN_DESCRIPTION},
+                        NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(mNoteId)}, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    String title = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
+                    String description = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
+                    mNoteTitleEditText.setText(title);
+                    mOldDescription = description;
+                    File image = new File(description);
+                    if (image.exists()) {
+                        Glide.with(this).asDrawable().load(Uri.fromFile(image)).into(mImageView);
+                    }
+                    cursor.close();
+                }
+            }
+            mChangeImageButton.setVisibility(View.VISIBLE);
+            mCaptureImageButton.setVisibility(View.GONE);
+            mImageView.setVisibility(View.VISIBLE);
+        } else {
+            mIsEditing = false;
+            mImageView.setVisibility(View.GONE);
+            mChangeImageButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -166,7 +197,7 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
             processAndSetImage();
             mIsChanged = true;
         } else {
-            if (mTempImagePath != null) {
+            if (new File(mTempImagePath).exists()) {
                 BitmapUtils.deleteImageFile(this, mTempImagePath);
             }
         }
@@ -177,7 +208,7 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
         mImageView.setVisibility(View.VISIBLE);
         mCaptureImageButton.setVisibility(View.GONE);
         mResultBitmap = BitmapUtils.resamplePic(this, mTempImagePath);
-        if (mBackupTempImagePath != null) {
+        if (mBackupTempImagePath != null && new File(mBackupTempImagePath).exists()) {
             BitmapUtils.deleteImageFile(AddImageNote.this, mBackupTempImagePath);
         }
         mImageView.setImageBitmap(mResultBitmap);
@@ -187,11 +218,14 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
     @Override
     protected void onStop() {
         super.onStop();
-        if (mTempImagePath != null) {
+        if (mTempImagePath != null && new File(mTempImagePath).exists()) {
             BitmapUtils.deleteImageFile(this, mTempImagePath);
         }
-        if (mBackupTempImagePath != null && (mTempImagePath != null && !mTempImagePath.equals(mBackupTempImagePath))) {
+        if (mBackupTempImagePath != null && new File(mBackupTempImagePath).exists()) {
             BitmapUtils.deleteImageFile(this, mBackupTempImagePath);
+        }
+        if(mIsImageChanged) {
+            BitmapUtils.deleteImageFile(this, mOldDescription);
         }
     }
 
@@ -206,11 +240,7 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                if (mIsChanged) {
-                    ViewUtils.showUnsavedChangesDialog(this);
-                    return true;
-                }
-                finish();
+                onBackPressed();
                 break;
             case R.id.save_action:
                 insertImageNote();
@@ -222,9 +252,10 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
     public void onBackPressed() {
         if (mIsChanged) {
             ViewUtils.showUnsavedChangesDialog(this);
-            return;
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     private void insertImageNote() {
@@ -244,35 +275,30 @@ public class AddImageNote extends AppCompatActivity implements View.OnTouchListe
         ContentValues values = new ContentValues();
         values.put(NotesContract.NotesEntry.COLUMN_TITLE, noteTitle);
         values.put(NotesContract.NotesEntry.COLUMN_DESCRIPTION, saveImageToStorage());
-        values.put(NotesContract.NotesEntry.COLUMN_TYPE, getString(R.string.image_note));
-        values.put(NotesContract.NotesEntry.COLUMN_DATE_CREATED, System.currentTimeMillis());
+        if (!mIsEditing) {
+            values.put(NotesContract.NotesEntry.COLUMN_TYPE, getString(R.string.image_note));
+            values.put(NotesContract.NotesEntry.COLUMN_DATE_CREATED, System.currentTimeMillis());
+            Uri uri = getContentResolver().insert(NotesContract.NotesEntry.CONTENT_URI, values);
+            if (uri != null) {
+                Toast.makeText(this, "Note created successfully!", Toast.LENGTH_LONG).show();
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                return;
+            }
+        }
+        mIsImageChanged = true;
         values.put(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED, System.currentTimeMillis());
-        Uri uri = getContentResolver().insert(NotesContract.NotesEntry.CONTENT_URI, values);
-        if (uri != null) {
-            Toast.makeText(this, "Note created successfully!", Toast.LENGTH_LONG).show();
+        int rowsUpdated = getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
+                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(mNoteId)});
+        if (rowsUpdated > 0) {
+            Toast.makeText(this, "Note updated successfully!", Toast.LENGTH_LONG).show();
             finish();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         }
     }
 
     public String saveImageToStorage() {
         // Save the image
         return BitmapUtils.saveImage(this, mResultBitmap);
-    }
-
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        switch (motionEvent.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (!TextUtils.isEmpty(mNoteTitleEditText.getText().toString().trim())) {
-                    mIsChanged = true;
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                view.performClick();
-                break;
-            default:
-                break;
-        }
-        return false;
     }
 }

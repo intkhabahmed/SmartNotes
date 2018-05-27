@@ -11,9 +11,9 @@
     <string name="enpty_view_description">No notes to show, click on add button to add a new note</string>
     <string name="image_note">Image Note</string>
     <string name="title">Title</string>
-    <string name="title_hint">Enter Note Title</string>
+    <string name="note_title">Note Title</string>
     <string name="description">Description</string>
-    <string name="description_hint">Enter Description of note</string>
+    <string name="description_hint">Description of note</string>
     <string name="save">Save</string>
     <string name="sort">Sort</string>
     <string name="date_created_ascending">Date Created (Old first)</string>
@@ -21,13 +21,13 @@
     <string name="title_ascending">Title (Ascending)</string>
     <string name="sort_criteria">Sort Criteria</string>
     <string name="sort_criteria_id">Sort Id</string>
-    <string name="add_checklist_hint">Enter the checklist item</string>
+    <string name="checklist_item">Checklist Item</string>
     <string name="add_checklist">Add</string>
     <string name="delete_note">Delete Note</string>
     <string name="share_note">Share Note</string>
-    <string name="date_created">Date Created</string>
-    <string name="date_modified">Date Modified</string>
-    <string name="add_checklist_title_hint">Enter Checklist Title</string>
+    <string name="date_created">Created On</string>
+    <string name="date_modified">Modified On</string>
+    <string name="checklist_title">Checklist Title</string>
     <string name="checkmark_unicode">\u2714</string>
     <string name="image">Image</string>
     <string name="error">Error deleting Temp Image</string>
@@ -56,4 +56,9 @@
     <string name="add_checklist_button">Add Checklist Button</string>
     <string name="chooser_title">Share Note with</string>
     <string name="share_type_text">text/plain</string>
+    <string name="delete_dialog_message">Do you want to delete it?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="menu_button">Menu button for extra options</string>
+    <string name="image_capture_button">Button to start image capture</string>
 </resources>

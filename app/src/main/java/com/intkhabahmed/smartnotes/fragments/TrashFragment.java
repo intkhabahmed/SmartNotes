@@ -4,8 +4,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -54,13 +52,14 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
         mEmptyView = view.findViewById(R.id.trash_empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
 
-        mNotesAdapter = new NotesAdapter(getActivity(), null, this, false);
+        mNotesAdapter = new NotesAdapter(getActivity(), null, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
+        getActivity().setTitle(R.string.trash);
         getLoaderManager().initLoader(TRASH_FRAGMENT_LOADER_ID, null, TrashFragment.this);
     }
 

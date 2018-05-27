@@ -30,13 +30,11 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final Context mContext;
     private Cursor mCursor;
     private OnItemClickListener mOnItemClickListener;
-    private boolean mIsImageNote;
 
-    public NotesAdapter(Context context, Cursor cursor, OnItemClickListener clickListener, boolean isImageNote) {
+    public NotesAdapter(Context context, Cursor cursor, OnItemClickListener clickListener) {
         mContext = context;
         mCursor = cursor;
         mOnItemClickListener = clickListener;
-        mIsImageNote = isImageNote;
     }
 
     public interface OnItemClickListener {
@@ -65,52 +63,48 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         mCursor.moveToPosition(position);
         switch (holder.getItemViewType()) {
             case 0:
-                int trashed = mCursor.getInt(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TRASH));
                 TextNotesViewHolder textNotesViewHolder = (TextNotesViewHolder) holder;
                 String title = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
-
-                if (trashed == 0) {
-                    String noteType = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
-                    textNotesViewHolder.noteDescriptionTextView.setText("");
-                    if (noteType.equals(mContext.getString(R.string.simple_note))) {
-                        StringBuilder description = new StringBuilder(mCursor.getString(mCursor
-                                .getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION)));
-                        if (description.length() > 30) {
-                            description.delete(30, description.length());
-                            description.append(" ...");
-                        }
-                        textNotesViewHolder.noteDescriptionTextView.setText(description);
-                    } else if (noteType.equals(mContext.getString(R.string.checklist))) {
-                        String description = mCursor.getString(mCursor
-                                .getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
-                        try {
-                            JSONObject checklistObjects = new JSONObject(description);
-                            JSONArray jsonArrays = checklistObjects.getJSONArray(mContext.getString(R.string.checklist));
-                            int noOfItems = jsonArrays.length() >= 2 ? 2 : 1;
-                            for (int i = 0; i < noOfItems; i++) {
-                                try {
-                                    JSONObject jsonObject = jsonArrays.getJSONObject(i);
-                                    String task = String.valueOf(jsonObject.get(AddAndEditChecklist.LIST_TITLE));
-                                    boolean isCompleted = jsonObject.getBoolean(AddAndEditChecklist.IS_LIST_CHECKED);
-                                    textNotesViewHolder.noteDescriptionTextView.append(task);
-                                    if (isCompleted) {
-                                        textNotesViewHolder.noteDescriptionTextView.append(" " +
-                                                mContext.getString(R.string.checkmark_unicode));
-                                    }
-                                    textNotesViewHolder.noteDescriptionTextView.append("\n");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            if (jsonArrays.length() > 2) {
-                                textNotesViewHolder.noteDescriptionTextView.append("...");
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                String noteType = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
+                textNotesViewHolder.noteDescriptionTextView.setText("");
+                if (noteType.equals(mContext.getString(R.string.simple_note))) {
+                    StringBuilder description = new StringBuilder(mCursor.getString(mCursor
+                            .getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION)));
+                    if (description.length() > 30) {
+                        description.delete(30, description.length());
+                        description.append(" ...");
                     }
-                } else {
-                    textNotesViewHolder.noteDescriptionTextView.setVisibility(View.GONE);
+                    textNotesViewHolder.noteDescriptionTextView.setText(description);
+                } else if (noteType.equals(mContext.getString(R.string.checklist))) {
+                    String description = mCursor.getString(mCursor
+                            .getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
+                    try {
+                        JSONObject checklistObjects = new JSONObject(description);
+                        JSONArray jsonArrays = checklistObjects.getJSONArray(mContext.getString(R.string.checklist));
+                        JSONObject jsonObject;
+                        int noOfItems = jsonArrays.length() >= 2 ? 2 : 1;
+                        for (int i = 0; i < noOfItems; i++) {
+                            try {
+                                jsonObject = jsonArrays.getJSONObject(i);
+                                textNotesViewHolder.noteDescriptionTextView
+                                        .append(String.valueOf(jsonObject.get(AddAndEditChecklist.LIST_TITLE)));
+                                if (jsonObject.getBoolean(AddAndEditChecklist.IS_LIST_CHECKED)) {
+                                    textNotesViewHolder.noteDescriptionTextView.append(" " +
+                                            mContext.getString(R.string.checkmark_unicode));
+                                }
+                                if (i < noOfItems - 1 || noOfItems == 1) {
+                                    textNotesViewHolder.noteDescriptionTextView.append("\n");
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (jsonArrays.length() > 2) {
+                            textNotesViewHolder.noteDescriptionTextView.append(" ...");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
                 long time = mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DATE_CREATED));
                 textNotesViewHolder.noteTitleTextView.setText(title);
@@ -141,7 +135,10 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (!mIsImageNote) {
+        mCursor.moveToPosition(position);
+        String noteType = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
+        if (noteType.equals(mContext.getString(R.string.simple_note))
+                || noteType.equals(mContext.getString(R.string.checklist))) {
             return 0;
         }
         return 1;

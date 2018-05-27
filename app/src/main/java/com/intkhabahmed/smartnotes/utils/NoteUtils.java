@@ -2,7 +2,6 @@ package com.intkhabahmed.smartnotes.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.ShareCompat;
 import android.text.format.DateUtils;
 

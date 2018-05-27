@@ -1,6 +1,5 @@
 package com.intkhabahmed.smartnotes.fragments;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -13,12 +12,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +27,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import com.intkhabahmed.smartnotes.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.NoteDetailActivity;
@@ -50,6 +46,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     private SearchView mSearchView;
     private String mFilterText;
     private FrameLayout mRootFrameLayout;
+    private static final String BUNDLE_EXTRA = "search-query";
 
     public SearchFragment() {
     }
@@ -67,12 +64,15 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.search_error_view);
 
-        mNotesAdapter = new NotesAdapter(getActivity(), null, this, false);
+        mNotesAdapter = new NotesAdapter(getActivity(), null, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
         getLoaderManager().initLoader(SEARCH_NOTE_FRAGMENT_LOADER_ID, null, SearchFragment.this);
+        if (savedInstanceState != null) {
+            mFilterText = savedInstanceState.getString(BUNDLE_EXTRA);
+        }
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -91,6 +91,9 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         closedBtn.setColorFilter(Color.WHITE);
         mSearchView.setMaxWidth(4000);
         mSearchView.setOnQueryTextListener(this);
+        if (!TextUtils.isEmpty(mFilterText)) {
+            mSearchView.setQuery(mFilterText, false);
+        }
         searchViewItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
@@ -132,8 +135,8 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
             showEmptyView();
         } else {
             hideEmptyView();
-            mNotesAdapter.swapCursor(data);
         }
+        mNotesAdapter.swapCursor(data);
     }
 
     @Override
@@ -207,7 +210,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     private void showSnackBar(final int noteId) {
         Snackbar snackbar = Snackbar.make(mRootFrameLayout, "Note has been moved to trash", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener(){
+        snackbar.setAction("Undo", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DBUtils.restoreFromTrash(getActivity(), noteId);
@@ -216,5 +219,11 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         });
         snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity()));
         snackbar.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(BUNDLE_EXTRA, mFilterText);
+        super.onSaveInstanceState(outState);
     }
 }
