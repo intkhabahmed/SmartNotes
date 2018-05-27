@@ -6,9 +6,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.transition.Fade;
-import android.support.transition.Transition;
-import android.support.transition.TransitionInflater;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private FragmentManager mFragmentManager;
-    private ActionBar mActionBar;
     private Handler handler;
 
     @Override
@@ -40,20 +36,20 @@ public class MainActivity extends AppCompatActivity {
         mToggle.syncState();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mActionBar = getSupportActionBar();
-        if(mActionBar != null) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
         }
         mFragmentManager = getSupportFragmentManager();
         handler = new Handler();
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mFragmentManager.beginTransaction()
-                                    .replace(R.id.fragment_layout, new HomePageFragment())
-                                    .commit();
+                            .replace(R.id.fragment_layout, new HomePageFragment())
+                            .commit();
                 }
             }, 300);
         }
@@ -62,55 +58,53 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-                NavigationView navigationView = findViewById(R.id.navigation_view);
-                navigationView.getMenu().getItem(0).setChecked(true);
-                navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView.getMenu().getItem(0).setChecked(true);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                handler.postDelayed(new Runnable() {
                     @Override
-                    public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
+                    public void run() {
                         int id = item.getItemId();
 
                         switch (id) {
                             case R.id.home_page:
-                                mActionBar.setTitle(getString(R.string.app_name));
                                 item.setChecked(true);
+                                mFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                 mFragmentManager.beginTransaction()
                                         .replace(R.id.fragment_layout, new HomePageFragment())
                                         .commit();
                                 break;
                             case R.id.trash:
-                                mActionBar.setTitle(getString(R.string.trash));
                                 item.setChecked(true);
                                 mFragmentManager.beginTransaction()
                                         .replace(R.id.fragment_layout, new TrashFragment())
+                                        .addToBackStack(null)
                                         .commit();
                                 break;
                             case R.id.settings:
-                                mActionBar.setTitle(getString(R.string.settings));
                                 item.setChecked(true);
                                 mFragmentManager.beginTransaction()
                                         .replace(R.id.fragment_layout, new SettingsFragment())
+                                        .addToBackStack(null)
                                         .commit();
                                 break;
                         }
-                            }
-                        }, 300);
-                        return false;
                     }
-                });
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }, 300);
+                return false;
+            }
+        });
     }
 
     @Override
     public Resources.Theme getTheme() {
-        final Resources.Theme theme =  super.getTheme();
+        final Resources.Theme theme = super.getTheme();
         boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
                 .getBoolean(getString(R.string.dark_theme_key), false);
-        if(isDarkThemeEnabled){
+        if (isDarkThemeEnabled) {
             theme.applyStyle(R.style.AppThemeDark, true);
         } else {
             theme.applyStyle(R.style.AppThemeLight, true);
@@ -120,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(mToggle.onOptionsItemSelected(item)){
+        if (mToggle.onOptionsItemSelected(item)) {
             mDrawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
@@ -129,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
             return;
         }

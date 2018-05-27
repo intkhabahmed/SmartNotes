@@ -1,18 +1,18 @@
 /*
-* Copyright (C) 2017 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*  	http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.intkhabahmed.smartnotes.utils;
 
@@ -82,7 +82,7 @@ public class BitmapUtils {
      * @return The temporary image file.
      * @throws IOException Thrown if there is an error creating the file
      */
-   public static File createTempImageFile(Context context) throws IOException {
+    public static File createTempImageFile(Context context) throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
                 Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -101,7 +101,7 @@ public class BitmapUtils {
      * @param context   The application context.
      * @param imagePath The path of the photo to be deleted.
      */
-   public static boolean deleteImageFile(Context context, String imagePath) {
+    public static boolean deleteImageFile(Context context, String imagePath) {
         // Get the file
         File imageFile = new File(imagePath);
 
@@ -163,7 +163,7 @@ public class BitmapUtils {
      * @param context   The image context.
      * @param imagePath The path of the image to be shared.
      */
-   public static void shareImage(Context context, String imagePath) {
+    public static void shareImage(Context context, String imagePath) {
         // Create the share intent and start the share activity
         File imageFile = new File(imagePath);
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
