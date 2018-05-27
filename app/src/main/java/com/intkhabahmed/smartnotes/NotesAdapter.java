@@ -2,7 +2,10 @@ package com.intkhabahmed.smartnotes;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +16,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
-import com.intkhabahmed.smartnotes.utils.NoteUtils;
+import com.intkhabahmed.smartnotes.utils.BitmapUtils;
+import com.intkhabahmed.smartnotes.utils.NotesDateUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,8 +44,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public interface OnItemClickListener {
-        void onMenuItemClick(View view, int noteId);
-
+        void onMenuItemClick(View view, long noteId);
         void onItemClick(int adapterPosition, Cursor cursor);
     }
 
@@ -69,7 +72,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 TextNotesViewHolder textNotesViewHolder = (TextNotesViewHolder) holder;
                 String title = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
 
-                if (trashed == 0) {
+                if(trashed == 0){
                     String noteType = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
                     textNotesViewHolder.noteDescriptionTextView.setText("");
                     if (noteType.equals(mContext.getString(R.string.simple_note))) {
@@ -109,12 +112,14 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             e.printStackTrace();
                         }
                     }
-                } else {
+                }else{
                     textNotesViewHolder.noteDescriptionTextView.setVisibility(View.GONE);
+                    textNotesViewHolder.noteTitleTextView.setOnClickListener(null);
+                    textNotesViewHolder.noteCreateDateTextView.setOnClickListener(null);
                 }
                 long time = mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DATE_CREATED));
                 textNotesViewHolder.noteTitleTextView.setText(title);
-                textNotesViewHolder.noteCreateDateTextView.setText(NoteUtils.getFormattedTime(time, System.currentTimeMillis()));
+                textNotesViewHolder.noteCreateDateTextView.setText(NotesDateUtil.getFormattedTime(time, System.currentTimeMillis()));
                 break;
             case 1:
                 ImageNotesViewHolder imageNotesViewHolder = (ImageNotesViewHolder) holder;
@@ -123,11 +128,11 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 String imagePath = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
 
                 File imageFile = new File(imagePath);
-                if (imageFile.exists()) {
+                if(imageFile.exists()){
                     Glide.with(mContext).asDrawable().load(Uri.fromFile(imageFile)).into(imageNotesViewHolder.noteImageView);
                 }
                 imageNotesViewHolder.noteTitleTextView.setText(imageNoteTitle);
-                imageNotesViewHolder.noteCreateDateTextView.setText(NoteUtils.getFormattedTime(imageNoteTime,
+                imageNotesViewHolder.noteCreateDateTextView.setText(NotesDateUtil.getFormattedTime(imageNoteTime,
                         System.currentTimeMillis()));
                 break;
         }
@@ -176,7 +181,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void onClick(View view) {
             if (view instanceof ImageButton) {
                 mCursor.moveToPosition(getAdapterPosition());
-                int noteId = (int) mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry._ID));
+                long noteId = mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry._ID));
                 mOnItemClickListener.onMenuItemClick(view, noteId);
             } else if (view instanceof TextView) {
                 Cursor cursor = mCursor;
@@ -207,7 +212,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void onClick(View view) {
             if (view instanceof ImageButton) {
                 mCursor.moveToPosition(getAdapterPosition());
-                int noteId = (int) mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry._ID));
+                long noteId = mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry._ID));
                 mOnItemClickListener.onMenuItemClick(view, noteId);
             } else if (view instanceof TextView || view instanceof ImageView) {
                 Cursor cursor = mCursor;

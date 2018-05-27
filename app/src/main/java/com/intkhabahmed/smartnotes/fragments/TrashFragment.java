@@ -22,13 +22,11 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.intkhabahmed.smartnotes.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.NoteDetailActivity;
 import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.notesdata.NotesContract;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
-import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 public class TrashFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NotesAdapter.OnItemClickListener {
 
@@ -44,21 +42,23 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.notes_recycler_view, container, false);
-    }
+        View rootView = inflater.inflate(R.layout.notes_recycler_view, container, false);
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mRecyclerView = view.findViewById(R.id.recycler_view);
-        mEmptyView = view.findViewById(R.id.trash_empty_view);
-        mProgressBar = view.findViewById(R.id.progress_bar);
+        mRecyclerView = rootView.findViewById(R.id.recycler_view);
+        mEmptyView = rootView.findViewById(R.id.trash_empty_view);
+        mProgressBar = rootView.findViewById(R.id.progress_bar);
 
-        mNotesAdapter = new NotesAdapter(getActivity(), null, this, false);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mNotesAdapter = new NotesAdapter(getActivity(),null, this, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,  false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         mProgressBar.setVisibility(View.VISIBLE);
         mEmptyView.setVisibility(View.INVISIBLE);
         getLoaderManager().initLoader(TRASH_FRAGMENT_LOADER_ID, null, TrashFragment.this);
@@ -66,18 +66,20 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String selection = NotesContract.NotesEntry.COLUMN_TRASH + "=?";
+        String[] selectionArgs = {"1"};
+        String sortOrder = NotesContract.NotesEntry.COLUMN_DATE_MODIFIED + " desc";
         return new CursorLoader(getActivity(), NotesContract.NotesEntry.CONTENT_URI, null,
-                NotesContract.NotesEntry.COLUMN_TRASH + "=?", new String[]{"1"},
-                NotesContract.NotesEntry.COLUMN_DATE_MODIFIED + " desc");
+                selection, selectionArgs, sortOrder);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mProgressBar.setVisibility(View.GONE);
-        if (data != null && data.getCount() == 0) {
-            ViewUtils.showEmptyView(mRecyclerView, mEmptyView);
+        if(data != null && data.getCount()==0){
+            showEmptyView();
         } else {
-            ViewUtils.hideEmptyView(mRecyclerView, mEmptyView);
+            hideEmptyView();
             mNotesAdapter.swapCursor(data);
         }
     }
@@ -87,24 +89,29 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
         mNotesAdapter.swapCursor(null);
     }
 
+    private void showEmptyView(){
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mEmptyView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideEmptyView(){
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     public void onItemClick(int adapterPosition, Cursor cursor) {
         cursor.moveToPosition(adapterPosition);
-        String noteType = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
-        Intent detailActivityIntent;
-        if (noteType.equals(getString(R.string.checklist))) {
-            detailActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
-        } else {
-            detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
-            detailActivityIntent.putExtra(getString(R.string.note_type), noteType);
-        }
+        Intent detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
         detailActivityIntent.putExtra(Intent.EXTRA_TEXT, cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID)));
+        detailActivityIntent.putExtra(getString(R.string.note_type),
+                cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE)));
         startActivity(detailActivityIntent);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override
-    public void onMenuItemClick(View view, final int noteId) {
+    public void onMenuItemClick(View view, final long noteId) {
 
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
@@ -128,13 +135,14 @@ public class TrashFragment extends Fragment implements LoaderManager.LoaderCallb
                         getActivity().getContentResolver().delete(NotesContract.NotesEntry.CONTENT_URI,
                                 NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
                         Toast.makeText(getActivity(), "Note has been permanently deleted!!", Toast.LENGTH_LONG).show();
+                        getLoaderManager().restartLoader(TRASH_FRAGMENT_LOADER_ID, null, TrashFragment.this);
                         break;
                     case R.id.share_note:
                         ContentValues values = new ContentValues();
                         values.put(NotesContract.NotesEntry.COLUMN_TRASH, 0);
                         int rowsUpdated = getActivity().getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
                                 NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)});
-                        if (rowsUpdated > 0) {
+                        if(rowsUpdated > 0){
                             Toast.makeText(getActivity(), "Note has been restored!", Toast.LENGTH_LONG).show();
                         }
                         break;
