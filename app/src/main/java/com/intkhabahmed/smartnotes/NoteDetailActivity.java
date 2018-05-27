@@ -32,7 +32,7 @@ public class NoteDetailActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
+        if(actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_white_black_24dp);
         }
@@ -40,12 +40,12 @@ public class NoteDetailActivity extends AppCompatActivity {
         FloatingActionButton editButton = findViewById(R.id.edit_note_button);
 
         Intent intent = getIntent();
-        if (intent.hasExtra(Intent.EXTRA_TEXT) && intent.hasExtra(getString(R.string.note_type))) {
+        if(intent.hasExtra(Intent.EXTRA_TEXT) && intent.hasExtra(getString(R.string.note_type))){
             mNoteId = intent.getLongExtra(Intent.EXTRA_TEXT, 0);
             mNoteType = intent.getStringExtra(getString(R.string.note_type));
         }
 
-        if (mNoteType.equals(getString(R.string.simple_note))) {
+        if(mNoteType.equals(getString(R.string.simple_note))){
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -58,24 +58,24 @@ public class NoteDetailActivity extends AppCompatActivity {
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
             simpleNotesDetailFragment.setNoteId(mNoteId);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.detail_activity_container, simpleNotesDetailFragment)
+                    .add(R.id.detail_activity_container,simpleNotesDetailFragment)
                     .commit();
-        } else if (mNoteType.equals(getString(R.string.image_note))) {
+        } else if(mNoteType.equals(getString(R.string.image_note))) {
             editButton.setVisibility(View.GONE);
             ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
             imageNotesDetailFragment.setNoteId(mNoteId);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.detail_activity_container, imageNotesDetailFragment)
+                    .add(R.id.detail_activity_container,imageNotesDetailFragment)
                     .commit();
         }
     }
 
     @Override
     public Resources.Theme getTheme() {
-        Resources.Theme theme = super.getTheme();
+        Resources.Theme theme =  super.getTheme();
         boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(getString(R.string.dark_theme_key), false);
-        if (isDarkThemeEnabled) {
+        if(isDarkThemeEnabled){
             theme.applyStyle(R.style.AppThemeDark, true);
         } else {
             theme.applyStyle(R.style.AppThemeLight, true);
@@ -86,17 +86,17 @@ public class NoteDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mNoteType.equals(getString(R.string.simple_note))) {
+        if(mNoteType.equals(getString(R.string.simple_note))){
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
             simpleNotesDetailFragment.setNoteId(mNoteId);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.detail_activity_container, simpleNotesDetailFragment)
+                    .replace(R.id.detail_activity_container,simpleNotesDetailFragment)
                     .commit();
-        } else if (mNoteType.equals(getString(R.string.image_note))) {
+        } else if(mNoteType.equals(getString(R.string.image_note))) {
             ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
             imageNotesDetailFragment.setNoteId(mNoteId);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.detail_activity_container, imageNotesDetailFragment)
+                    .replace(R.id.detail_activity_container,imageNotesDetailFragment)
                     .commit();
         }
     }

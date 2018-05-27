@@ -57,12 +57,12 @@ public class NotesFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        if (object instanceof SimpleNotesFragment) {
-            ((SimpleNotesFragment) object).updateSimpleNotesFragment();
-        } else if (object instanceof ChecklistFragment) {
-            ((ChecklistFragment) object).updateCheckListFragment();
-        } else if (object instanceof ImageNotesFragment) {
-            ((ImageNotesFragment) object).updateImageNotesFragment();
+        if(object instanceof SimpleNotesFragment){
+            ((SimpleNotesFragment)object).updateSimpleNotesFragment();
+        } else if(object instanceof ChecklistFragment){
+            ((ChecklistFragment)object).updateCheckListFragment();
+        } else if (object instanceof ImageNotesFragment){
+            ((ImageNotesFragment)object).updateImageNotesFragment();
         }
         return super.getItemPosition(object);
     }
