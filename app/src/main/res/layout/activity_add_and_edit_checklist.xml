@@ -64,12 +64,13 @@
             android:id="@+id/titleInputLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             app:hintTextAppearance="?attr/hintColor"
+            android:textColorHint="?attr/secondaryTextColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -85,8 +86,7 @@
                 android:ems="10"
                 android:hint="@string/checklist_title"
                 android:inputType="textPersonName"
-                android:padding="16dp"
-                android:textColorHint="@color/secondaryTextColor" />
+                android:padding="16dp" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v4.widget.NestedScrollView
@@ -96,17 +96,25 @@
             android:layout_marginTop="16dp"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/add_checklist_button"
-            app:layout_constraintStart_toStartOf="@+id/noteItemInputLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/noteItemInputLayout">
 
-            <LinearLayout
-                android:id="@+id/checklist_container"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?attr/cardBackground"
-                android:orientation="vertical"
-                android:paddingBottom="16dp" />
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="?attr/cardViewBackground">
+
+                <LinearLayout
+                    android:id="@+id/checklist_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="8dp" />
+            </android.support.v7.widget.CardView>
         </android.support.v4.widget.NestedScrollView>
     </android.support.constraint.ConstraintLayout>
 </FrameLayout>

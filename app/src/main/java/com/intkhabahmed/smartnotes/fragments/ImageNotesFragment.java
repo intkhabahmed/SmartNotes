@@ -171,7 +171,7 @@ public class ImageNotesFragment extends Fragment implements LoaderManager.Loader
                 Snackbar.make(mAddButton, "Note Restored", Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity()));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
         snackbar.show();
     }
 }

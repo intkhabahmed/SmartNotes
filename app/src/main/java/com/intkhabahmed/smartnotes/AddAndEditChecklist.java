@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -145,6 +147,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
         ImageButton removeButton = new ImageButton(this);
         removeButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_clear_24dp));
         removeButton.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
+        removeButton.setPadding(0, 10, 0, 5);
 
         final CheckBox checkBox = new CheckBox(this);
         checkBox.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -155,6 +158,8 @@ public class AddAndEditChecklist extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             checkBox.setTextAppearance(R.style.TextAppearance_AppCompat_Large);
         }
+        checkBox.setTextColor(ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor));
+        removeButton.setColorFilter(ViewUtils.getColorFromAttribute(this, R.attr.iconPlaceHolder));
         mChecklistContainer.addView(checkBoxContainer);
         final JSONObject checklistObject = new JSONObject();
         try {
