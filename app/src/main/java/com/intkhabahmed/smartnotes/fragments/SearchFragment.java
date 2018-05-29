@@ -146,6 +146,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     private void showEmptyView() {
         mRecyclerView.setVisibility(View.INVISIBLE);
+        mEmptyView.setVisibility(View.INVISIBLE);
         if (!TextUtils.isEmpty(mFilterText)) {
             mEmptyView.setVisibility(View.VISIBLE);
         }

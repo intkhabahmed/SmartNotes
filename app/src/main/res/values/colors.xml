@@ -13,8 +13,10 @@
     <color name="nightPrimaryTextColor">#e0e0e0</color>
     <color name="nightSecondaryTextColor">#b7f4f4f6</color>
     <color name="cardBackgroundColor">#555555</color>
+    <color name="editTextLightBackground">#f7f7f3</color>
     <color name="iconColorModeInverse">?attr/iconPlaceHolder</color>
     <color name="iconColorMode">?attr/iconColor</color>
     <color name="primaryColorMode">?attr/colorPrimary</color>
     <color name="accentColorMode">?attr/colorAccent</color>
+    <color name="editTextBackgroundMode">?attr/editTextBackgroundColor</color>
 </resources>

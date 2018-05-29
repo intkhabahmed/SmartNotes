@@ -29,6 +29,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             app:hintTextAppearance="?attr/hintColor"
+            android:textColorHint="?attr/secondaryTextColor"
             app:layout_constraintEnd_toStartOf="@+id/add_checklist_button"
             app:layout_constraintStart_toStartOf="@+id/titleInputLayout"
             app:layout_constraintTop_toBottomOf="@+id/titleInputLayout">
@@ -44,7 +45,7 @@
                 android:hint="@string/checklist_item"
                 android:inputType="textPersonName"
                 android:padding="16dp"
-                android:textColorHint="@color/secondaryTextColor" />
+                android:textColor="?attr/primaryTextColor"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.FloatingActionButton
@@ -86,7 +87,8 @@
                 android:ems="10"
                 android:hint="@string/checklist_title"
                 android:inputType="textPersonName"
-                android:padding="16dp" />
+                android:padding="16dp"
+                android:textColor="?attr/primaryTextColor"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v4.widget.NestedScrollView
