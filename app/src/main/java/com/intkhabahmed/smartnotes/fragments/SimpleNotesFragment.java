@@ -173,7 +173,7 @@ public class SimpleNotesFragment extends Fragment implements LoaderManager.Loade
                 Snackbar.make(mAddButton, "Note Restored", Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity()));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
         snackbar.show();
     }
 }

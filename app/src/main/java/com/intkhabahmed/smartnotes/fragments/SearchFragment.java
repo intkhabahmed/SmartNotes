@@ -146,6 +146,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     private void showEmptyView() {
         mRecyclerView.setVisibility(View.INVISIBLE);
+        mEmptyView.setVisibility(View.INVISIBLE);
         if (!TextUtils.isEmpty(mFilterText)) {
             mEmptyView.setVisibility(View.VISIBLE);
         }
@@ -217,7 +218,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
                 Snackbar.make(mRootFrameLayout, "Note Restored", Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity()));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
         snackbar.show();
     }
 
