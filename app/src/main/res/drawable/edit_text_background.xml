@@ -4,8 +4,8 @@
         <shape
             android:shape="rectangle">
             <corners android:radius="10dp"/>
-            <solid android:color="#f7f7f3"/>
-            <stroke android:color="@android:color/white" android:width="2dp"/>
+            <solid android:color="@color/editTextBackgroundMode"/>
+            <stroke android:color="#d7ccc8" android:width="2dp"/>
         </shape>
     </item>
 </layer-list>

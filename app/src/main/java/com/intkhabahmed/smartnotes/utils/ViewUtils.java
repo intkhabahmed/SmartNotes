@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
@@ -59,10 +60,10 @@ public class ViewUtils {
         alertDialog.show();
     }
 
-    public static int getColorFromAttribute(Context context) {
+    public static int getColorFromAttribute(Context context, @AttrRes int attribute) {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = context.getTheme();
-        theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+        theme.resolveAttribute(attribute, typedValue, true);
         @ColorInt int color = typedValue.data;
         return color;
     }
