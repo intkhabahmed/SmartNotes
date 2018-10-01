@@ -1,8 +1,8 @@
 package com.intkhabahmed.smartnotes;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.intkhabahmed.smartnotes.notesdata.NotesContract;
+import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 
 import org.json.JSONArray;
@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by INTKHAB on 23-03-2018.
@@ -28,23 +29,23 @@ import java.io.File;
 public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context mContext;
-    private Cursor mCursor;
+    private List<Note> mNotes;
     private OnItemClickListener mOnItemClickListener;
 
-    public NotesAdapter(Context context, Cursor cursor, OnItemClickListener clickListener) {
+    public NotesAdapter(Context context, OnItemClickListener clickListener) {
         mContext = context;
-        mCursor = cursor;
         mOnItemClickListener = clickListener;
     }
 
     public interface OnItemClickListener {
-        void onMenuItemClick(View view, int noteId);
+        void onMenuItemClick(View view, Note note);
 
-        void onItemClick(int adapterPosition, Cursor cursor);
+        void onItemClick(Note note);
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         switch (viewType) {
             case 0:
@@ -59,25 +60,23 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        mCursor.moveToPosition(position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Note note = mNotes.get(holder.getAdapterPosition());
         switch (holder.getItemViewType()) {
             case 0:
                 TextNotesViewHolder textNotesViewHolder = (TextNotesViewHolder) holder;
-                String title = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
-                String noteType = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
+                String title = note.getNoteTitle();
+                String noteType = note.getNoteType();
                 textNotesViewHolder.noteDescriptionTextView.setText("");
                 if (noteType.equals(mContext.getString(R.string.simple_note))) {
-                    StringBuilder description = new StringBuilder(mCursor.getString(mCursor
-                            .getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION)));
+                    StringBuilder description = new StringBuilder(note.getDescription());
                     if (description.length() > 30) {
                         description.delete(30, description.length());
                         description.append(" ...");
                     }
                     textNotesViewHolder.noteDescriptionTextView.setText(description);
                 } else if (noteType.equals(mContext.getString(R.string.checklist))) {
-                    String description = mCursor.getString(mCursor
-                            .getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
+                    String description = note.getDescription();
                     try {
                         JSONObject checklistObjects = new JSONObject(description);
                         JSONArray jsonArrays = checklistObjects.getJSONArray(mContext.getString(R.string.checklist));
@@ -106,15 +105,15 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         e.printStackTrace();
                     }
                 }
-                long time = mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DATE_CREATED));
+                long time = note.getDateCreated();
                 textNotesViewHolder.noteTitleTextView.setText(title);
                 textNotesViewHolder.noteCreateDateTextView.setText(NoteUtils.getFormattedTime(time, System.currentTimeMillis()));
                 break;
             case 1:
                 ImageNotesViewHolder imageNotesViewHolder = (ImageNotesViewHolder) holder;
-                String imageNoteTitle = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
-                long imageNoteTime = mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DATE_CREATED));
-                String imagePath = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
+                String imageNoteTitle = note.getNoteTitle();
+                long imageNoteTime = note.getDateCreated();
+                String imagePath = note.getDescription();
 
                 File imageFile = new File(imagePath);
                 if (imageFile.exists()) {
@@ -129,26 +128,25 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if (mCursor == null || mCursor.getCount() == 0) return 0;
-        return mCursor.getCount();
+        if (mNotes == null) {
+            return 0;
+        }
+        return mNotes.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        mCursor.moveToPosition(position);
-        String noteType = mCursor.getString(mCursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
-        if (noteType.equals(mContext.getString(R.string.simple_note))
-                || noteType.equals(mContext.getString(R.string.checklist))) {
+        Note note = mNotes.get(position);
+        if (note.getNoteType().equals(mContext.getString(R.string.simple_note))
+                || note.getNoteType().equals(mContext.getString(R.string.checklist))) {
             return 0;
         }
         return 1;
     }
 
-    public void swapCursor(Cursor data) {
-        if (data != null) {
-            mCursor = data;
-            notifyDataSetChanged();
-        }
+    public void setNotes(List<Note> notes) {
+        mNotes = notes;
+        notifyDataSetChanged();
     }
 
     public class TextNotesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -172,12 +170,9 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @Override
         public void onClick(View view) {
             if (view instanceof ImageButton) {
-                mCursor.moveToPosition(getAdapterPosition());
-                int noteId = (int) mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry._ID));
-                mOnItemClickListener.onMenuItemClick(view, noteId);
+                mOnItemClickListener.onMenuItemClick(view, mNotes.get(getAdapterPosition()));
             } else if (view instanceof TextView) {
-                Cursor cursor = mCursor;
-                mOnItemClickListener.onItemClick(getAdapterPosition(), cursor);
+                mOnItemClickListener.onItemClick(mNotes.get(getAdapterPosition()));
             }
         }
     }
@@ -203,12 +198,9 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @Override
         public void onClick(View view) {
             if (view instanceof ImageButton) {
-                mCursor.moveToPosition(getAdapterPosition());
-                int noteId = (int) mCursor.getLong(mCursor.getColumnIndex(NotesContract.NotesEntry._ID));
-                mOnItemClickListener.onMenuItemClick(view, noteId);
+                mOnItemClickListener.onMenuItemClick(view, mNotes.get(getAdapterPosition()));
             } else if (view instanceof TextView || view instanceof ImageView) {
-                Cursor cursor = mCursor;
-                mOnItemClickListener.onItemClick(getAdapterPosition(), cursor);
+                mOnItemClickListener.onItemClick(mNotes.get(getAdapterPosition()));
             }
         }
     }

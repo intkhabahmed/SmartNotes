@@ -1,5 +1,6 @@
 package com.intkhabahmed.smartnotes.database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -15,10 +16,10 @@ import java.util.List;
 interface NotesDao {
 
     @Query("SELECT * FROM notes WHERE noteType = :type AND trash = :trashed ORDER BY :sortOrder")
-    List<Note> getNotesByTypeAndAvailability(String type, int trashed, String sortOrder);
+    LiveData<List<Note>> getNotesByTypeAndAvailability(String type, int trashed, String sortOrder);
 
     @Query("SELECT * FROM notes WHERE title LIKE '%' || :title || '%' AND trash = :trashed")
-    List<Note> getNotesByTitleAndAvailability(String title, int trashed);
+    LiveData<List<Note>> getNotesByTitleAndAvailability(String title, int trashed);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insertNote(Note note);

@@ -1,6 +1,9 @@
 package com.intkhabahmed.smartnotes.database;
 
+import android.arch.lifecycle.LiveData;
+
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.Global;
 
 import java.util.List;
@@ -18,11 +21,12 @@ public class NoteRepository {
         return sInstance;
     }
 
-    public List<Note> getNotesByTypeAndAvailability(String type, int trashed, String sortBy) {
-        return Global.getDbInstance().notesDao().getNotesByTypeAndAvailability(type, trashed, sortBy);
+    public LiveData<List<Note>> getNotesByTypeAndAvailability(String type, int trashed) {
+        return Global.getDbInstance().notesDao().getNotesByTypeAndAvailability(type, trashed,
+                Global.getSortCriteria());
     }
 
-    public List<Note> getNotesByTitleAndAvailability(String title, int trashed) {
+    public LiveData<List<Note>> getNotesByTitleAndAvailability(String title, int trashed) {
         return Global.getDbInstance().notesDao().getNotesByTitleAndAvailability(title, trashed);
     }
 
@@ -38,13 +42,23 @@ public class NoteRepository {
         return Global.getDbInstance().notesDao().deleteNote(note);
     }
 
-    public int moveNoteToTrash(Note note) {
+    public void moveNoteToTrash(final Note note) {
         note.setTrashed(1);
-        return Global.getDbInstance().notesDao().updateNote(note);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Global.getDbInstance().notesDao().updateNote(note);
+            }
+        });
     }
 
-    public int recoverNoteFromTrash(Note note) {
+    public void recoverNoteFromTrash(final Note note) {
         note.setTrashed(0);
-        return Global.getDbInstance().notesDao().updateNote(note);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Global.getDbInstance().notesDao().updateNote(note);
+            }
+        });
     }
 }

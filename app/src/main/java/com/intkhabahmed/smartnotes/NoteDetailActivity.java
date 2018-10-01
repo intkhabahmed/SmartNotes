@@ -12,11 +12,11 @@ import android.view.MenuItem;
 
 import com.intkhabahmed.smartnotes.fragments.ImageNotesDetailFragment;
 import com.intkhabahmed.smartnotes.fragments.SimpleNotesDetailFragment;
+import com.intkhabahmed.smartnotes.models.Note;
 
 public class NoteDetailActivity extends AppCompatActivity {
 
-    private long mNoteId;
-    private String mNoteType;
+    private Note mNote;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,19 +33,18 @@ public class NoteDetailActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent.hasExtra(Intent.EXTRA_TEXT) && intent.hasExtra(getString(R.string.note_type))) {
-            mNoteId = intent.getLongExtra(Intent.EXTRA_TEXT, 0);
-            mNoteType = intent.getStringExtra(getString(R.string.note_type));
+            mNote = intent.getParcelableExtra(Intent.EXTRA_TEXT);
         }
 
-        if (mNoteType.equals(getString(R.string.simple_note))) {
+        if (mNote.getNoteType().equals(getString(R.string.simple_note))) {
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
-            simpleNotesDetailFragment.setNoteId(mNoteId);
+            simpleNotesDetailFragment.setNote(mNote);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.detail_activity_container, simpleNotesDetailFragment)
                     .commit();
-        } else if (mNoteType.equals(getString(R.string.image_note))) {
+        } else if (mNote.getNoteType().equals(getString(R.string.image_note))) {
             ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
-            imageNotesDetailFragment.setNoteId(mNoteId);
+            imageNotesDetailFragment.setNote(mNote);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.detail_activity_container, imageNotesDetailFragment)
                     .commit();
@@ -68,15 +67,15 @@ public class NoteDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mNoteType.equals(getString(R.string.simple_note))) {
+        if (mNote.getNoteType().equals(getString(R.string.simple_note))) {
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
-            simpleNotesDetailFragment.setNoteId(mNoteId);
+            simpleNotesDetailFragment.setNote(mNote);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.detail_activity_container, simpleNotesDetailFragment)
                     .commit();
-        } else if (mNoteType.equals(getString(R.string.image_note))) {
+        } else if (mNote.getNoteType().equals(getString(R.string.image_note))) {
             ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
-            imageNotesDetailFragment.setNoteId(mNoteId);
+            imageNotesDetailFragment.setNote(mNote);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.detail_activity_container, imageNotesDetailFragment)
                     .commit();

@@ -6,6 +6,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "notes")
 public class Note implements Parcelable {
@@ -13,8 +14,11 @@ public class Note implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int noteId;
     @ColumnInfo(name = "title")
+    @NonNull
     private String noteTitle;
+    @NonNull
     private String description;
+    @NonNull
     private String noteType;
     private long dateCreated;
     private long dateModified;
@@ -25,7 +29,7 @@ public class Note implements Parcelable {
     public Note() {
     }
 
-    public Note(int noteId, String noteTitle, String description, String noteType, long dateCreated, long dateModified, int trashed) {
+    public Note(int noteId, @NonNull String noteTitle, @NonNull String description, @NonNull String noteType, long dateCreated, long dateModified, int trashed) {
         this.noteId = noteId;
         this.noteTitle = noteTitle;
         this.description = description;
@@ -36,7 +40,7 @@ public class Note implements Parcelable {
     }
 
     @Ignore
-    public Note(String noteTitle, String description, String noteType, long dateCreated, long dateModified, int trashed) {
+    public Note(@NonNull String noteTitle, @NonNull String description, @NonNull String noteType, long dateCreated, long dateModified, int trashed) {
         this.noteTitle = noteTitle;
         this.description = description;
         this.noteType = noteType;
@@ -92,27 +96,30 @@ public class Note implements Parcelable {
         this.noteId = noteId;
     }
 
+    @NonNull
     public String getNoteTitle() {
         return noteTitle;
     }
 
-    public void setNoteTitle(String noteTitle) {
+    public void setNoteTitle(@NonNull String noteTitle) {
         this.noteTitle = noteTitle;
     }
 
+    @NonNull
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(@NonNull String description) {
         this.description = description;
     }
 
+    @NonNull
     public String getNoteType() {
         return noteType;
     }
 
-    public void setNoteType(String noteType) {
+    public void setNoteType(@NonNull String noteType) {
         this.noteType = noteType;
     }
 
