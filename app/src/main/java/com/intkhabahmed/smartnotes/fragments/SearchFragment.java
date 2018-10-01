@@ -82,7 +82,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
-                if (notes != null) {
+                if (notes != null && notes.size() > 0) {
                     hideEmptyView();
                     mNotesAdapter.setNotes(notes);
                 } else {

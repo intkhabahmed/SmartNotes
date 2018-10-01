@@ -89,7 +89,7 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
-                if (notes != null) {
+                if (notes != null && notes.size() > 0) {
                     mProgressBar.setVisibility(View.GONE);
                     ViewUtils.hideEmptyView(mRecyclerView, mEmptyView);
                     mNotesAdapter.setNotes(notes);
