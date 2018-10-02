@@ -37,7 +37,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 /**
- * Created by INTKHAB on 23-03-2018.
+ * Created by INTKHAB on 01-10-2018.
  */
 
 public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemClickListener {
@@ -89,8 +89,8 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
+                mProgressBar.setVisibility(View.GONE);
                 if (notes != null && notes.size() > 0) {
-                    mProgressBar.setVisibility(View.GONE);
                     ViewUtils.hideEmptyView(mRecyclerView, mEmptyView);
                     mNotesAdapter.setNotes(notes);
                 } else {
@@ -132,7 +132,7 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
                                 showSnackBar(note);
                             }
                         };
-                        ViewUtils.showDeleteConfirmationDialog(getActivity(), deleteListener);
+                        ViewUtils.showDeleteConfirmationDialog(deleteListener);
                         break;
                     case R.id.share_note:
                         String noteTitle = note.getNoteTitle();
@@ -170,15 +170,15 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
     }
 
     private void showSnackBar(final Note note) {
-        Snackbar snackbar = Snackbar.make(mAddButton, "Note has been moved to trash", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(mAddButton, getString(R.string.moved_to_trash), Snackbar.LENGTH_LONG);
+        snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NoteRepository.getInstance().recoverNoteFromTrash(note);
-                Snackbar.make(mAddButton, "Note Restored", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mAddButton, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(R.attr.colorAccent));
         snackbar.show();
     }
 }

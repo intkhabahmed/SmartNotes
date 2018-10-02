@@ -45,24 +45,24 @@ public class ViewUtils {
         alertDialog.show();
     }
 
-    public static void showDeleteConfirmationDialog(final Context context, DialogInterface.OnClickListener deleteButtonListener) {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-        dialogBuilder.setPositiveButton(context.getString(R.string.yes), deleteButtonListener);
-        dialogBuilder.setNegativeButton(context.getString(R.string.no), new DialogInterface.OnClickListener() {
+    public static void showDeleteConfirmationDialog(DialogInterface.OnClickListener deleteButtonListener) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Global.getInstance());
+        dialogBuilder.setPositiveButton(Global.getInstance().getString(R.string.yes), deleteButtonListener);
+        dialogBuilder.setNegativeButton(Global.getInstance().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
             }
         });
-        dialogBuilder.setMessage(context.getString(R.string.delete_dialog_message));
-        dialogBuilder.setTitle(context.getString(R.string.delete_note));
+        dialogBuilder.setMessage(Global.getInstance().getString(R.string.delete_dialog_message));
+        dialogBuilder.setTitle(Global.getInstance().getString(R.string.delete_note));
         AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.show();
     }
 
-    public static int getColorFromAttribute(Context context, @AttrRes int attribute) {
+    public static int getColorFromAttribute(@AttrRes int attribute) {
         TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = context.getTheme();
+        Resources.Theme theme = Global.getInstance().getTheme();
         theme.resolveAttribute(attribute, typedValue, true);
         @ColorInt int color = typedValue.data;
         return color;

@@ -7,6 +7,7 @@ import android.text.format.DateUtils;
 
 import com.intkhabahmed.smartnotes.R;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -22,7 +23,7 @@ public class NoteUtils {
     }
 
     public static String getFormattedTime(long timeInMillis) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/YYYY", Locale.US);
+        DateFormat formatter = SimpleDateFormat.getDateInstance();
         return formatter.format(new Date(timeInMillis));
     }
 

@@ -73,8 +73,8 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
+                mProgressBar.setVisibility(View.GONE);
                 if (notes != null && notes.size() > 0) {
-                    mProgressBar.setVisibility(View.GONE);
                     ViewUtils.hideEmptyView(mRecyclerView, mEmptyView);
                     mNotesAdapter.setNotes(notes);
                 } else {
@@ -120,11 +120,11 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
                                 NoteRepository.getInstance().deleteNote(note);
                             }
                         });
-                        Toast.makeText(getActivity(), "Note has been permanently deleted!!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.deleted_permanently), Toast.LENGTH_LONG).show();
                         break;
                     case R.id.share_note:
                         NoteRepository.getInstance().recoverNoteFromTrash(note);
-                        Toast.makeText(getActivity(), "Note has been restored!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.restored), Toast.LENGTH_LONG).show();
                         break;
                 }
                 return false;

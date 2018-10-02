@@ -154,8 +154,8 @@ public class AddAndEditChecklist extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             checkBox.setTextAppearance(R.style.TextAppearance_AppCompat_Large);
         }
-        checkBox.setTextColor(ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor));
-        removeButton.setColorFilter(ViewUtils.getColorFromAttribute(this, R.attr.iconPlaceHolder));
+        checkBox.setTextColor(ViewUtils.getColorFromAttribute(R.attr.primaryTextColor));
+        removeButton.setColorFilter(ViewUtils.getColorFromAttribute(R.attr.iconPlaceHolder));
         mChecklistContainer.addView(checkBoxContainer);
         final JSONObject checklistObject = new JSONObject();
         try {

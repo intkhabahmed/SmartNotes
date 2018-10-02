@@ -189,15 +189,15 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     }
 
     private void showSnackBar(final Note note) {
-        Snackbar snackbar = Snackbar.make(mRootFrameLayout, "Note has been moved to trash", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+        Snackbar snackbar = Snackbar.make(mRootFrameLayout, getString(R.string.moved_to_trash), Snackbar.LENGTH_LONG);
+        snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NoteRepository.getInstance().recoverNoteFromTrash(note);
-                Snackbar.make(mRootFrameLayout, "Note Restored", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mRootFrameLayout, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(R.attr.colorAccent));
         snackbar.show();
     }
 

@@ -14,11 +14,8 @@ public class Note implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int noteId;
     @ColumnInfo(name = "title")
-    @NonNull
     private String noteTitle;
-    @NonNull
     private String description;
-    @NonNull
     private String noteType;
     private long dateCreated;
     private long dateModified;
