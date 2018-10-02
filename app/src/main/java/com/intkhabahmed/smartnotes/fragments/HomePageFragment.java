@@ -1,9 +1,8 @@
 package com.intkhabahmed.smartnotes.fragments;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,7 +17,8 @@ import android.widget.ProgressBar;
 
 import com.intkhabahmed.smartnotes.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.R;
-import com.intkhabahmed.smartnotes.notesdata.NotesContract;
+import com.intkhabahmed.smartnotes.utils.AppConstants;
+import com.intkhabahmed.smartnotes.utils.Global;
 
 public class HomePageFragment extends Fragment {
 
@@ -30,12 +30,12 @@ public class HomePageFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.home_page_layout, container, false);
     }
 
     @Override
-    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mProgressBar = view.findViewById(R.id.progress_bar);
         mNotesFragmentPagerAdapter = new NotesFragmentPagerAdapter(getChildFragmentManager(), getActivity());
@@ -61,8 +61,7 @@ public class HomePageFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                int subMenuOrder = PreferenceManager.getDefaultSharedPreferences(getActivity()).getInt(getString(R.string.sort_criteria_id), 4);
-                menu.getItem(1).getSubMenu().getItem(subMenuOrder - 1).setChecked(true);
+                menu.getItem(1).getSubMenu().getItem(Global.getSortId() - 1).setChecked(true);
             }
         }, 0);
         super.onCreateOptionsMenu(menu, inflater);
@@ -85,7 +84,8 @@ public class HomePageFragment extends Fragment {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
-                    changeSortCriteria(getCriteriaString(item.getOrder()), item.getOrder());
+                    Global.setSortCriteriaAndSortId(getCriteriaString(item.getOrder()), item.getOrder());
+                    mNotesFragmentPagerAdapter.notifyDataSetChanged();
                 }
                 return true;
             default:
@@ -96,23 +96,15 @@ public class HomePageFragment extends Fragment {
     private String getCriteriaString(int order) {
         switch (order) {
             case 1:
-                return NotesContract.NotesEntry.COLUMN_TITLE + " ASC";
+                return AppConstants.COLUMN_TITLE_ASC;
             case 2:
-                return NotesContract.NotesEntry.COLUMN_TITLE + " DESC";
+                return AppConstants.COLUMN_TITLE_DESC;
             case 3:
-                return NotesContract.NotesEntry.COLUMN_DATE_CREATED + " ASC";
+                return AppConstants.COLUMN_DATE_CREATED_ASC;
             case 4:
-                return NotesContract.NotesEntry.COLUMN_DATE_CREATED + " DESC";
+                return AppConstants.COLUMN_DATE_CREATED_DESC;
             default:
                 return null;
         }
-    }
-
-    private void changeSortCriteria(String criteria, int subMenuOrder) {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-        editor.putString(getString(R.string.sort_criteria), criteria);
-        editor.putInt(getString(R.string.sort_criteria_id), subMenuOrder);
-        editor.apply();
-        mNotesFragmentPagerAdapter.notifyDataSetChanged();
     }
 }

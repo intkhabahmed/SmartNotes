@@ -1,11 +1,9 @@
 package com.intkhabahmed.smartnotes;
 
 import android.Manifest;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,7 +29,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.intkhabahmed.smartnotes.notesdata.NotesContract;
+import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
@@ -50,7 +50,7 @@ public class AddImageNote extends AppCompatActivity {
     private Bitmap mResultBitmap;
     private Button mChangeImageButton;
     private boolean mIsChanged;
-    private long mNoteId;
+    private Note mNote;
     private boolean mIsEditing;
     private boolean mIsImageChanged;
     private String mOldDescription;
@@ -109,22 +109,13 @@ public class AddImageNote extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             mIsEditing = true;
-            mNoteId = intent.getLongExtra(Intent.EXTRA_TEXT, 0);
-            if (mNoteId > 0) {
-                Cursor cursor = getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI,
-                        new String[]{NotesContract.NotesEntry.COLUMN_TITLE, NotesContract.NotesEntry.COLUMN_DESCRIPTION},
-                        NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(mNoteId)}, null);
-                if (cursor != null) {
-                    cursor.moveToFirst();
-                    String title = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
-                    String description = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
-                    mNoteTitleEditText.setText(title);
-                    mOldDescription = description;
-                    File image = new File(description);
-                    if (image.exists()) {
-                        Glide.with(this).asDrawable().load(Uri.fromFile(image)).into(mImageView);
-                    }
-                    cursor.close();
+            mNote = intent.getParcelableExtra(Intent.EXTRA_TEXT);
+            if (mNote != null) {
+                mNoteTitleEditText.setText(mNote.getNoteTitle());
+                mOldDescription = mNote.getDescription();
+                File image = new File(mNote.getDescription());
+                if (image.exists()) {
+                    Glide.with(this).asDrawable().load(Uri.fromFile(image)).into(mImageView);
                 }
             }
             mChangeImageButton.setVisibility(View.VISIBLE);
@@ -224,7 +215,7 @@ public class AddImageNote extends AppCompatActivity {
         if (mBackupTempImagePath != null && new File(mBackupTempImagePath).exists()) {
             BitmapUtils.deleteImageFile(this, mBackupTempImagePath);
         }
-        if(mIsImageChanged) {
+        if (mIsImageChanged) {
             BitmapUtils.deleteImageFile(this, mOldDescription);
         }
     }
@@ -272,29 +263,50 @@ public class AddImageNote extends AppCompatActivity {
             Toast.makeText(this, "Please select an image for your note", Toast.LENGTH_LONG).show();
             return;
         }
-        ContentValues values = new ContentValues();
-        values.put(NotesContract.NotesEntry.COLUMN_TITLE, noteTitle);
-        values.put(NotesContract.NotesEntry.COLUMN_DESCRIPTION, saveImageToStorage());
+
+        final Note note = mIsEditing ? mNote : new Note();
+        note.setNoteTitle(noteTitle);
+        note.setDescription(saveImageToStorage());
+
         if (!mIsEditing) {
-            values.put(NotesContract.NotesEntry.COLUMN_TYPE, getString(R.string.image_note));
-            values.put(NotesContract.NotesEntry.COLUMN_DATE_CREATED, System.currentTimeMillis());
-            Uri uri = getContentResolver().insert(NotesContract.NotesEntry.CONTENT_URI, values);
-            if (uri != null) {
-                Toast.makeText(this, "Note created successfully!", Toast.LENGTH_LONG).show();
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                return;
-            }
+            note.setNoteType(getString(R.string.image_note));
+            note.setDateCreated(System.currentTimeMillis());
+            note.setDateModified(0);
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    final long noteId = NoteRepository.getInstance().insertNote(note);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (noteId > 0) {
+                                Toast.makeText(AddImageNote.this, "Note created successfully!", Toast.LENGTH_LONG).show();
+                                finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            }
+                        }
+                    });
+                }
+            });
         }
+        note.setDateModified(System.currentTimeMillis());
         mIsImageChanged = true;
-        values.put(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED, System.currentTimeMillis());
-        int rowsUpdated = getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
-                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(mNoteId)});
-        if (rowsUpdated > 0) {
-            Toast.makeText(this, "Note updated successfully!", Toast.LENGTH_LONG).show();
-            finish();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        }
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                final int rowsUpdated = NoteRepository.getInstance().updateNote(note);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (rowsUpdated > 0) {
+                            Toast.makeText(AddImageNote.this, "Note updated successfully!", Toast.LENGTH_LONG).show();
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     public String saveImageToStorage() {

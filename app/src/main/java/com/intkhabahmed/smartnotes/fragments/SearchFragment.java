@@ -1,17 +1,15 @@
 package com.intkhabahmed.smartnotes.fragments;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -32,14 +30,17 @@ import com.intkhabahmed.smartnotes.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.NoteDetailActivity;
 import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
-import com.intkhabahmed.smartnotes.notesdata.NotesContract;
-import com.intkhabahmed.smartnotes.utils.DBUtils;
+import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
+import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
+import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
 
-public class SearchFragment extends Fragment implements NotesAdapter.OnItemClickListener, SearchView.OnQueryTextListener,
-        LoaderManager.LoaderCallbacks<Cursor> {
+import java.util.List;
 
-    private static final int SEARCH_NOTE_FRAGMENT_LOADER_ID = 4;
+public class SearchFragment extends Fragment implements NotesAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
+
     private NotesAdapter mNotesAdapter;
     private RecyclerView mRecyclerView;
     private LinearLayout mEmptyView;
@@ -53,27 +54,43 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.notes_recycler_view, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         mRootFrameLayout = view.findViewById(R.id.root_frame_layout);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.search_error_view);
 
-        mNotesAdapter = new NotesAdapter(getActivity(), null, this);
+        mNotesAdapter = new NotesAdapter(getActivity(), this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-        getLoaderManager().initLoader(SEARCH_NOTE_FRAGMENT_LOADER_ID, null, SearchFragment.this);
         if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(BUNDLE_EXTRA);
         }
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void setupViewModel() {
+        NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.simple_note), 0);
+        NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
+        notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(@Nullable List<Note> notes) {
+                if (notes != null && notes.size() > 0) {
+                    hideEmptyView();
+                    mNotesAdapter.setNotes(notes);
+                } else {
+                    mNotesAdapter.setNotes(null);
+                    showEmptyView();
+                }
+            }
+        });
     }
 
     @Override
@@ -117,31 +134,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     @Override
     public boolean onQueryTextChange(String query) {
         mFilterText = TextUtils.isEmpty(query) ? null : query;
-        getLoaderManager().restartLoader(SEARCH_NOTE_FRAGMENT_LOADER_ID, null, this);
         return true;
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri contentUri = NotesContract.NotesEntry.CONTENT_URI.buildUpon().appendPath("0").appendPath(mFilterText).build();
-        String sortOrder = NotesContract.NotesEntry.COLUMN_TITLE;
-        return new CursorLoader(getActivity(), contentUri, null,
-                null, null, sortOrder);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null && data.getCount() == 0) {
-            showEmptyView();
-        } else {
-            hideEmptyView();
-        }
-        mNotesAdapter.swapCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mNotesAdapter.swapCursor(null);
     }
 
     private void showEmptyView() {
@@ -158,7 +151,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     }
 
     @Override
-    public void onMenuItemClick(View view, final int noteId) {
+    public void onMenuItemClick(View view, final Note note) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -167,24 +160,12 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
-                        DBUtils.moveToTrash(getActivity(), noteId);
-                        showSnackBar(noteId);
-                        getLoaderManager().restartLoader(SEARCH_NOTE_FRAGMENT_LOADER_ID, null, SearchFragment.this);
+                        NoteRepository.getInstance().moveNoteToTrash(note);
+                        showSnackBar(note);
                         break;
                     case R.id.share_note:
-                        Cursor cursor = getActivity().getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI, new String[]{NotesContract.NotesEntry.COLUMN_DESCRIPTION},
-                                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(noteId)}, null);
-                        if (cursor != null) {
-                            cursor.moveToFirst();
-                            String noteDescription = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
-                            cursor.close();
-                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                            shareIntent.setType("text/plain");
-                            shareIntent.putExtra(Intent.EXTRA_TEXT, noteDescription);
-                            if (shareIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                                startActivity(shareIntent);
-                            }
-                        }
+                        String noteDescription = note.getDescription();
+                        NoteUtils.shareNote(getActivity(), noteDescription);
                         break;
                 }
                 return false;
@@ -194,36 +175,34 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     }
 
     @Override
-    public void onItemClick(int adapterPosition, Cursor cursor) {
-        cursor.moveToPosition(adapterPosition);
-        String noteType = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TYPE));
+    public void onItemClick(Note note) {
         Intent detailActivityIntent;
-        if (noteType.equals(getString(R.string.checklist))) {
+        if (note.getNoteType().equals(getString(R.string.checklist))) {
             detailActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
         } else {
             detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
-            detailActivityIntent.putExtra(getString(R.string.note_type), noteType);
+            detailActivityIntent.putExtra(getString(R.string.note_type), note.getNoteType());
         }
-        detailActivityIntent.putExtra(Intent.EXTRA_TEXT, cursor.getLong(cursor.getColumnIndex(NotesContract.NotesEntry._ID)));
+        detailActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
         startActivity(detailActivityIntent);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    private void showSnackBar(final int noteId) {
-        Snackbar snackbar = Snackbar.make(mRootFrameLayout, "Note has been moved to trash", Snackbar.LENGTH_LONG);
-        snackbar.setAction("Undo", new View.OnClickListener() {
+    private void showSnackBar(final Note note) {
+        Snackbar snackbar = Snackbar.make(mRootFrameLayout, getString(R.string.moved_to_trash), Snackbar.LENGTH_LONG);
+        snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DBUtils.restoreFromTrash(getActivity(), noteId);
-                Snackbar.make(mRootFrameLayout, "Note Restored", Snackbar.LENGTH_LONG).show();
+                NoteRepository.getInstance().recoverNoteFromTrash(note);
+                Snackbar.make(mRootFrameLayout, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(R.attr.colorAccent));
         snackbar.show();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(BUNDLE_EXTRA, mFilterText);
         super.onSaveInstanceState(outState);
     }

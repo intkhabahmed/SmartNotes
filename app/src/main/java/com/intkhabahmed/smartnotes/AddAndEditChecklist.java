@@ -1,11 +1,7 @@
 package com.intkhabahmed.smartnotes;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,12 +20,13 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.intkhabahmed.smartnotes.notesdata.NotesContract;
+import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 import org.json.JSONArray;
@@ -49,7 +46,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
     private JSONArray mChecklistArray;
     private EditText mChecklistTitleEditText;
     private boolean mIsEditing;
-    private long mNoteId;
+    private Note mNote;
     private HashSet<String> mUniqueChecklist;
     private boolean mIsChanged;
     private int mTrashed;
@@ -120,10 +117,9 @@ public class AddAndEditChecklist extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-            mNoteId = intent.getLongExtra(Intent.EXTRA_TEXT, 0);
+            mNote = intent.getParcelableExtra(Intent.EXTRA_TEXT);
             mIsEditing = true;
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
+            new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     populateChecklist();
@@ -158,8 +154,8 @@ public class AddAndEditChecklist extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             checkBox.setTextAppearance(R.style.TextAppearance_AppCompat_Large);
         }
-        checkBox.setTextColor(ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor));
-        removeButton.setColorFilter(ViewUtils.getColorFromAttribute(this, R.attr.iconPlaceHolder));
+        checkBox.setTextColor(ViewUtils.getColorFromAttribute(R.attr.primaryTextColor));
+        removeButton.setColorFilter(ViewUtils.getColorFromAttribute(R.attr.iconPlaceHolder));
         mChecklistContainer.addView(checkBoxContainer);
         final JSONObject checklistObject = new JSONObject();
         try {
@@ -265,31 +261,50 @@ public class AddAndEditChecklist extends AppCompatActivity {
             return;
         }
 
-        ContentValues values = new ContentValues();
-        values.put(NotesContract.NotesEntry.COLUMN_TITLE, checklistTitle);
-        values.put(NotesContract.NotesEntry.COLUMN_DESCRIPTION, checklistData);
+        final Note note = mIsEditing ? mNote : new Note();
+        note.setNoteTitle(checklistTitle);
+        note.setDescription(checklistData);
 
         if (!mIsEditing) {
-            values.put(NotesContract.NotesEntry.COLUMN_TYPE, getString(R.string.checklist));
-            values.put(NotesContract.NotesEntry.COLUMN_DATE_CREATED, System.currentTimeMillis());
-            values.put(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED, System.currentTimeMillis());
-            Uri uri = getContentResolver().insert(NotesContract.NotesEntry.CONTENT_URI, values);
-            if (uri != null) {
-                Toast.makeText(this, "Note created successfully!", Toast.LENGTH_LONG).show();
-                finish();
+            note.setNoteType(getString(R.string.checklist));
+            note.setDateCreated(System.currentTimeMillis());
+            note.setDateModified(0);
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    final long noteId = NoteRepository.getInstance().insertNote(note);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (noteId > 0) {
+                                Toast.makeText(AddAndEditChecklist.this, "Note created successfully!", Toast.LENGTH_LONG).show();
+                                finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        note.setDateModified(System.currentTimeMillis());
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                final int rowsUpdated = NoteRepository.getInstance().updateNote(note);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (rowsUpdated > 0) {
+                            Toast.makeText(AddAndEditChecklist.this, "Note updated successfully!", Toast.LENGTH_LONG).show();
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        }
+                    }
+                });
             }
-        }
-        values.put(NotesContract.NotesEntry.COLUMN_DATE_MODIFIED, System.currentTimeMillis());
-        int rowsUpdated = getContentResolver().update(NotesContract.NotesEntry.CONTENT_URI, values,
-                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(mNoteId)});
-        if (rowsUpdated > 0) {
-            Toast.makeText(this, "Note updated successfully!", Toast.LENGTH_LONG).show();
-            finish();
-        }
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        });
         mChecklistArray = null;
         mUniqueChecklist = null;
-
     }
 
     public static JSONArray remove(final int idx, final JSONArray from) {
@@ -316,22 +331,17 @@ public class AddAndEditChecklist extends AppCompatActivity {
     }
 
     public void populateChecklist() {
-        Cursor cursor = getContentResolver().query(NotesContract.NotesEntry.CONTENT_URI,
-                new String[]{NotesContract.NotesEntry.COLUMN_TITLE, NotesContract.NotesEntry.COLUMN_DESCRIPTION,
-                        NotesContract.NotesEntry.COLUMN_TRASH},
-                NotesContract.NotesEntry._ID + "=?", new String[]{String.valueOf(mNoteId)}, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            mTrashed = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TRASH));
+        if (mNote != null) {
+            mTrashed = mNote.getTrashed();
             if (mTrashed == 1) {
                 mChecklistTitleEditText.setEnabled(false);
                 mChecklistEditText.setVisibility(View.GONE);
                 mAddChecklistItemButton.setVisibility(View.GONE);
                 menuItem.setVisible(false);
             }
-            String title = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
+            String title = mNote.getNoteTitle();
             mChecklistTitleEditText.setText(title);
-            String description = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTION));
+            String description = mNote.getDescription();
 
             try {
                 JSONObject checklistObjects = new JSONObject(description);
@@ -350,7 +360,6 @@ public class AddAndEditChecklist extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            cursor.close();
         }
     }
 
