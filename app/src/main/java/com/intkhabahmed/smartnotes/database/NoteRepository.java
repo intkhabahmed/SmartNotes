@@ -3,6 +3,7 @@ package com.intkhabahmed.smartnotes.database;
 import android.arch.lifecycle.LiveData;
 
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.utils.AppConstants;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.Global;
 
@@ -22,7 +23,11 @@ public class NoteRepository {
     }
 
     public LiveData<List<Note>> getNotesByTypeAndAvailability(String type, int trashed) {
-        return Global.getDbInstance().notesDao().getNotesByTypeAndAvailability(type, trashed,
+        if (Global.getSortCriteria().contains(AppConstants.ASC)) {
+            return Global.getDbInstance().notesDao().getNotesByTypeAndAvailabilityInAscendingOrder(type, trashed,
+                    Global.getSortCriteria());
+        }
+        return Global.getDbInstance().notesDao().getNotesByTypeAndAvailabilityInDescendingOrder(type, trashed,
                 Global.getSortCriteria());
     }
 
@@ -34,12 +39,12 @@ public class NoteRepository {
         return Global.getDbInstance().notesDao().insertNote(note);
     }
 
-    public int updateNote (Note note) {
+    public int updateNote(Note note) {
         return Global.getDbInstance().notesDao().updateNote(note);
     }
 
-    public int deleteNote(Note note) {
-        return Global.getDbInstance().notesDao().deleteNote(note);
+    public void deleteNote(Note note) {
+        Global.getDbInstance().notesDao().deleteNote(note);
     }
 
     public void moveNoteToTrash(final Note note) {

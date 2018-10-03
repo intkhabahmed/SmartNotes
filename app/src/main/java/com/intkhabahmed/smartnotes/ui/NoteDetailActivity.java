@@ -1,4 +1,4 @@
-package com.intkhabahmed.smartnotes;
+package com.intkhabahmed.smartnotes.ui;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -10,9 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.fragments.ImageNotesDetailFragment;
 import com.intkhabahmed.smartnotes.fragments.SimpleNotesDetailFragment;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.utils.Global;
 
 public class NoteDetailActivity extends AppCompatActivity {
 
@@ -54,8 +56,7 @@ public class NoteDetailActivity extends AppCompatActivity {
     @Override
     public Resources.Theme getTheme() {
         Resources.Theme theme = super.getTheme();
-        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.dark_theme_key), false);
+        boolean isDarkThemeEnabled = Global.getDarkThemeStatus();
         if (isDarkThemeEnabled) {
             theme.applyStyle(R.style.AppThemeDark, true);
         } else {

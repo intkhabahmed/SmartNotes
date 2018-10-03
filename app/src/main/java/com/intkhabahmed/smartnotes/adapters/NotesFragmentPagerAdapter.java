@@ -1,10 +1,11 @@
-package com.intkhabahmed.smartnotes;
+package com.intkhabahmed.smartnotes.adapters;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.fragments.ChecklistFragment;
 import com.intkhabahmed.smartnotes.fragments.ImageNotesFragment;
 import com.intkhabahmed.smartnotes.fragments.SimpleNotesFragment;

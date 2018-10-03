@@ -1,4 +1,4 @@
-package com.intkhabahmed.smartnotes;
+package com.intkhabahmed.smartnotes.ui;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -24,9 +24,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
+import com.intkhabahmed.smartnotes.utils.Global;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 import org.json.JSONArray;
@@ -154,8 +156,8 @@ public class AddAndEditChecklist extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             checkBox.setTextAppearance(R.style.TextAppearance_AppCompat_Large);
         }
-        checkBox.setTextColor(ViewUtils.getColorFromAttribute(R.attr.primaryTextColor));
-        removeButton.setColorFilter(ViewUtils.getColorFromAttribute(R.attr.iconPlaceHolder));
+        checkBox.setTextColor(ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor));
+        removeButton.setColorFilter(ViewUtils.getColorFromAttribute(this, R.attr.iconPlaceHolder));
         mChecklistContainer.addView(checkBoxContainer);
         final JSONObject checklistObject = new JSONObject();
         try {
@@ -210,8 +212,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
     @Override
     public Resources.Theme getTheme() {
         Resources.Theme theme = super.getTheme();
-        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.dark_theme_key), false);
+        boolean isDarkThemeEnabled = Global.getDarkThemeStatus();
         if (isDarkThemeEnabled) {
             theme.applyStyle(R.style.AppThemeDark, true);
         } else {

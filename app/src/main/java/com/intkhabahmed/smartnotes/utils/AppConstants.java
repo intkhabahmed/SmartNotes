@@ -8,4 +8,5 @@ public interface AppConstants {
     String COLUMN_DATE_CREATED_DESC = "dateCreated DESC";
     String COLUMN_TITLE_ASC = "title ASC";
     String COLUMN_TITLE_DESC = "title DESC";
+    String ASC = "ASC";
 }

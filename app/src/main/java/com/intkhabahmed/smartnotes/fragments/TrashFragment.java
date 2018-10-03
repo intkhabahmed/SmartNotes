@@ -18,9 +18,9 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.intkhabahmed.smartnotes.AddAndEditChecklist;
-import com.intkhabahmed.smartnotes.NoteDetailActivity;
-import com.intkhabahmed.smartnotes.NotesAdapter;
+import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
+import com.intkhabahmed.smartnotes.ui.NoteDetailActivity;
+import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
@@ -68,7 +68,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
 
     private void setupViewModel() {
         mProgressBar.setVisibility(View.VISIBLE);
-        NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.simple_note), 0);
+        NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.simple_note), 1);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override

@@ -5,31 +5,30 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.intkhabahmed.smartnotes.MainActivity">
+    tools:context="com.intkhabahmed.smartnotes.ui.MainActivity">
 
     <FrameLayout
         android:id="@+id/root_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?android:actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:contentInsetStart="72dp"
-        app:titleTextColor="@android:color/white"
-        app:collapseIcon="@drawable/ic_arrow_white_black_24dp"
-        />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:collapseIcon="@drawable/ic_arrow_white_black_24dp"
+            app:contentInsetStart="72dp"
+            app:titleTextColor="@android:color/white" />
 
-            <FrameLayout
-                android:id="@+id/fragment_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="?android:actionBarSize"
-                app:layout_scrollFlags="scroll|enterAlways">
+        <FrameLayout
+            android:id="@+id/fragment_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?android:actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways">
 
-            </FrameLayout>
+        </FrameLayout>
 
     </FrameLayout>
 
@@ -38,10 +37,10 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/navigation_view_menu"
-        app:headerLayout="@layout/navigation_header"
         android:background="?attr/backgroundColor"
+        app:headerLayout="@layout/navigation_header"
         app:itemBackground="@drawable/navigation_drawer_item_selector"
         app:itemTextAppearance="@style/TextAppearance.AppCompat.Menu"
-        app:itemTextColor="?attr/primaryTextColor" />
+        app:itemTextColor="?attr/primaryTextColor"
+        app:menu="@menu/navigation_view_menu" />
 </android.support.v4.widget.DrawerLayout>

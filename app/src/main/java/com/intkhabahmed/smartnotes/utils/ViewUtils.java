@@ -45,8 +45,8 @@ public class ViewUtils {
         alertDialog.show();
     }
 
-    public static void showDeleteConfirmationDialog(DialogInterface.OnClickListener deleteButtonListener) {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Global.getInstance());
+    public static void showDeleteConfirmationDialog(Context context, DialogInterface.OnClickListener deleteButtonListener) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
         dialogBuilder.setPositiveButton(Global.getInstance().getString(R.string.yes), deleteButtonListener);
         dialogBuilder.setNegativeButton(Global.getInstance().getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
@@ -60,9 +60,9 @@ public class ViewUtils {
         alertDialog.show();
     }
 
-    public static int getColorFromAttribute(@AttrRes int attribute) {
+    public static int getColorFromAttribute(Context context, @AttrRes int attribute) {
         TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = Global.getInstance().getTheme();
+        Resources.Theme theme = context.getTheme();
         theme.resolveAttribute(attribute, typedValue, true);
         @ColorInt int color = typedValue.data;
         return color;
