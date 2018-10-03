@@ -1,4 +1,4 @@
-package com.intkhabahmed.smartnotes;
+package com.intkhabahmed.smartnotes.ui;
 
 import android.Manifest;
 import android.content.Intent;
@@ -29,10 +29,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
+import com.intkhabahmed.smartnotes.utils.Global;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 import java.io.File;
@@ -131,8 +133,7 @@ public class AddImageNote extends AppCompatActivity {
     @Override
     public Resources.Theme getTheme() {
         Resources.Theme theme = super.getTheme();
-        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.dark_theme_key), false);
+        boolean isDarkThemeEnabled = Global.getDarkThemeStatus();
         if (isDarkThemeEnabled) {
             theme.applyStyle(R.style.AppThemeDark, true);
         } else {

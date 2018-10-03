@@ -1,9 +1,8 @@
-package com.intkhabahmed.smartnotes;
+package com.intkhabahmed.smartnotes.ui;
 
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -15,9 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.fragments.HomePageFragment;
 import com.intkhabahmed.smartnotes.fragments.SettingsFragment;
 import com.intkhabahmed.smartnotes.fragments.TrashFragment;
+import com.intkhabahmed.smartnotes.utils.Global;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,14 +45,9 @@ public class MainActivity extends AppCompatActivity {
         mFragmentManager = getSupportFragmentManager();
         handler = new Handler();
         if (savedInstanceState == null) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_layout, new HomePageFragment())
-                            .commit();
-                }
-            }, 300);
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_layout, new HomePageFragment(), HomePageFragment.class.getSimpleName())
+                    .commit();
         }
     }
 
@@ -74,20 +70,20 @@ public class MainActivity extends AppCompatActivity {
                                 item.setChecked(true);
                                 mFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                 mFragmentManager.beginTransaction()
-                                        .replace(R.id.fragment_layout, new HomePageFragment())
+                                        .replace(R.id.fragment_layout, new HomePageFragment(), HomePageFragment.class.getSimpleName())
                                         .commit();
                                 break;
                             case R.id.trash:
                                 item.setChecked(true);
                                 mFragmentManager.beginTransaction()
-                                        .replace(R.id.fragment_layout, new TrashFragment())
+                                        .replace(R.id.fragment_layout, new TrashFragment(), TrashFragment.class.getSimpleName())
                                         .addToBackStack(null)
                                         .commit();
                                 break;
                             case R.id.settings:
                                 item.setChecked(true);
                                 mFragmentManager.beginTransaction()
-                                        .replace(R.id.fragment_layout, new SettingsFragment())
+                                        .replace(R.id.fragment_layout, new SettingsFragment(), SettingsFragment.class.getSimpleName())
                                         .addToBackStack(null)
                                         .commit();
                                 break;
@@ -102,8 +98,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public Resources.Theme getTheme() {
         final Resources.Theme theme = super.getTheme();
-        boolean isDarkThemeEnabled = PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
-                .getBoolean(getString(R.string.dark_theme_key), false);
+        boolean isDarkThemeEnabled = Global.getDarkThemeStatus();
         if (isDarkThemeEnabled) {
             theme.applyStyle(R.style.AppThemeDark, true);
         } else {

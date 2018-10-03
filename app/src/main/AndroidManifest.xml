@@ -17,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppThemeLight">
             <intent-filter>
@@ -37,22 +37,22 @@
         </provider>
 
         <activity
-            android:name=".AddSimpleNote"
-            android:parentActivityName=".MainActivity"
+            android:name=".ui.AddSimpleNote"
+            android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppThemeLight">
             <meta-data
                 android:name="com.android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".AddAndEditChecklist"
+            android:name=".ui.AddAndEditChecklist"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
         <activity
-            android:name=".NoteDetailActivity"
+            android:name=".ui.NoteDetailActivity"
             android:theme="@style/AppThemeLight" />
         <activity
-            android:name=".AddImageNote"
+            android:name=".ui.AddImageNote"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
     </application>

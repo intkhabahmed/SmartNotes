@@ -15,8 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.intkhabahmed.smartnotes.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.adapters.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.utils.AppConstants;
 import com.intkhabahmed.smartnotes.utils.Global;
 

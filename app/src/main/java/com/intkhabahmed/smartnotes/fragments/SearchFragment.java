@@ -26,9 +26,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
-import com.intkhabahmed.smartnotes.AddAndEditChecklist;
-import com.intkhabahmed.smartnotes.NoteDetailActivity;
-import com.intkhabahmed.smartnotes.NotesAdapter;
+import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
+import com.intkhabahmed.smartnotes.ui.NoteDetailActivity;
+import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
@@ -36,6 +36,8 @@ import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
+import com.intkhabahmed.smartnotes.viewmodels.SearchNotesViewModel;
+import com.intkhabahmed.smartnotes.viewmodels.SearchNotesViewModelFactory;
 
 import java.util.List;
 
@@ -73,12 +75,16 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         if (savedInstanceState != null) {
             mFilterText = savedInstanceState.getString(BUNDLE_EXTRA);
         }
+        setupViewModel(false);
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void setupViewModel() {
-        NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.simple_note), 0);
-        NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
+    private void setupViewModel(boolean isQueryChanged) {
+        SearchNotesViewModelFactory factory = new SearchNotesViewModelFactory(mFilterText, 0);
+        SearchNotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(SearchNotesViewModel.class);
+        if (isQueryChanged) {
+            notesViewModel.setNotes(mFilterText, 0);
+        }
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
@@ -134,6 +140,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     @Override
     public boolean onQueryTextChange(String query) {
         mFilterText = TextUtils.isEmpty(query) ? null : query;
+        setupViewModel(true);
         return true;
     }
 
@@ -197,7 +204,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
                 Snackbar.make(mRootFrameLayout, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
         snackbar.show();
     }
 

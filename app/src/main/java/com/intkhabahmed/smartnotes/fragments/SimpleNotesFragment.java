@@ -20,9 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
-import com.intkhabahmed.smartnotes.AddSimpleNote;
-import com.intkhabahmed.smartnotes.NoteDetailActivity;
-import com.intkhabahmed.smartnotes.NotesAdapter;
+import com.intkhabahmed.smartnotes.ui.AddSimpleNote;
+import com.intkhabahmed.smartnotes.ui.NoteDetailActivity;
+import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
@@ -76,13 +76,16 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
                 getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
-        setupViewModel();
+        setupViewModel(false);
     }
 
-    private void setupViewModel() {
+    private void setupViewModel(boolean isSortCriteriaChanged) {
         mProgressBar.setVisibility(View.VISIBLE);
         NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.simple_note), 0);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
+        if (isSortCriteriaChanged) {
+            notesViewModel.setNotes(getString(R.string.simple_note), 0);
+        }
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
@@ -105,6 +108,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     }
 
     public void updateSimpleNotesFragment() {
+        setupViewModel(true);
     }
 
     @Override
@@ -133,7 +137,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
                                 showSnackBar(note);
                             }
                         };
-                        ViewUtils.showDeleteConfirmationDialog(deleteListener);
+                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
                         break;
                     case R.id.share_note:
                         NoteUtils.shareNote(getActivity(), note.getDescription());
@@ -154,7 +158,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
                 Snackbar.make(mAddButton, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
         snackbar.show();
     }
 }

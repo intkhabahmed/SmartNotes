@@ -1,4 +1,4 @@
-package com.intkhabahmed.smartnotes;
+package com.intkhabahmed.smartnotes.adapters;
 
 import android.content.Context;
 import android.net.Uri;
@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
+import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 

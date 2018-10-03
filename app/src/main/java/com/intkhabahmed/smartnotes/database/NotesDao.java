@@ -15,8 +15,19 @@ import java.util.List;
 @Dao
 interface NotesDao {
 
-    @Query("SELECT * FROM notes WHERE noteType = :type AND trash = :trashed ORDER BY :sortOrder")
-    LiveData<List<Note>> getNotesByTypeAndAvailability(String type, int trashed, String sortOrder);
+    @Query("SELECT * FROM notes WHERE noteType = :type AND trash = :trashed ORDER BY " +
+            "CASE :sortOrder " +
+            "WHEN 'dateCreated ASC' THEN dateCreated " +
+            "WHEN 'title ASC' THEN title " +
+            "END ASC")
+    LiveData<List<Note>> getNotesByTypeAndAvailabilityInAscendingOrder(String type, int trashed, String sortOrder);
+
+    @Query("SELECT * FROM notes WHERE noteType = :type AND trash = :trashed ORDER BY " +
+            "CASE :sortOrder " +
+            "WHEN 'dateCreated DESC' THEN dateCreated " +
+            "WHEN 'title DESC' THEN title " +
+            "END DESC")
+    LiveData<List<Note>> getNotesByTypeAndAvailabilityInDescendingOrder(String type, int trashed, String sortOrder);
 
     @Query("SELECT * FROM notes WHERE title LIKE '%' || :title || '%' AND trash = :trashed")
     LiveData<List<Note>> getNotesByTitleAndAvailability(String title, int trashed);
@@ -28,5 +39,5 @@ interface NotesDao {
     int updateNote(Note note);
 
     @Delete
-    int deleteNote(Note note);
+    void deleteNote(Note note);
 }
