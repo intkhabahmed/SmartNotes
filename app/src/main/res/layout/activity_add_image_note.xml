@@ -29,6 +29,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:hint="@string/note_title"
             android:textColorHint="?attr/secondaryTextColor"
             app:hintTextAppearance="?attr/hintColor"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +42,6 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/edit_text_background"
                 android:ems="10"
-                android:hint="@string/note_title"
                 android:inputType="text|textPersonName"
                 android:padding="16dp"
                 android:textColor="?attr/primaryTextColor" />

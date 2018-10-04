@@ -32,6 +32,9 @@ interface NotesDao {
     @Query("SELECT * FROM notes WHERE title LIKE '%' || :title || '%' AND trash = :trashed")
     LiveData<List<Note>> getNotesByTitleAndAvailability(String title, int trashed);
 
+    @Query("SELECT * FROM notes WHERE _ID = :id")
+    LiveData<Note> getNoteById(int id);
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insertNote(Note note);
 

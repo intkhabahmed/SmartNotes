@@ -28,6 +28,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:hint="@string/checklist_item"
             android:textColorHint="?attr/secondaryTextColor"
             app:hintTextAppearance="?attr/hintColor"
             app:layout_constraintEnd_toStartOf="@+id/add_checklist_button"
@@ -42,7 +43,6 @@
                 android:layout_alignParentLeft="true"
                 android:layout_margin="0dp"
                 android:background="@drawable/edit_text_background"
-                android:hint="@string/checklist_item"
                 android:inputType="textPersonName"
                 android:padding="16dp"
                 android:textColor="?attr/primaryTextColor" />
@@ -70,6 +70,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:hint="@string/checklist_title"
             android:textColorHint="?attr/secondaryTextColor"
             app:hintTextAppearance="?attr/hintColor"
             app:layout_constraintEnd_toEndOf="parent"
@@ -85,7 +86,6 @@
                 android:layout_marginLeft="8dp"
                 android:background="@drawable/edit_text_background"
                 android:ems="10"
-                android:hint="@string/checklist_title"
                 android:inputType="textPersonName"
                 android:padding="16dp"
                 android:textColor="?attr/primaryTextColor" />

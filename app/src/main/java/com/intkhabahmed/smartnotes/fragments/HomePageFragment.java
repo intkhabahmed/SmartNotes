@@ -47,6 +47,7 @@ public class HomePageFragment extends Fragment {
                 ViewPager viewPager = view.findViewById(R.id.view_pager);
                 TabLayout tabLayout = view.findViewById(R.id.tab_layout);
                 viewPager.setAdapter(mNotesFragmentPagerAdapter);
+                viewPager.setOffscreenPageLimit(2);
                 tabLayout.setupWithViewPager(viewPager, true);
                 mProgressBar.setVisibility(View.INVISIBLE);
             }
@@ -57,13 +58,7 @@ public class HomePageFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                menu.getItem(1).getSubMenu().getItem(Global.getSortId() - 1).setChecked(true);
-            }
-        }, 0);
+        menu.getItem(1).getSubMenu().getItem(Global.getSortId() - 1).setChecked(true);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

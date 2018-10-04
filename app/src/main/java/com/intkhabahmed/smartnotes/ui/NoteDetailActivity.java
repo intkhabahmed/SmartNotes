@@ -1,5 +1,6 @@
 package com.intkhabahmed.smartnotes.ui;
 
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.fragments.ImageNotesDetailFragment;
 import com.intkhabahmed.smartnotes.fragments.SimpleNotesDetailFragment;
 import com.intkhabahmed.smartnotes.models.Note;
@@ -68,19 +70,30 @@ public class NoteDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mNote.getNoteType().equals(getString(R.string.simple_note))) {
-            SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
-            simpleNotesDetailFragment.setNote(mNote);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.detail_activity_container, simpleNotesDetailFragment)
-                    .commit();
-        } else if (mNote.getNoteType().equals(getString(R.string.image_note))) {
-            ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
-            imageNotesDetailFragment.setNote(mNote);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.detail_activity_container, imageNotesDetailFragment)
-                    .commit();
-        }
+        NoteRepository.getInstance().getNoteById(mNote.getNoteId()).observe(this, new Observer<Note>() {
+            @Override
+            public void onChanged(@Nullable Note note) {
+                mNote = note;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mNote.getNoteType().equals(getString(R.string.simple_note))) {
+                            SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
+                            simpleNotesDetailFragment.setNote(mNote);
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.detail_activity_container, simpleNotesDetailFragment)
+                                    .commit();
+                        } else if (mNote.getNoteType().equals(getString(R.string.image_note))) {
+                            ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
+                            imageNotesDetailFragment.setNote(mNote);
+                            getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.detail_activity_container, imageNotesDetailFragment)
+                                    .commit();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     @Override

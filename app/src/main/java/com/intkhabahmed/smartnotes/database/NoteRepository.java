@@ -66,4 +66,8 @@ public class NoteRepository {
             }
         });
     }
+
+    public LiveData<Note> getNoteById(int noteId) {
+        return Global.getDbInstance().notesDao().getNoteById(noteId);
+    }
 }
