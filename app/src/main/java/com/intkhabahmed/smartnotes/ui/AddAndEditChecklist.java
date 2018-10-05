@@ -2,10 +2,10 @@ package com.intkhabahmed.smartnotes.ui;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -151,6 +151,9 @@ public class AddAndEditChecklist extends AppCompatActivity {
         checkBox.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         checkBox.setText(checklistItem);
         checkBox.setChecked(checked);
+        if (checked) {
+            checkBox.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
         checkBoxContainer.addView(removeButton, 0);
         checkBoxContainer.addView(checkBox, 1);
         if (Build.VERSION.SDK_INT >= 23) {
@@ -170,6 +173,11 @@ public class AddAndEditChecklist extends AppCompatActivity {
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if (b) {
+                        checkBox.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                    } else {
+                        checkBox.setPaintFlags(0);
+                    }
                     checklistObject.remove(IS_LIST_CHECKED);
                     mIsChanged = true;
                     try {

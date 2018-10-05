@@ -1,5 +1,6 @@
 package com.intkhabahmed.smartnotes.fragments;
 
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,15 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.intkhabahmed.smartnotes.ui.AddSimpleNote;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.ui.AddSimpleNote;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 
 public class SimpleNotesDetailFragment extends Fragment {
 
     private Note mNote;
     private static final String BUNDLE_DATA = "bundle-data";
+    private TextView noteTitleTextView;
+    private TextView noteDescriptionTextView;
+    private TextView noteCreatedDateTextView;
+    private TextView noteModifiedDateTextView;
+    private FloatingActionButton editButton;
 
 
     public SimpleNotesDetailFragment() {
@@ -47,15 +54,19 @@ public class SimpleNotesDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView noteTitleTextView = view.findViewById(R.id.tv_note_title);
-        TextView noteDescriptionTextView = view.findViewById(R.id.tv_note_desciption);
-        TextView noteCreatedDateTextView = view.findViewById(R.id.tv_date_created);
-        TextView noteModifiedDateTextView = view.findViewById(R.id.tv_date_modified);
+        noteTitleTextView = view.findViewById(R.id.tv_note_title);
+        noteDescriptionTextView = view.findViewById(R.id.tv_note_desciption);
+        noteCreatedDateTextView = view.findViewById(R.id.tv_date_created);
+        noteModifiedDateTextView = view.findViewById(R.id.tv_date_modified);
+        editButton = view.findViewById(R.id.edit_note_button);
+        setupUI();
+    }
+
+    private void setupUI() {
         noteTitleTextView.setText(mNote.getNoteTitle());
         noteDescriptionTextView.setText(mNote.getDescription());
         noteCreatedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
         noteModifiedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
-        FloatingActionButton editButton = view.findViewById(R.id.edit_note_button);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,6 +74,18 @@ public class SimpleNotesDetailFragment extends Fragment {
                 intent.putExtra(Intent.EXTRA_TEXT, mNote);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        NoteRepository.getInstance().getNoteById(mNote.getNoteId()).observe(this, new Observer<Note>() {
+            @Override
+            public void onChanged(@Nullable Note note) {
+                mNote = note;
+                setupUI();
             }
         });
     }

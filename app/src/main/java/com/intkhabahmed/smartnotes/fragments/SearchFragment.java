@@ -26,16 +26,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
-import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
-import com.intkhabahmed.smartnotes.ui.NoteDetailActivity;
-import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
-import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
-import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
 import com.intkhabahmed.smartnotes.viewmodels.SearchNotesViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.SearchNotesViewModelFactory;
 
@@ -183,16 +180,28 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     @Override
     public void onItemClick(Note note) {
-        Intent detailActivityIntent;
         if (note.getNoteType().equals(getString(R.string.checklist))) {
-            detailActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
+            Intent detailActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
+            detailActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
+            startActivity(detailActivityIntent);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        } else if (note.getNoteType().equals(getString(R.string.image_note))) {
+            ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
+            imageNotesDetailFragment.setNote(note);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .replace(R.id.fragment_layout, imageNotesDetailFragment)
+                    .commit();
         } else {
-            detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
-            detailActivityIntent.putExtra(getString(R.string.note_type), note.getNoteType());
+            SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
+            simpleNotesDetailFragment.setNote(note);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .replace(R.id.fragment_layout, simpleNotesDetailFragment)
+                    .commit();
         }
-        detailActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
-        startActivity(detailActivityIntent);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     private void showSnackBar(final Note note) {

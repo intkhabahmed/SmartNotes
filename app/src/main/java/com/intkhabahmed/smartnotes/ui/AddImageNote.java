@@ -216,7 +216,7 @@ public class AddImageNote extends AppCompatActivity {
         if (mBackupTempImagePath != null && new File(mBackupTempImagePath).exists()) {
             BitmapUtils.deleteImageFile(this, mBackupTempImagePath);
         }
-        if (mIsImageChanged) {
+        if (mIsImageChanged && !mOldDescription.isEmpty()) {
             BitmapUtils.deleteImageFile(this, mOldDescription);
         }
     }
@@ -252,7 +252,7 @@ public class AddImageNote extends AppCompatActivity {
 
     private void insertImageNote() {
         String noteTitle = mNoteTitleEditText.getText().toString().trim();
-        if (!noteTitle.matches("[A-Za-z0-9]+") || noteTitle.matches("[0-9]+")) {
+        if (!noteTitle.matches("[A-Za-z0-9 ]+") || noteTitle.matches("[0-9 ]+")) {
             Toast.makeText(this, "Title can only contain characters or characters and numbers", Toast.LENGTH_LONG).show();
             return;
         }

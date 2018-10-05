@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.intkhabahmed.smartnotes.ui.AddImageNote;
-import com.intkhabahmed.smartnotes.ui.NoteDetailActivity;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
@@ -109,11 +108,13 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
 
     @Override
     public void onItemClick(Note note) {
-        Intent detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
-        detailActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
-        detailActivityIntent.putExtra(getString(R.string.note_type), note.getNoteType());
-        startActivity(detailActivityIntent);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
+        imageNotesDetailFragment.setNote(note);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fragment_layout, imageNotesDetailFragment)
+                .commit();
     }
 
     @Override

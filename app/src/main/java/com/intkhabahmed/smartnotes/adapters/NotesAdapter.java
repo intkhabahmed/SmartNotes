@@ -1,6 +1,7 @@
 package com.intkhabahmed.smartnotes.adapters;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -72,10 +73,10 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 textNotesViewHolder.noteDescriptionTextView.setText("");
                 if (noteType.equals(mContext.getString(R.string.simple_note))) {
                     StringBuilder description = new StringBuilder(note.getDescription());
-                    if (description.length() > 30) {
+                    /*if (description.length() > 30) {
                         description.delete(30, description.length());
                         description.append(" ...");
-                    }
+                    }*/
                     textNotesViewHolder.noteDescriptionTextView.setText(description);
                 } else if (noteType.equals(mContext.getString(R.string.checklist))) {
                     String description = note.getDescription();
