@@ -29,6 +29,9 @@ interface NotesDao {
             "END DESC")
     LiveData<List<Note>> getNotesByTypeAndAvailabilityInDescendingOrder(String type, int trashed, String sortOrder);
 
+    @Query("SELECT * FROM notes WHERE trash = :trashed")
+    LiveData<List<Note>> getNotesByAvailability(int trashed);
+
     @Query("SELECT * FROM notes WHERE title LIKE '%' || :title || '%' AND trash = :trashed")
     LiveData<List<Note>> getNotesByTitleAndAvailability(String title, int trashed);
 

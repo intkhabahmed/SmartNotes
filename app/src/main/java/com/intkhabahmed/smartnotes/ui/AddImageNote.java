@@ -159,7 +159,7 @@ public class AddImageNote extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     launchCamera();
                 } else {
-                    Toast.makeText(this, "Storage Permission Denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.storage_permission_error), Toast.LENGTH_LONG).show();
                 }
         }
     }
@@ -253,15 +253,15 @@ public class AddImageNote extends AppCompatActivity {
     private void insertImageNote() {
         String noteTitle = mNoteTitleEditText.getText().toString().trim();
         if (!noteTitle.matches("[A-Za-z0-9 ]+") || noteTitle.matches("[0-9 ]+")) {
-            Toast.makeText(this, "Title can only contain characters or characters and numbers", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.title_regex_error), Toast.LENGTH_LONG).show();
             return;
         }
         if (TextUtils.isEmpty(noteTitle)) {
-            Toast.makeText(this, "Please enter a title of your note", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.empty_title_error), Toast.LENGTH_LONG).show();
             return;
         }
         if (mResultBitmap == null) {
-            Toast.makeText(this, "Please select an image for your note", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.empty_image_error), Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -281,7 +281,7 @@ public class AddImageNote extends AppCompatActivity {
                         @Override
                         public void run() {
                             if (noteId > 0) {
-                                Toast.makeText(AddImageNote.this, "Note created successfully!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(AddImageNote.this, getString(R.string.note_created_msg), Toast.LENGTH_LONG).show();
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             }
@@ -300,7 +300,7 @@ public class AddImageNote extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (rowsUpdated > 0) {
-                            Toast.makeText(AddImageNote.this, "Note updated successfully!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AddImageNote.this, getString(R.string.note_updated_msg), Toast.LENGTH_LONG).show();
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         }

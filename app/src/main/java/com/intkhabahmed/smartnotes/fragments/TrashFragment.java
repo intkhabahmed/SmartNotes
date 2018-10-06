@@ -67,7 +67,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
 
     private void setupViewModel() {
         mProgressBar.setVisibility(View.VISIBLE);
-        NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.simple_note), 1);
+        NotesViewModelFactory factory = new NotesViewModelFactory(null, 1);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override

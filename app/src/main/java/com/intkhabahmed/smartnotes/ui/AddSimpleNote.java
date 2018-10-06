@@ -117,7 +117,7 @@ public class AddSimpleNote extends AppCompatActivity {
         String noteDescription = mNoteDescriptionEditText.getText().toString().trim();
 
         if (TextUtils.isEmpty(noteTitle) || TextUtils.isEmpty(noteDescription)) {
-            Toast.makeText(this, "All fields are mandatory", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.mandatory_fields_error), Toast.LENGTH_LONG).show();
             return;
         }
         final Note note = mIsEditing ? mNote : new Note();
@@ -136,7 +136,7 @@ public class AddSimpleNote extends AppCompatActivity {
                         @Override
                         public void run() {
                             if (noteId > 0) {
-                                Toast.makeText(AddSimpleNote.this, "Note created successfully!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(AddSimpleNote.this, getString(R.string.note_created_msg), Toast.LENGTH_LONG).show();
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             }
@@ -154,7 +154,7 @@ public class AddSimpleNote extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (rowsUpdated > 0) {
-                            Toast.makeText(AddSimpleNote.this, "Note updated successfully!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AddSimpleNote.this, getString(R.string.note_updated_msg), Toast.LENGTH_LONG).show();
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         }

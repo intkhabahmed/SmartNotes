@@ -1,6 +1,7 @@
 package com.intkhabahmed.smartnotes.database;
 
 import android.arch.lifecycle.LiveData;
+import android.text.TextUtils;
 
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.AppConstants;
@@ -23,6 +24,9 @@ public class NoteRepository {
     }
 
     public LiveData<List<Note>> getNotesByTypeAndAvailability(String type, int trashed) {
+        if (TextUtils.isEmpty(type)) {
+            return Global.getDbInstance().notesDao().getNotesByAvailability(trashed);
+        }
         if (Global.getSortCriteria().contains(AppConstants.ASC)) {
             return Global.getDbInstance().notesDao().getNotesByTypeAndAvailabilityInAscendingOrder(type, trashed,
                     Global.getSortCriteria());

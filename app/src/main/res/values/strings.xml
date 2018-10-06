@@ -65,4 +65,17 @@
     <string name="undo">Undo</string>
     <string name="restored">Restored from trash</string>
     <string name="deleted_permanently">Deleted Permanently</string>
+    <string name="items">Items:</string>
+    <string name="duplicate_entry_error">Duplicate Entry is not allowed</string>
+    <string name="empty_item_error">Item cannot be empty</string>
+    <string name="empty_task_error">Task cannot be empty</string>
+    <string name="empty_task_list_error">You need to add at least one task</string>
+    <string name="list_title_error">You should give a title to your list</string>
+    <string name="note_created_msg">Note created successfully!</string>
+    <string name="note_updated_msg">Note updated successfully!</string>
+    <string name="mandatory_fields_error">All fields are mandatory</string>
+    <string name="storage_permission_error">Storage Permission Denied</string>
+    <string name="title_regex_error">Title can only contain characters or characters and numbers</string>
+    <string name="empty_title_error">Please enter a title of your note</string>
+    <string name="empty_image_error">Please select an image for your note</string>
 </resources>

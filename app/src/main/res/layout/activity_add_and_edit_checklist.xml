@@ -91,16 +91,29 @@
                 android:textColor="?attr/primaryTextColor" />
         </android.support.design.widget.TextInputLayout>
 
+        <TextView
+            android:id="@+id/items_label_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/items"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            app:layout_constraintEnd_toEndOf="@+id/noteItemInputLayout"
+            app:layout_constraintStart_toStartOf="@+id/noteItemInputLayout"
+            app:layout_constraintTop_toBottomOf="@+id/noteItemInputLayout" />
+
         <android.support.v4.widget.NestedScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noteItemInputLayout">
+            app:layout_constraintTop_toBottomOf="@+id/items_label_tv">
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
