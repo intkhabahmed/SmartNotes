@@ -18,14 +18,17 @@ import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.fragments.HomePageFragment;
 import com.intkhabahmed.smartnotes.fragments.SettingsFragment;
 import com.intkhabahmed.smartnotes.fragments.TrashFragment;
+import com.intkhabahmed.smartnotes.utils.CurrentFragmentListener;
 import com.intkhabahmed.smartnotes.utils.Global;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CurrentFragmentListener {
 
+    private static final String BUNDLE_EXTRA = "bundle-extra";
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
     private FragmentManager mFragmentManager;
     private Handler handler;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        NavigationView navigationView = findViewById(R.id.navigation_view);
+        navigationView = findViewById(R.id.navigation_view);
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -95,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public CurrentFragmentListener getCurrentFragmentListener() {
+        return this;
+    }
+
     @Override
     public Resources.Theme getTheme() {
         final Resources.Theme theme = super.getTheme();
@@ -122,12 +129,30 @@ public class MainActivity extends AppCompatActivity {
             mDrawerLayout.closeDrawer(GravityCompat.START);
             return;
         }
+        HomePageFragment homePageFragment = (HomePageFragment) mFragmentManager.findFragmentByTag(HomePageFragment.class.getSimpleName());
+        if (homePageFragment != null && homePageFragment.isVisible()) {
+            if (!homePageFragment.isFirstViewPagerPage()) {
+                homePageFragment.getViewPager().setCurrentItem(0);
+                return;
+            }
+        }
         super.onBackPressed();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("bundle-extra", 1);
+        outState.putInt(BUNDLE_EXTRA, 1);
+    }
+
+    @Override
+    public void setCurrentFragment(String fragmentName) {
+        if (fragmentName.equals(HomePageFragment.class.getSimpleName())) {
+            navigationView.getMenu().getItem(0).setChecked(true);
+        } else if (fragmentName.equals(TrashFragment.class.getSimpleName())) {
+            navigationView.getMenu().getItem(1).setChecked(true);
+        } else if (fragmentName.equals(SettingsFragment.class.getSimpleName())) {
+            navigationView.getMenu().getItem(2).setChecked(true);
+        }
     }
 }

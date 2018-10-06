@@ -9,4 +9,5 @@ public interface AppConstants {
     String COLUMN_TITLE_ASC = "title ASC";
     String COLUMN_TITLE_DESC = "title DESC";
     String ASC = "ASC";
+    String FRAGMENT_LISTENER = "fragment listener";
 }

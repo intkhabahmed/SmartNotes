@@ -23,8 +23,10 @@ import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
+import com.intkhabahmed.smartnotes.ui.MainActivity;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
+import com.intkhabahmed.smartnotes.utils.CurrentFragmentListener;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
@@ -39,6 +41,11 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     private ProgressBar mProgressBar;
 
     public TrashFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -82,6 +89,13 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        CurrentFragmentListener listener = ((MainActivity) getActivity()).getCurrentFragmentListener();
+        listener.setCurrentFragment(TrashFragment.class.getSimpleName());
     }
 
     @Override
