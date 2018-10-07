@@ -1,12 +1,15 @@
 package com.intkhabahmed.smartnotes.ui;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -154,6 +157,17 @@ public class AddAndEditChecklist extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             checkBox.setTextAppearance(R.style.TextAppearance_AppCompat_Large);
         }
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked}, // unchecked
+                        new int[]{android.R.attr.state_checked} , // checked
+                },
+                new int[]{
+                        ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor),
+                        ViewUtils.getColorFromAttribute(this, R.attr.colorAccent),
+                }
+        );
+        CompoundButtonCompat.setButtonTintList(checkBox,colorStateList);
         checkBox.setTextColor(ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor));
         removeButton.setColorFilter(ViewUtils.getColorFromAttribute(this, R.attr.iconPlaceHolder));
         mChecklistContainer.addView(checkBoxContainer);

@@ -32,6 +32,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:singleLine="true"
+            android:ellipsize="marquee"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textColor="?attr/primaryTextColor"
             app:layout_constraintBottom_toTopOf="@+id/tv_note_date_created"

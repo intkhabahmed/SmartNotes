@@ -216,7 +216,7 @@ public class AddImageNote extends AppCompatActivity {
         if (mBackupTempImagePath != null && new File(mBackupTempImagePath).exists()) {
             BitmapUtils.deleteImageFile(this, mBackupTempImagePath);
         }
-        if (mIsImageChanged && !mOldDescription.isEmpty()) {
+        if (mIsImageChanged && !TextUtils.isEmpty(mOldDescription)) {
             BitmapUtils.deleteImageFile(this, mOldDescription);
         }
     }

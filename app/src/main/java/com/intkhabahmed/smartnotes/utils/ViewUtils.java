@@ -9,6 +9,7 @@ import android.support.annotation.ColorInt;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.intkhabahmed.smartnotes.R;
 
@@ -42,6 +43,10 @@ public class ViewUtils {
         dialogBuilder.setMessage(context.getString(R.string.unsaved_changes_dialog_message));
         dialogBuilder.setTitle(context.getString(R.string.unsaved_changes));
         AlertDialog alertDialog = dialogBuilder.create();
+        WindowManager.LayoutParams params = alertDialog.getWindow().getAttributes();
+        params.dimAmount=0.7f;
+        alertDialog.getWindow().setAttributes(params);
+        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         alertDialog.show();
     }
 
@@ -57,6 +62,10 @@ public class ViewUtils {
         dialogBuilder.setMessage(Global.getInstance().getString(R.string.delete_dialog_message));
         dialogBuilder.setTitle(Global.getInstance().getString(R.string.delete_note));
         AlertDialog alertDialog = dialogBuilder.create();
+        WindowManager.LayoutParams params = alertDialog.getWindow().getAttributes();
+        params.dimAmount=0.7f;
+        alertDialog.getWindow().setAttributes(params);
+        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         alertDialog.show();
     }
 
