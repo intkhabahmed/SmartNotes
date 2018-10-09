@@ -9,6 +9,8 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:name=".utils.Global"
@@ -54,6 +56,14 @@
             android:name=".ui.AddImageNote"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
+
+        <service
+            android:name=".services.NoteJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
