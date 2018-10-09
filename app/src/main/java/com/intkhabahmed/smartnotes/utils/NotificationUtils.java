@@ -37,7 +37,7 @@ public class NotificationUtils {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(note.getDescription()))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setPriority(ViewUtils.getColorFromAttribute(context, R.attr.colorPrimary))
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_smart_notes)
                 .setLargeIcon(largeIcon(context))
                 .setDefaults(NotificationCompat.DEFAULT_VIBRATE);
 
@@ -58,6 +58,6 @@ public class NotificationUtils {
 
     private static Bitmap largeIcon(Context context) {
         Resources res = context.getResources();
-        return BitmapFactory.decodeResource(res, R.drawable.ic_launcher);
+        return BitmapFactory.decodeResource(res, R.drawable.ic_smart_notes_24px);
     }
 }
