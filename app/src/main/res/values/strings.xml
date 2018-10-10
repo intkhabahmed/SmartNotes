@@ -79,4 +79,6 @@
     <string name="empty_title_error">Please enter a title of your note</string>
     <string name="empty_image_error">Please select an image for your note</string>
     <string name="notification_desc">Click bell to set notification</string>
+    <string name="notification_time_error">Date and Time cannot be in past</string>
+    <string name="image_note_notification_message">You have some work pending, see your image note.</string>
 </resources>

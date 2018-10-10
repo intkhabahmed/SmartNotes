@@ -7,9 +7,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -26,21 +26,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
+import com.intkhabahmed.smartnotes.utils.DateTimeListener;
 import com.intkhabahmed.smartnotes.utils.Global;
+import com.intkhabahmed.smartnotes.utils.NoteUtils;
+import com.intkhabahmed.smartnotes.utils.ReminderUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 import java.io.File;
 import java.io.IOException;
 
-public class AddImageNote extends AppCompatActivity {
+public class AddImageNote extends AppCompatActivity implements DateTimeListener {
     private static final int RC_STORAGE_PERMISSION = 100;
     private static final String FILEPROVIDER_AUTHORITY = "com.intkhabahmed.fileprovider";
     private static final int RC_CAPTURE_IMAGE = 101;
@@ -56,6 +62,8 @@ public class AddImageNote extends AppCompatActivity {
     private boolean mIsEditing;
     private boolean mIsImageChanged;
     private String mOldDescription;
+    private String dateTime;
+    private TextView dateTimeTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +101,15 @@ public class AddImageNote extends AppCompatActivity {
         mImageView = findViewById(R.id.iv_image_note);
         mChangeImageButton = findViewById(R.id.change_image_button);
         mNoteTitleEditText.addTextChangedListener(textWatcher);
+        dateTimeTv = findViewById(R.id.date_time_tv);
+
+        ImageButton dateTimePickerBtn = findViewById(R.id.date_time_picker_btn);
+        dateTimePickerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewUtils.showDatePicker(AddImageNote.this, AddImageNote.this);
+            }
+        });
 
         mChangeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,9 +132,16 @@ public class AddImageNote extends AppCompatActivity {
             if (mNote != null) {
                 mNoteTitleEditText.setText(mNote.getNoteTitle());
                 mOldDescription = mNote.getDescription();
+                dateTimeTv.setText(mNote.getReminderDateTime());
                 File image = new File(mNote.getDescription());
                 if (image.exists()) {
                     Glide.with(this).asDrawable().load(Uri.fromFile(image)).into(mImageView);
+                    Glide.with(this).asBitmap().load(Uri.fromFile(image)).into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            mResultBitmap = resource;
+                        }
+                    });
                 }
             }
             mChangeImageButton.setVisibility(View.VISIBLE);
@@ -252,6 +276,7 @@ public class AddImageNote extends AppCompatActivity {
 
     private void insertImageNote() {
         String noteTitle = mNoteTitleEditText.getText().toString().trim();
+        String dateTimeString = dateTimeTv.getText().toString();
         if (!noteTitle.matches("[A-Za-z0-9 ]+") || noteTitle.matches("[0-9 ]+")) {
             Toast.makeText(this, getString(R.string.title_regex_error), Toast.LENGTH_LONG).show();
             return;
@@ -268,6 +293,13 @@ public class AddImageNote extends AppCompatActivity {
         final Note note = mIsEditing ? mNote : new Note();
         note.setNoteTitle(noteTitle);
         note.setDescription(saveImageToStorage());
+        final int timeToRemind = NoteUtils.getRelativeTimeFromNow(dateTimeString);
+        if (timeToRemind < 0) {
+            Toast.makeText(this, getString(R.string.notification_time_error), Toast.LENGTH_LONG).show();
+            return;
+        }
+        note.setRemainingTimeToRemind(timeToRemind);
+        note.setReminderDateTime(dateTimeString);
 
         if (!mIsEditing) {
             note.setNoteType(getString(R.string.image_note));
@@ -277,10 +309,14 @@ public class AddImageNote extends AppCompatActivity {
                 @Override
                 public void run() {
                     final long noteId = NoteRepository.getInstance().insertNote(note);
+                    /*note.setNoteId((int) NoteRepository.getInstance().insertNote(note));*/
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (noteId > 0) {
+                                if (timeToRemind > 0) {
+                                    ReminderUtils.scheduleNoteReminder(AddImageNote.this, note);
+                                }
                                 Toast.makeText(AddImageNote.this, getString(R.string.note_created_msg), Toast.LENGTH_LONG).show();
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -300,6 +336,9 @@ public class AddImageNote extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (rowsUpdated > 0) {
+                            if (timeToRemind > 0) {
+                                ReminderUtils.scheduleNoteReminder(AddImageNote.this, note);
+                            }
                             Toast.makeText(AddImageNote.this, getString(R.string.note_updated_msg), Toast.LENGTH_LONG).show();
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -313,5 +352,22 @@ public class AddImageNote extends AppCompatActivity {
     public String saveImageToStorage() {
         // Save the image
         return BitmapUtils.saveImage(this, mResultBitmap);
+    }
+
+    @Override
+    public void selectedDate(String date) {
+        dateTime = date;
+    }
+
+    @Override
+    public void selectedTime(String time) {
+        dateTime += " " + time;
+    }
+
+    @Override
+    public void dateTimeSelected(boolean isSelected) {
+        if (isSelected) {
+            dateTimeTv.setText(dateTime);
+        }
     }
 }

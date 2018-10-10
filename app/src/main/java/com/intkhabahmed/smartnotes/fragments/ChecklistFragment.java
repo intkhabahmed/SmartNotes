@@ -145,7 +145,7 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
                         }.getType());
                         for (ChecklistItem item : checklistItems) {
                             tasks.append("\n");
-                            tasks.append(item);
+                            tasks.append(item.getTitle());
                         }
                         NoteUtils.shareNote(getActivity(), tasks.toString());
                         break;

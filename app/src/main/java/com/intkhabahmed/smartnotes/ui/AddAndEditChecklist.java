@@ -3,7 +3,6 @@ package com.intkhabahmed.smartnotes.ui;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +24,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -34,17 +34,16 @@ import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
+import com.intkhabahmed.smartnotes.utils.DateTimeListener;
 import com.intkhabahmed.smartnotes.utils.Global;
+import com.intkhabahmed.smartnotes.utils.NoteUtils;
+import com.intkhabahmed.smartnotes.utils.ReminderUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-public class AddAndEditChecklist extends AppCompatActivity {
+public class AddAndEditChecklist extends AppCompatActivity implements DateTimeListener {
 
     private EditText mChecklistEditText;
     private LinearLayout mChecklistContainer;
@@ -56,6 +55,8 @@ public class AddAndEditChecklist extends AppCompatActivity {
     private ImageButton mAddChecklistItemButton;
     private MenuItem menuItem;
     private TreeMap<String, ChecklistItem> mItems;
+    private String dateTime;
+    private TextView dateTimeTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +97,15 @@ public class AddAndEditChecklist extends AppCompatActivity {
         mChecklistContainer = findViewById(R.id.checklist_container);
         mChecklistTitleEditText = findViewById(R.id.checklist_title);
         mChecklistTitleEditText.addTextChangedListener(textWatcher);
+        dateTimeTv = findViewById(R.id.date_time_tv);
+
+        ImageButton dateTimePickerBtn = findViewById(R.id.date_time_picker_btn);
+        dateTimePickerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewUtils.showDatePicker(AddAndEditChecklist.this, AddAndEditChecklist.this);
+            }
+        });
 
         mAddChecklistItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,14 +170,14 @@ public class AddAndEditChecklist extends AppCompatActivity {
         ColorStateList colorStateList = new ColorStateList(
                 new int[][]{
                         new int[]{-android.R.attr.state_checked}, // unchecked
-                        new int[]{android.R.attr.state_checked} , // checked
+                        new int[]{android.R.attr.state_checked}, // checked
                 },
                 new int[]{
                         ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor),
                         ViewUtils.getColorFromAttribute(this, R.attr.colorAccent),
                 }
         );
-        CompoundButtonCompat.setButtonTintList(checkBox,colorStateList);
+        CompoundButtonCompat.setButtonTintList(checkBox, colorStateList);
         checkBox.setTextColor(ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor));
         removeButton.setColorFilter(ViewUtils.getColorFromAttribute(this, R.attr.iconPlaceHolder));
         mChecklistContainer.addView(checkBoxContainer);
@@ -246,6 +256,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
         }
         String checklistData = new Gson().toJson(mItems.values());
         String checklistTitle = mChecklistTitleEditText.getText().toString().trim();
+        String dateTimeString = dateTimeTv.getText().toString();
 
         if (TextUtils.isEmpty(checklistTitle)) {
             Toast.makeText(this, getString(R.string.list_title_error), Toast.LENGTH_LONG).show();
@@ -255,6 +266,13 @@ public class AddAndEditChecklist extends AppCompatActivity {
         final Note note = mIsEditing ? mNote : new Note();
         note.setNoteTitle(checklistTitle);
         note.setDescription(checklistData);
+        final int timeToRemind = NoteUtils.getRelativeTimeFromNow(dateTimeString);
+        if (timeToRemind < 0) {
+            Toast.makeText(this, getString(R.string.notification_time_error), Toast.LENGTH_LONG).show();
+            return;
+        }
+        note.setRemainingTimeToRemind(timeToRemind);
+        note.setReminderDateTime(dateTimeString);
 
         if (!mIsEditing) {
             note.setNoteType(getString(R.string.checklist));
@@ -268,6 +286,9 @@ public class AddAndEditChecklist extends AppCompatActivity {
                         @Override
                         public void run() {
                             if (noteId > 0) {
+                                if (timeToRemind > 0) {
+                                    ReminderUtils.scheduleNoteReminder(AddAndEditChecklist.this, note);
+                                }
                                 Toast.makeText(AddAndEditChecklist.this, getString(R.string.note_created_msg), Toast.LENGTH_LONG).show();
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -286,6 +307,9 @@ public class AddAndEditChecklist extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (rowsUpdated > 0) {
+                            if (timeToRemind > 0) {
+                                ReminderUtils.scheduleNoteReminder(AddAndEditChecklist.this, note);
+                            }
                             Toast.makeText(AddAndEditChecklist.this, getString(R.string.note_updated_msg), Toast.LENGTH_LONG).show();
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -306,6 +330,7 @@ public class AddAndEditChecklist extends AppCompatActivity {
                 menuItem.setVisible(false);
             }
             mChecklistTitleEditText.setText(mNote.getNoteTitle());
+            dateTimeTv.setText(mNote.getReminderDateTime());
             List<ChecklistItem> checklistItems = new Gson().fromJson(mNote.getDescription(), new TypeToken<List<ChecklistItem>>() {
             }.getType());
             for (ChecklistItem item : checklistItems) {
@@ -322,5 +347,22 @@ public class AddAndEditChecklist extends AppCompatActivity {
             super.onBackPressed();
         }
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    @Override
+    public void selectedDate(String date) {
+        dateTime = date;
+    }
+
+    @Override
+    public void selectedTime(String time) {
+        dateTime += " " + time;
+    }
+
+    @Override
+    public void dateTimeSelected(boolean isSelected) {
+        if (isSelected) {
+            dateTimeTv.setText(dateTime);
+        }
     }
 }

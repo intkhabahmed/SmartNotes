@@ -11,13 +11,18 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.ui.MainActivity;
 
-public class NotificationUtils {
+import java.util.List;
 
-    public static void showReminderNotification(Context context, Note note) {
+class NotificationUtils {
+
+    static void showReminderNotification(final Context context, final Note note) {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= 26) {
@@ -28,17 +33,30 @@ public class NotificationUtils {
                 manager.createNotificationChannel(notificationChannel);
             }
         }
+        String noteDescription = note.getDescription();
+        if (note.getNoteType().equals(context.getString(R.string.checklist))) {
+            StringBuilder tasks = new StringBuilder();
+            List<ChecklistItem> checklistItems = new Gson().fromJson(note.getDescription(), new TypeToken<List<ChecklistItem>>() {
+            }.getType());
+            for (ChecklistItem item : checklistItems) {
+                tasks.append(item.getTitle());
+                tasks.append("\n");
+            }
+            noteDescription = tasks.toString();
+        } else if (note.getNoteType().equals(context.getString(R.string.image_note))) {
+            noteDescription = context.getString(R.string.image_note_notification_message);
+        }
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, AppConstants.NOTIFICATION_CHANNEL_ID)
+        final NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, AppConstants.NOTIFICATION_CHANNEL_ID)
                 .setContentIntent(getContentIntent(context, note))
                 .setAutoCancel(true)
                 .setContentTitle(note.getNoteTitle())
-                .setContentText(note.getDescription())
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(note.getDescription()))
+                .setContentText(noteDescription)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setPriority(ViewUtils.getColorFromAttribute(context, R.attr.colorPrimary))
                 .setSmallIcon(R.drawable.ic_smart_notes)
                 .setLargeIcon(largeIcon(context))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(noteDescription))
+                .setColor(ViewUtils.getColorFromAttribute(context, R.attr.colorPrimary))
                 .setDefaults(NotificationCompat.DEFAULT_VIBRATE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN

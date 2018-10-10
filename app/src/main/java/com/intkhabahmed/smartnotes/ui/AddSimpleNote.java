@@ -142,6 +142,10 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
         note.setNoteTitle(noteTitle);
         note.setDescription(noteDescription);
         final int timeToRemind = NoteUtils.getRelativeTimeFromNow(dateTimeString);
+        if (timeToRemind < 0) {
+            Toast.makeText(this, getString(R.string.notification_time_error), Toast.LENGTH_LONG).show();
+            return;
+        }
         note.setRemainingTimeToRemind(timeToRemind);
         note.setReminderDateTime(dateTimeString);
 
@@ -157,7 +161,9 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
                         @Override
                         public void run() {
                             if (note.getNoteId() > 0) {
-                                ReminderUtils.scheduleNoteReminder(AddSimpleNote.this, note);
+                                if (timeToRemind > 0) {
+                                    ReminderUtils.scheduleNoteReminder(AddSimpleNote.this, note);
+                                }
                                 Toast.makeText(AddSimpleNote.this, getString(R.string.note_created_msg), Toast.LENGTH_LONG).show();
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -176,7 +182,9 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
                     @Override
                     public void run() {
                         if (rowsUpdated > 0) {
-                            ReminderUtils.scheduleNoteReminder(AddSimpleNote.this, note);
+                            if (timeToRemind > 0) {
+                                ReminderUtils.scheduleNoteReminder(AddSimpleNote.this, note);
+                            }
                             Toast.makeText(AddSimpleNote.this, getString(R.string.note_updated_msg), Toast.LENGTH_LONG).show();
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
