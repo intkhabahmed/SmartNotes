@@ -281,11 +281,11 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
-                    final long noteId = NoteRepository.getInstance().insertNote(note);
+                    note.setNoteId((int) NoteRepository.getInstance().insertNote(note));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (noteId > 0) {
+                            if (note.getNoteId() > 0) {
                                 if (timeToRemind > 0) {
                                     ReminderUtils.scheduleNoteReminder(AddAndEditChecklist.this, note);
                                 }
