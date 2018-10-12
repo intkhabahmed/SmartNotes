@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
@@ -56,7 +57,7 @@ class NotificationUtils {
                 .setSmallIcon(R.drawable.ic_smart_notes)
                 .setLargeIcon(largeIcon(context))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(noteDescription))
-                .setColor(ViewUtils.getColorFromAttribute(context, R.attr.colorPrimary))
+                .setColor(Color.rgb(0, 100, 0))
                 .setDefaults(NotificationCompat.DEFAULT_VIBRATE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
