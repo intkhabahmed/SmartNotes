@@ -51,6 +51,18 @@
                     android:textColor="?attr/primaryTextColor" />
             </android.support.design.widget.TextInputLayout>
 
+            <CheckBox
+                android:id="@+id/enable_notification_cb"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/enable_notification_message"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="?attr/primaryTextColor"
+                app:layout_constraintEnd_toEndOf="@+id/titleInputLayout"
+                app:layout_constraintStart_toStartOf="@+id/titleInputLayout"
+                app:layout_constraintTop_toBottomOf="@+id/titleInputLayout" />
+
             <ImageButton
                 android:id="@+id/date_time_picker_btn"
                 style="@style/Base.Widget.AppCompat.Button.Borderless"
@@ -60,7 +72,7 @@
                 android:contentDescription="@string/notification_desc"
                 android:scaleType="centerCrop"
                 app:layout_constraintStart_toStartOf="@+id/titleInputLayout"
-                app:layout_constraintTop_toBottomOf="@+id/titleInputLayout"
+                app:layout_constraintTop_toBottomOf="@+id/enable_notification_cb"
                 app:srcCompat="@drawable/ic_notifications_active_24dp" />
 
             <TextView
@@ -76,6 +88,13 @@
                 app:layout_constraintEnd_toEndOf="@+id/titleInputLayout"
                 app:layout_constraintStart_toEndOf="@+id/date_time_picker_btn"
                 app:layout_constraintTop_toBottomOf="@+id/date_time_picker_btn" />
+
+            <android.support.constraint.Group
+                android:id="@+id/notification_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="date_time_tv, date_time_picker_btn" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/descriptionInputLayout"

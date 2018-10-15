@@ -3,6 +3,7 @@ package com.intkhabahmed.smartnotes.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -10,9 +11,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.Group;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +26,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -64,6 +69,8 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
     private String mOldDescription;
     private String dateTime;
     private TextView dateTimeTv;
+    private Group notificationGroup;
+    private boolean isNotificationEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +103,37 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
             }
         };
 
+        notificationGroup = findViewById(R.id.notification_group);
         mCaptureImageButton = findViewById(R.id.capture_image_button);
         mNoteTitleEditText = findViewById(R.id.note_title_input);
         mImageView = findViewById(R.id.iv_image_note);
         mChangeImageButton = findViewById(R.id.change_image_button);
         mNoteTitleEditText.addTextChangedListener(textWatcher);
         dateTimeTv = findViewById(R.id.date_time_tv);
+
+        CheckBox notificationCb = findViewById(R.id.enable_notification_cb);
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked}, // unchecked
+                        new int[]{android.R.attr.state_checked}, // checked
+                },
+                new int[]{
+                        ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor),
+                        ViewUtils.getColorFromAttribute(this, R.attr.colorAccent),
+                }
+        );
+        CompoundButtonCompat.setButtonTintList(notificationCb, colorStateList);
+        notificationCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isNotificationEnabled = isChecked;
+                if (isChecked) {
+                    notificationGroup.setVisibility(View.VISIBLE);
+                } else {
+                    notificationGroup.setVisibility(View.GONE);
+                }
+            }
+        });
 
         ImageButton dateTimePickerBtn = findViewById(R.id.date_time_picker_btn);
         dateTimePickerBtn.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +164,13 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
             if (mNote != null) {
                 mNoteTitleEditText.setText(mNote.getNoteTitle());
                 mOldDescription = mNote.getDescription();
-                dateTimeTv.setText(mNote.getReminderDateTime());
+                if (!TextUtils.isEmpty(mNote.getReminderDateTime()) && NoteUtils.getRelativeTimeFromNow(mNote.getReminderDateTime()) > 0) {
+                    dateTimeTv.setText(mNote.getReminderDateTime());
+                    notificationCb.setChecked(true);
+                } else {
+                    dateTimeTv.setText(getString(R.string.notification_desc));
+                    notificationCb.setChecked(false);
+                }
                 File image = new File(mNote.getDescription());
                 if (image.exists()) {
                     Glide.with(this).asDrawable().load(Uri.fromFile(image)).into(mImageView);
@@ -294,12 +332,13 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
         note.setNoteTitle(noteTitle);
         note.setDescription(saveImageToStorage());
         final int timeToRemind = NoteUtils.getRelativeTimeFromNow(dateTimeString);
-        if (timeToRemind < 0) {
+        if (timeToRemind < 0 && isNotificationEnabled) {
             Toast.makeText(this, getString(R.string.notification_time_error), Toast.LENGTH_LONG).show();
             return;
+        } else if (isNotificationEnabled && timeToRemind > 0) {
+            note.setRemainingTimeToRemind(timeToRemind);
+            note.setReminderDateTime(dateTimeString);
         }
-        note.setRemainingTimeToRemind(timeToRemind);
-        note.setReminderDateTime(dateTimeString);
 
         if (!mIsEditing) {
             note.setNoteType(getString(R.string.image_note));

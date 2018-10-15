@@ -81,4 +81,5 @@
     <string name="notification_desc">Click bell to set notification</string>
     <string name="notification_time_error">Date and Time cannot be in past</string>
     <string name="image_note_notification_message">You have some work pending, see your image note.</string>
+    <string name="enable_notification_message">Want to set reminder notification?</string>
 </resources>

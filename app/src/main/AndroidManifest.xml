@@ -9,8 +9,8 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".utils.Global"
@@ -45,8 +45,8 @@
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppThemeLight">
             <meta-data
-                android:name="com.android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
         </activity>
         <activity
             android:name=".ui.AddAndEditChecklist"

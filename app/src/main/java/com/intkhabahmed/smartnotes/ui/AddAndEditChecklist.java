@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.app.ActionBar;
@@ -57,6 +58,9 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
     private TreeMap<String, ChecklistItem> mItems;
     private String dateTime;
     private TextView dateTimeTv;
+    private Group notificationGroup;
+    private boolean isNotificationEnabled;
+    private CheckBox notificationCb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +96,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
             }
         };
 
+        notificationGroup = findViewById(R.id.notification_group);
         mAddChecklistItemButton = findViewById(R.id.add_checklist_button);
         mChecklistEditText = findViewById(R.id.checklist_item);
         mChecklistContainer = findViewById(R.id.checklist_container);
@@ -121,6 +126,29 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                 } else {
                     Toast.makeText(AddAndEditChecklist.this, getString(R.string.duplicate_entry_error),
                             Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        notificationCb = findViewById(R.id.enable_notification_cb);
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked}, // unchecked
+                        new int[]{android.R.attr.state_checked}, // checked
+                },
+                new int[]{
+                        ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor),
+                        ViewUtils.getColorFromAttribute(this, R.attr.colorAccent),
+                }
+        );
+        CompoundButtonCompat.setButtonTintList(notificationCb, colorStateList);
+        notificationCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isNotificationEnabled = isChecked;
+                if (isChecked) {
+                    notificationGroup.setVisibility(View.VISIBLE);
+                } else {
+                    notificationGroup.setVisibility(View.GONE);
                 }
             }
         });
@@ -267,12 +295,13 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
         note.setNoteTitle(checklistTitle);
         note.setDescription(checklistData);
         final int timeToRemind = NoteUtils.getRelativeTimeFromNow(dateTimeString);
-        if (timeToRemind < 0) {
+        if (timeToRemind < 0 && isNotificationEnabled) {
             Toast.makeText(this, getString(R.string.notification_time_error), Toast.LENGTH_LONG).show();
             return;
+        } else if (isNotificationEnabled && timeToRemind > 0) {
+            note.setRemainingTimeToRemind(timeToRemind);
+            note.setReminderDateTime(dateTimeString);
         }
-        note.setRemainingTimeToRemind(timeToRemind);
-        note.setReminderDateTime(dateTimeString);
 
         if (!mIsEditing) {
             note.setNoteType(getString(R.string.checklist));
@@ -330,7 +359,13 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                 menuItem.setVisible(false);
             }
             mChecklistTitleEditText.setText(mNote.getNoteTitle());
-            dateTimeTv.setText(mNote.getReminderDateTime());
+            if (!TextUtils.isEmpty(mNote.getReminderDateTime()) && NoteUtils.getRelativeTimeFromNow(mNote.getReminderDateTime()) > 0) {
+                dateTimeTv.setText(mNote.getReminderDateTime());
+                notificationCb.setChecked(true);
+            } else {
+                dateTimeTv.setText(getString(R.string.notification_desc));
+                notificationCb.setChecked(false);
+            }
             List<ChecklistItem> checklistItems = new Gson().fromJson(mNote.getDescription(), new TypeToken<List<ChecklistItem>>() {
             }.getType());
             for (ChecklistItem item : checklistItems) {
