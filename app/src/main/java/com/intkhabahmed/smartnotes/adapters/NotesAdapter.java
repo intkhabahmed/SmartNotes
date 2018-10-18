@@ -12,14 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
@@ -42,7 +40,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public interface OnItemClickListener {
         void onMenuItemClick(View view, Note note);
 
-        void onItemClick(Note note);
+        void onItemClick(int noteId, String noteType);
     }
 
     @NonNull
@@ -67,62 +65,40 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         switch (holder.getItemViewType()) {
             case 0:
                 TextNotesViewHolder textNotesViewHolder = (TextNotesViewHolder) holder;
-                String title = note.getNoteTitle();
-                String noteType = note.getNoteType();
-                textNotesViewHolder.noteDescriptionTextView.setText("");
-                if (noteType.equals(mContext.getString(R.string.simple_note))) {
-                    StringBuilder description = new StringBuilder(note.getDescription());
-                    if (description.length() > 30) {
-                        description.delete(30, description.length());
-                        description.append(" ...");
+                if (note.getNoteType().equals(mContext.getString(R.string.simple_note))) {
+                    textNotesViewHolder.noteDescriptionTextView.setText(note.getDescription());
+                } else if (note.getNoteType().equals(mContext.getString(R.string.checklist))) {
+                    List<ChecklistItem> checklistItems = new Gson().fromJson(note.getDescription(), new TypeToken<List<ChecklistItem>>() {
+                    }.getType());
+                    int noOfItems = checklistItems.size() >= 2 ? 2 : checklistItems.size();
+                    textNotesViewHolder.noteDescriptionTextView.setText("");
+                    for (int i = 0; i < noOfItems; i++) {
+                        textNotesViewHolder.noteDescriptionTextView
+                                .append(String.valueOf(checklistItems.get(i).getTitle()));
+                        if (checklistItems.get(i).isChecked()) {
+                            textNotesViewHolder.noteDescriptionTextView.append(" " +
+                                    mContext.getString(R.string.checkmark_unicode));
+                        }
+                        if (i < noOfItems - 1) {
+                            textNotesViewHolder.noteDescriptionTextView.append("\n");
+                        }
                     }
-                    textNotesViewHolder.noteDescriptionTextView.setText(description);
-                } else if (noteType.equals(mContext.getString(R.string.checklist))) {
-                    String description = note.getDescription();
-                    try {
-                        JSONObject checklistObjects = new JSONObject(description);
-                        JSONArray jsonArrays = checklistObjects.getJSONArray(mContext.getString(R.string.checklist));
-                        JSONObject jsonObject;
-                        int noOfItems = jsonArrays.length() >= 2 ? 2 : 1;
-                        for (int i = 0; i < noOfItems; i++) {
-                            try {
-                                jsonObject = jsonArrays.getJSONObject(i);
-                                textNotesViewHolder.noteDescriptionTextView
-                                        .append(String.valueOf(jsonObject.get(AddAndEditChecklist.LIST_TITLE)));
-                                if (jsonObject.getBoolean(AddAndEditChecklist.IS_LIST_CHECKED)) {
-                                    textNotesViewHolder.noteDescriptionTextView.append(" " +
-                                            mContext.getString(R.string.checkmark_unicode));
-                                }
-                                if (i < noOfItems - 1 || noOfItems == 1) {
-                                    textNotesViewHolder.noteDescriptionTextView.append("\n");
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        if (jsonArrays.length() > 2) {
-                            textNotesViewHolder.noteDescriptionTextView.append(" ...");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    if (checklistItems.size() > 2) {
+                        textNotesViewHolder.noteDescriptionTextView.append(" ...");
                     }
                 }
-                long time = note.getDateCreated();
-                textNotesViewHolder.noteTitleTextView.setText(title);
-                textNotesViewHolder.noteCreateDateTextView.setText(NoteUtils.getFormattedTime(time, System.currentTimeMillis()));
+                textNotesViewHolder.noteTitleTextView.setText(note.getNoteTitle());
+                textNotesViewHolder.noteCreateDateTextView.setText(NoteUtils.getFormattedTime(note.getDateCreated(),
+                        System.currentTimeMillis()));
                 break;
             case 1:
                 ImageNotesViewHolder imageNotesViewHolder = (ImageNotesViewHolder) holder;
-                String imageNoteTitle = note.getNoteTitle();
-                long imageNoteTime = note.getDateCreated();
-                String imagePath = note.getDescription();
-
-                File imageFile = new File(imagePath);
+                File imageFile = new File(note.getDescription());
                 if (imageFile.exists()) {
                     Glide.with(mContext).asDrawable().load(Uri.fromFile(imageFile)).into(imageNotesViewHolder.noteImageView);
                 }
-                imageNotesViewHolder.noteTitleTextView.setText(imageNoteTitle);
-                imageNotesViewHolder.noteCreateDateTextView.setText(NoteUtils.getFormattedTime(imageNoteTime,
+                imageNotesViewHolder.noteTitleTextView.setText(note.getNoteTitle());
+                imageNotesViewHolder.noteCreateDateTextView.setText(NoteUtils.getFormattedTime(note.getDateCreated(),
                         System.currentTimeMillis()));
                 break;
         }
@@ -174,7 +150,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (view instanceof ImageButton) {
                 mOnItemClickListener.onMenuItemClick(view, mNotes.get(getAdapterPosition()));
             } else if (view instanceof TextView) {
-                mOnItemClickListener.onItemClick(mNotes.get(getAdapterPosition()));
+                mOnItemClickListener.onItemClick(mNotes.get(getAdapterPosition()).getNoteId(), mNotes.get(getAdapterPosition()).getNoteType());
             }
         }
     }
@@ -202,7 +178,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (view instanceof ImageButton) {
                 mOnItemClickListener.onMenuItemClick(view, mNotes.get(getAdapterPosition()));
             } else if (view instanceof TextView || view instanceof ImageView) {
-                mOnItemClickListener.onItemClick(mNotes.get(getAdapterPosition()));
+                mOnItemClickListener.onItemClick(mNotes.get(getAdapterPosition()).getNoteId(), mNotes.get(getAdapterPosition()).getNoteType());
             }
         }
     }

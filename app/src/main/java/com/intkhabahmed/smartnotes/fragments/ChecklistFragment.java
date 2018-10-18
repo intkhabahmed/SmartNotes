@@ -20,19 +20,18 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
-import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
-import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -111,11 +110,14 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
     }
 
     @Override
-    public void onItemClick(Note note) {
-        Intent editChecklistActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
-        editChecklistActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
-        startActivity(editChecklistActivityIntent);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    public void onItemClick(int noteId, String noteType) {
+        ChecklistNotesDetailFragment checklistNotesDetailFragment = new ChecklistNotesDetailFragment();
+        checklistNotesDetailFragment.setNoteId(noteId);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fragment_layout, checklistNotesDetailFragment)
+                .commit();
     }
 
     @Override
@@ -139,27 +141,16 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
                         break;
                     case R.id.share_note:
                         String noteTitle = note.getNoteTitle();
-                        String noteDescription = note.getDescription();
                         StringBuilder tasks = new StringBuilder();
                         tasks.append(noteTitle);
                         tasks.append("\n_____________________");
-                        try {
-                            JSONObject checklistObjects = new JSONObject(noteDescription);
-                            JSONArray jsonArrays = checklistObjects.getJSONArray(getActivity().getString(R.string.checklist));
-                            for (int i = 0; i < jsonArrays.length(); i++) {
-                                try {
-                                    JSONObject jsonObject = jsonArrays.getJSONObject(i);
-                                    tasks.append("\n");
-                                    tasks.append(jsonObject.getString(AddAndEditChecklist.LIST_TITLE));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        List<ChecklistItem> checklistItems = new Gson().fromJson(note.getDescription(), new TypeToken<List<ChecklistItem>>() {
+                        }.getType());
+                        for (ChecklistItem item : checklistItems) {
+                            tasks.append("\n");
+                            tasks.append(item.getTitle());
                         }
                         NoteUtils.shareNote(getActivity(), tasks.toString());
-
                         break;
                 }
                 return false;

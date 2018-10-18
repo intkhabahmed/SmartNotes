@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.intkhabahmed.smartnotes">
 
     <uses-feature
@@ -8,6 +9,8 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".utils.Global"
@@ -15,7 +18,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
             android:name=".ui.MainActivity"
             android:launchMode="singleTop"
@@ -41,20 +45,25 @@
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppThemeLight">
             <meta-data
-                android:name="com.android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
         </activity>
         <activity
             android:name=".ui.AddAndEditChecklist"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
         <activity
-            android:name=".ui.NoteDetailActivity"
-            android:theme="@style/AppThemeLight" />
-        <activity
             android:name=".ui.AddImageNote"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
+
+        <service
+            android:name=".services.NoteJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

@@ -3,8 +3,9 @@ package com.intkhabahmed.smartnotes.fragments;
 import android.arch.lifecycle.Observer;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,39 +17,37 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
-import com.intkhabahmed.smartnotes.ui.AddImageNote;
+import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
-import java.io.File;
+import java.util.List;
 
-public class ImageNotesDetailFragment extends Fragment {
-
+public class ChecklistNotesDetailFragment extends Fragment {
     private Note mNote;
     private int mNoteId;
     private static final String BUNDLE_DATA = "bundle-data";
     private TextView noteTitleTextView;
-    private TextView noteDescriptionTextView;
+    private LinearLayout checklistContainer;
     private TextView noteCreatedDateTextView;
     private TextView noteModifiedDateTextView;
-    private ImageView noteImageView;
     private FloatingActionButton editButton;
 
-
-    public ImageNotesDetailFragment() {
+    public ChecklistNotesDetailFragment() {
     }
 
     public void setNoteId(int noteId) {
         mNoteId = noteId;
-
     }
 
     @Override
@@ -70,9 +69,9 @@ public class ImageNotesDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         noteTitleTextView = view.findViewById(R.id.tv_note_title);
+        checklistContainer = view.findViewById(R.id.checklist_container);
         noteCreatedDateTextView = view.findViewById(R.id.tv_date_created);
         noteModifiedDateTextView = view.findViewById(R.id.tv_date_modified);
-        noteImageView = view.findViewById(R.id.image_note_view);
         editButton = view.findViewById(R.id.edit_note_button);
         setupNote();
     }
@@ -87,6 +86,7 @@ public class ImageNotesDetailFragment extends Fragment {
                             if (mNote.getTrashed() == 1) {
                                 setHasOptionsMenu(false);
                             }
+                            checklistContainer.removeAllViews();
                             setupUI();
                         }
                     }
@@ -94,12 +94,14 @@ public class ImageNotesDetailFragment extends Fragment {
     }
 
     private void setupUI() {
-        noteImageView.setVisibility(View.VISIBLE);
-        File imageFile = new File(mNote.getDescription());
-        if (imageFile.exists()) {
-            Glide.with(getActivity()).load(Uri.fromFile(imageFile)).into(noteImageView);
-        }
+        checklistContainer.setVisibility(View.VISIBLE);
         noteTitleTextView.setText(mNote.getNoteTitle());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                populateChecklistData();
+            }
+        }, 200);
         noteCreatedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
         noteModifiedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
         if (mNote.getTrashed() == 1) {
@@ -108,7 +110,7 @@ public class ImageNotesDetailFragment extends Fragment {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddImageNote.class);
+                Intent intent = new Intent(getActivity(), AddAndEditChecklist.class);
                 intent.putExtra(Intent.EXTRA_TEXT, mNote);
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -143,5 +145,24 @@ public class ImageNotesDetailFragment extends Fragment {
             ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void populateChecklistData() {
+        if (mNote != null) {
+            List<ChecklistItem> checklistItems = new Gson().fromJson(mNote.getDescription(), new TypeToken<List<ChecklistItem>>() {
+            }.getType());
+            for (int i = 0; i < checklistItems.size(); i++) {
+                TextView checklistItem = new TextView(getActivity());
+                checklistItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));
+                checklistItem.setTextSize(24);
+                checklistItem.setTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.secondaryTextColor));
+                checklistItem.setText(checklistItems.get(i).getTitle());
+                if (checklistItems.get(i).isChecked()) {
+                    checklistItem.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                }
+                checklistContainer.addView(checklistItem);
+            }
+        }
     }
 }

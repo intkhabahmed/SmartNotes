@@ -2,12 +2,17 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.SwitchPreferenceCompat;
+import android.view.View;
 
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.ui.MainActivity;
+import com.intkhabahmed.smartnotes.utils.CurrentFragmentListener;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -19,7 +24,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.settings_fragment);
-        getActivity().setTitle(R.string.settings);
         PreferenceScreen preferenceScreen = getPreferenceScreen();
         mSharedPreferences = preferenceScreen.getSharedPreferences();
         int count = preferenceScreen.getPreferenceCount();
@@ -44,9 +48,22 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle(R.string.settings);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        CurrentFragmentListener listener = ((MainActivity) getActivity()).getCurrentFragmentListener();
+        listener.setCurrentFragment(SettingsFragment.class.getSimpleName());
     }
 
     @Override
