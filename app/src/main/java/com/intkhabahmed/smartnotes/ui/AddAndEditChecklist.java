@@ -224,6 +224,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
             });
         } else {
             checkBox.setEnabled(false);
+            removeButton.setVisibility(View.GONE);
         }
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -238,9 +239,6 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                 }
             }
         });
-        if (mTrashed == 1) {
-            removeButton.setVisibility(View.GONE);
-        }
     }
 
     @Override

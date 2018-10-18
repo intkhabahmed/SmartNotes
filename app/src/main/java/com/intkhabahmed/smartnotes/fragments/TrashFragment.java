@@ -99,15 +99,19 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     }
 
     @Override
-    public void onItemClick(Note note) {
-        if (note.getNoteType().equals(getString(R.string.checklist))) {
-            Intent detailActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
-            detailActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
-            startActivity(detailActivityIntent);
+    public void onItemClick(int noteId, String noteType) {
+        if (noteType.equals(getString(R.string.checklist))) {
+            ChecklistNotesDetailFragment checklistNotesDetailFragment = new ChecklistNotesDetailFragment();
+            checklistNotesDetailFragment.setNoteId(noteId);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .replace(R.id.fragment_layout, checklistNotesDetailFragment)
+                    .commit();
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (note.getNoteType().equals(getString(R.string.image_note))) {
+        } else if (noteType.equals(getString(R.string.image_note))) {
             ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
-            imageNotesDetailFragment.setNote(note);
+            imageNotesDetailFragment.setNoteId(noteId);
             getActivity().getSupportFragmentManager().beginTransaction()
                     .addToBackStack(null)
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
@@ -115,7 +119,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
                     .commit();
         } else {
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
-            simpleNotesDetailFragment.setNote(note);
+            simpleNotesDetailFragment.setNoteId(noteId);
             getActivity().getSupportFragmentManager().beginTransaction()
                     .addToBackStack(null)
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)

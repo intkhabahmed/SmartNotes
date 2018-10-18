@@ -51,6 +51,14 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     public SearchFragment() {
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mFilterText = savedInstanceState.getString(BUNDLE_EXTRA);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,15 +71,11 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         mRootFrameLayout = view.findViewById(R.id.root_frame_layout);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mEmptyView = view.findViewById(R.id.search_error_view);
-
         mNotesAdapter = new NotesAdapter(getActivity(), this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-        if (savedInstanceState != null) {
-            mFilterText = savedInstanceState.getString(BUNDLE_EXTRA);
-        }
         setupViewModel(false);
         super.onViewCreated(view, savedInstanceState);
     }
@@ -179,29 +183,36 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     }
 
     @Override
-    public void onItemClick(Note note) {
-        if (note.getNoteType().equals(getString(R.string.checklist))) {
-            Intent detailActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
-            detailActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
-            startActivity(detailActivityIntent);
-            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        } else if (note.getNoteType().equals(getString(R.string.image_note))) {
+    public void onItemClick(int noteId, String noteType) {
+        Fragment fragment;
+        if (noteType.equals(getString(R.string.checklist))) {
+            ChecklistNotesDetailFragment checklistNotesDetailFragment = new ChecklistNotesDetailFragment();
+            checklistNotesDetailFragment.setNoteId(noteId);
+            fragment = checklistNotesDetailFragment;
+            /*getActivity().getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .replace(R.id.fragment_layout, checklistNotesDetailFragment)
+                    .commit();*/
+        } else if (noteType.equals(getString(R.string.image_note))) {
             ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
-            imageNotesDetailFragment.setNote(note);
-            getActivity().getSupportFragmentManager().beginTransaction()
+            imageNotesDetailFragment.setNoteId(noteId);
+            fragment = imageNotesDetailFragment;
+           /* getActivity().getSupportFragmentManager().beginTransaction()
                     .addToBackStack(null)
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                     .replace(R.id.fragment_layout, imageNotesDetailFragment)
-                    .commit();
+                    .commit();*/
         } else {
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
-            simpleNotesDetailFragment.setNote(note);
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .addToBackStack(null)
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                    .replace(R.id.fragment_layout, simpleNotesDetailFragment)
-                    .commit();
+            simpleNotesDetailFragment.setNoteId(noteId);
+            fragment = simpleNotesDetailFragment;
         }
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fragment_layout, fragment)
+                .commit();
     }
 
     private void showSnackBar(final Note note) {

@@ -110,11 +110,14 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
     }
 
     @Override
-    public void onItemClick(Note note) {
-        Intent editChecklistActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
-        editChecklistActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
-        startActivity(editChecklistActivityIntent);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    public void onItemClick(int noteId, String noteType) {
+        ChecklistNotesDetailFragment checklistNotesDetailFragment = new ChecklistNotesDetailFragment();
+        checklistNotesDetailFragment.setNoteId(noteId);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fragment_layout, checklistNotesDetailFragment)
+                .commit();
     }
 
     @Override

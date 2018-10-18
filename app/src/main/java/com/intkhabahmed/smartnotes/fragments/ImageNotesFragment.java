@@ -13,7 +13,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -110,9 +109,9 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
     }
 
     @Override
-    public void onItemClick(Note note) {
+    public void onItemClick(int noteId, String noteType) {
         ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
-        imageNotesDetailFragment.setNote(note);
+        imageNotesDetailFragment.setNoteId(noteId);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .addToBackStack(null)
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)

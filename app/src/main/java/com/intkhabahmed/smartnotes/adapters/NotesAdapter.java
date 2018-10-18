@@ -40,7 +40,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public interface OnItemClickListener {
         void onMenuItemClick(View view, Note note);
 
-        void onItemClick(Note note);
+        void onItemClick(int noteId, String noteType);
     }
 
     @NonNull
@@ -150,7 +150,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (view instanceof ImageButton) {
                 mOnItemClickListener.onMenuItemClick(view, mNotes.get(getAdapterPosition()));
             } else if (view instanceof TextView) {
-                mOnItemClickListener.onItemClick(mNotes.get(getAdapterPosition()));
+                mOnItemClickListener.onItemClick(mNotes.get(getAdapterPosition()).getNoteId(), mNotes.get(getAdapterPosition()).getNoteType());
             }
         }
     }
@@ -178,7 +178,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (view instanceof ImageButton) {
                 mOnItemClickListener.onMenuItemClick(view, mNotes.get(getAdapterPosition()));
             } else if (view instanceof TextView || view instanceof ImageView) {
-                mOnItemClickListener.onItemClick(mNotes.get(getAdapterPosition()));
+                mOnItemClickListener.onItemClick(mNotes.get(getAdapterPosition()).getNoteId(), mNotes.get(getAdapterPosition()).getNoteType());
             }
         }
     }

@@ -111,9 +111,9 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     }
 
     @Override
-    public void onItemClick(Note note) {
+    public void onItemClick(int noteId, String noteType) {
         SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
-        simpleNotesDetailFragment.setNote(note);
+        simpleNotesDetailFragment.setNoteId(noteId);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .addToBackStack(null)
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
