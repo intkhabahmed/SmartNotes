@@ -2,7 +2,6 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,7 +29,6 @@ import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
-import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.SearchNotesViewModel;
@@ -189,20 +187,10 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
             ChecklistNotesDetailFragment checklistNotesDetailFragment = new ChecklistNotesDetailFragment();
             checklistNotesDetailFragment.setNoteId(noteId);
             fragment = checklistNotesDetailFragment;
-            /*getActivity().getSupportFragmentManager().beginTransaction()
-                    .addToBackStack(null)
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                    .replace(R.id.fragment_layout, checklistNotesDetailFragment)
-                    .commit();*/
         } else if (noteType.equals(getString(R.string.image_note))) {
             ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
             imageNotesDetailFragment.setNoteId(noteId);
             fragment = imageNotesDetailFragment;
-           /* getActivity().getSupportFragmentManager().beginTransaction()
-                    .addToBackStack(null)
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                    .replace(R.id.fragment_layout, imageNotesDetailFragment)
-                    .commit();*/
         } else {
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
             simpleNotesDetailFragment.setNoteId(noteId);

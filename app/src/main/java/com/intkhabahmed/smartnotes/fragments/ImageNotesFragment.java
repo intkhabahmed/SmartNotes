@@ -22,11 +22,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.intkhabahmed.smartnotes.ui.AddImageNote;
-import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.ui.AddImageNote;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;

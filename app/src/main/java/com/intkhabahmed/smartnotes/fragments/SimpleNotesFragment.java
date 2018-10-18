@@ -20,11 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
-import com.intkhabahmed.smartnotes.ui.AddSimpleNote;
-import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.ui.AddSimpleNote;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;

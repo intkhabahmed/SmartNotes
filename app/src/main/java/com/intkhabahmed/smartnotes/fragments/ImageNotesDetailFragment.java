@@ -21,10 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.intkhabahmed.smartnotes.database.NoteRepository;
-import com.intkhabahmed.smartnotes.ui.AddImageNote;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.ui.AddImageNote;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
