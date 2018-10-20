@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
+import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NotesDatabase;
 
 public class Global extends Application {
@@ -37,5 +38,9 @@ public class Global extends Application {
 
     public static int getSortId() {
         return sSharedPreferences.getInt(AppConstants.SORT_CRITERIA_ID, AppConstants.SORT_CRITERIA_ID_DEFAULT);
+    }
+
+    public static boolean getDarkThemeStatus() {
+        return sSharedPreferences.getBoolean(sGlobalInstance.getString(R.string.dark_theme_key), false);
     }
 }

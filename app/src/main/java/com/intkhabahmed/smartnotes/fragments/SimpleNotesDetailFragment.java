@@ -1,32 +1,48 @@
 package com.intkhabahmed.smartnotes.fragments;
 
+import android.arch.lifecycle.Observer;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.intkhabahmed.smartnotes.AddSimpleNote;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.ui.AddSimpleNote;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
+import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 public class SimpleNotesDetailFragment extends Fragment {
 
     private Note mNote;
+    private int mNoteId;
     private static final String BUNDLE_DATA = "bundle-data";
+    private TextView noteTitleTextView;
+    private TextView noteDescriptionTextView;
+    private TextView noteCreatedDateTextView;
+    private TextView noteModifiedDateTextView;
+    private FloatingActionButton editButton;
 
 
     public SimpleNotesDetailFragment() {
     }
 
-    public void setNote(Note note) {
-        mNote = note;
+    public void setNoteId(int noteId) {
+        mNoteId = noteId;
+
 
     }
 
@@ -34,8 +50,9 @@ public class SimpleNotesDetailFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            mNote = savedInstanceState.getParcelable(BUNDLE_DATA);
+            mNoteId = savedInstanceState.getInt(BUNDLE_DATA);
         }
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -47,15 +64,40 @@ public class SimpleNotesDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView noteTitleTextView = view.findViewById(R.id.tv_note_title);
-        TextView noteDescriptionTextView = view.findViewById(R.id.tv_note_desciption);
-        TextView noteCreatedDateTextView = view.findViewById(R.id.tv_date_created);
-        TextView noteModifiedDateTextView = view.findViewById(R.id.tv_date_modified);
+        noteTitleTextView = view.findViewById(R.id.tv_note_title);
+        noteDescriptionTextView = view.findViewById(R.id.tv_note_description);
+        noteCreatedDateTextView = view.findViewById(R.id.tv_date_created);
+        noteModifiedDateTextView = view.findViewById(R.id.tv_date_modified);
+        editButton = view.findViewById(R.id.edit_note_button);
+        setupNote();
+    }
+
+    private void setupNote() {
+        NoteRepository.getInstance().getNoteById(mNoteId)
+                .observe(this, new Observer<Note>() {
+                    @Override
+                    public void onChanged(@Nullable Note note) {
+                        if (note != null) {
+                            mNote = note;
+                            if (mNote.getTrashed() == 1) {
+                                setHasOptionsMenu(false);
+                            }
+                            setupUI();
+                        }
+                    }
+                });
+    }
+
+    private void setupUI() {
+        noteDescriptionTextView.setVisibility(View.VISIBLE);
         noteTitleTextView.setText(mNote.getNoteTitle());
         noteDescriptionTextView.setText(mNote.getDescription());
         noteCreatedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
         noteModifiedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
-        FloatingActionButton editButton = view.findViewById(R.id.edit_note_button);
+        if (mNote.getTrashed() == 1) {
+            editButton.setVisibility(View.GONE);
+        }
+
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,7 +111,30 @@ public class SimpleNotesDetailFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelable(BUNDLE_DATA, mNote);
+        outState.putInt(BUNDLE_DATA, mNoteId);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.detail_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.delete_menu) {
+            DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    NoteRepository.getInstance().moveNoteToTrash(mNote);
+                    Toast.makeText(getActivity(), getString(R.string.moved_to_trash), Toast.LENGTH_LONG).show();
+                    getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+            };
+            ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

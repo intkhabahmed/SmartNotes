@@ -2,7 +2,6 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,14 +17,14 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.intkhabahmed.smartnotes.AddAndEditChecklist;
-import com.intkhabahmed.smartnotes.NoteDetailActivity;
-import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.ui.MainActivity;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
+import com.intkhabahmed.smartnotes.utils.CurrentFragmentListener;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
@@ -40,6 +39,11 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     private ProgressBar mProgressBar;
 
     public TrashFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -68,7 +72,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
 
     private void setupViewModel() {
         mProgressBar.setVisibility(View.VISIBLE);
-        NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.simple_note), 0);
+        NotesViewModelFactory factory = new NotesViewModelFactory(null, 1);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
@@ -86,18 +90,40 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     }
 
     @Override
-    public void onItemClick(Note note) {
-        String noteType = note.getNoteType();
-        Intent detailActivityIntent;
+    public void onResume() {
+        super.onResume();
+        CurrentFragmentListener listener = ((MainActivity) getActivity()).getCurrentFragmentListener();
+        listener.setCurrentFragment(TrashFragment.class.getSimpleName());
+    }
+
+    @Override
+    public void onItemClick(int noteId, String noteType) {
         if (noteType.equals(getString(R.string.checklist))) {
-            detailActivityIntent = new Intent(getActivity(), AddAndEditChecklist.class);
+            ChecklistNotesDetailFragment checklistNotesDetailFragment = new ChecklistNotesDetailFragment();
+            checklistNotesDetailFragment.setNoteId(noteId);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .replace(R.id.fragment_layout, checklistNotesDetailFragment)
+                    .commit();
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        } else if (noteType.equals(getString(R.string.image_note))) {
+            ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
+            imageNotesDetailFragment.setNoteId(noteId);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .replace(R.id.fragment_layout, imageNotesDetailFragment)
+                    .commit();
         } else {
-            detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
-            detailActivityIntent.putExtra(getString(R.string.note_type), noteType);
+            SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
+            simpleNotesDetailFragment.setNoteId(noteId);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .replace(R.id.fragment_layout, simpleNotesDetailFragment)
+                    .commit();
         }
-        detailActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
-        startActivity(detailActivityIntent);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @Override

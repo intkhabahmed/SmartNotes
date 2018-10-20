@@ -21,12 +21,15 @@ public class Note implements Parcelable {
     private long dateModified;
     @ColumnInfo(name = "trash")
     private int trashed;
+    private int remainingTimeToRemind;
+    private String reminderDateTime;
 
     @Ignore
     public Note() {
     }
 
-    public Note(int noteId, @NonNull String noteTitle, @NonNull String description, @NonNull String noteType, long dateCreated, long dateModified, int trashed) {
+    public Note(int noteId, @NonNull String noteTitle, @NonNull String description, @NonNull String noteType, long dateCreated, long dateModified, int trashed, int remainingTimeToRemind, String reminderDateTime) {
+
         this.noteId = noteId;
         this.noteTitle = noteTitle;
         this.description = description;
@@ -34,16 +37,22 @@ public class Note implements Parcelable {
         this.dateCreated = dateCreated;
         this.dateModified = dateModified;
         this.trashed = trashed;
+        this.remainingTimeToRemind = remainingTimeToRemind;
+        this.reminderDateTime = reminderDateTime;
     }
 
     @Ignore
-    public Note(@NonNull String noteTitle, @NonNull String description, @NonNull String noteType, long dateCreated, long dateModified, int trashed) {
+    public Note(@NonNull String noteTitle, @NonNull String description, @NonNull String noteType, long dateCreated, long dateModified, int trashed, int remainingTimeToRemind, String reminderDateTime) {
+
         this.noteTitle = noteTitle;
         this.description = description;
         this.noteType = noteType;
         this.dateCreated = dateCreated;
         this.dateModified = dateModified;
         this.trashed = trashed;
+        this.remainingTimeToRemind = remainingTimeToRemind;
+        this.reminderDateTime = reminderDateTime;
+
     }
 
     @Ignore
@@ -55,6 +64,9 @@ public class Note implements Parcelable {
         dateCreated = in.readLong();
         dateModified = in.readLong();
         trashed = in.readInt();
+        remainingTimeToRemind = in.readInt();
+        reminderDateTime = in.readString();
+
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -83,6 +95,8 @@ public class Note implements Parcelable {
         dest.writeLong(dateCreated);
         dest.writeLong(dateModified);
         dest.writeInt(trashed);
+        dest.writeInt(remainingTimeToRemind);
+        dest.writeString(reminderDateTime);
     }
 
     public int getNoteId() {
@@ -142,5 +156,21 @@ public class Note implements Parcelable {
 
     public void setTrashed(int trashed) {
         this.trashed = trashed;
+    }
+
+    public int getRemainingTimeToRemind() {
+        return remainingTimeToRemind;
+    }
+
+    public void setRemainingTimeToRemind(int remainingTimeToRemind) {
+        this.remainingTimeToRemind = remainingTimeToRemind;
+    }
+
+    public String getReminderDateTime() {
+        return reminderDateTime;
+    }
+
+    public void setReminderDateTime(String reminderDateTime) {
+        this.reminderDateTime = reminderDateTime;
     }
 }

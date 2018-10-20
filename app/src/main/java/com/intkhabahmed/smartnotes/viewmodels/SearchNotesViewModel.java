@@ -8,17 +8,17 @@ import com.intkhabahmed.smartnotes.models.Note;
 
 import java.util.List;
 
-public class NotesViewModel extends ViewModel {
+public class SearchNotesViewModel extends ViewModel {
     private LiveData<List<Note>> notes;
 
-    NotesViewModel(String noteType, int trashed) {
+    SearchNotesViewModel(String title, int trashed) {
         if (notes == null) {
-            setNotes(noteType, trashed);
+            setNotes(title, trashed);
         }
     }
 
-    public void setNotes(String noteType, int trashed) {
-        notes = NoteRepository.getInstance().getNotesByTypeAndAvailability(noteType, trashed);
+    public void setNotes(String title, int trashed) {
+        notes = NoteRepository.getInstance().getNotesByTitleAndAvailability(title, trashed);
     }
 
     public LiveData<List<Note>> getNotes() {

@@ -5,12 +5,14 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -21,12 +23,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.intkhabahmed.smartnotes.AddImageNote;
-import com.intkhabahmed.smartnotes.NoteDetailActivity;
-import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.ui.AddImageNote;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
@@ -57,7 +58,8 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
         mEmptyView = view.findViewById(R.id.empty_view);
         mProgressBar = view.findViewById(R.id.progress_bar);
         mNotesAdapter = new NotesAdapter(getActivity(), this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        int noOfColumns = getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 3;
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(getActivity(), noOfColumns);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
@@ -72,13 +74,16 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
                 getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
-        setupViewModel();
+        setupViewModel(false);
     }
 
-    private void setupViewModel() {
+    private void setupViewModel(boolean isSortCriteriaChanged) {
         mProgressBar.setVisibility(View.VISIBLE);
         NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.image_note), 0);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
+        if (isSortCriteriaChanged) {
+            notesViewModel.setNotes(getString(R.string.image_note), 0);
+        }
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
@@ -101,15 +106,18 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
     }
 
     public void updateImageNotesFragment() {
+        setupViewModel(true);
     }
 
     @Override
-    public void onItemClick(Note note) {
-        Intent detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
-        detailActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
-        detailActivityIntent.putExtra(getString(R.string.note_type), note.getNoteType());
-        startActivity(detailActivityIntent);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    public void onItemClick(int noteId, String noteType) {
+        ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
+        imageNotesDetailFragment.setNoteId(noteId);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fragment_layout, imageNotesDetailFragment)
+                .commit();
     }
 
     @Override
@@ -130,7 +138,7 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
                                 showSnackBar(note);
                             }
                         };
-                        ViewUtils.showDeleteConfirmationDialog(deleteListener);
+                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
                         break;
                     case R.id.share_note:
                         String imagePath = note.getDescription();
@@ -152,7 +160,7 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
                 Snackbar.make(mAddButton, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
         snackbar.show();
     }
 }

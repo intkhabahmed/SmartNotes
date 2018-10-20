@@ -20,12 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
-import com.intkhabahmed.smartnotes.AddSimpleNote;
-import com.intkhabahmed.smartnotes.NoteDetailActivity;
-import com.intkhabahmed.smartnotes.NotesAdapter;
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.ui.AddSimpleNote;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
@@ -76,13 +75,16 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
                 getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
-        setupViewModel();
+        setupViewModel(false);
     }
 
-    private void setupViewModel() {
+    private void setupViewModel(boolean isSortCriteriaChanged) {
         mProgressBar.setVisibility(View.VISIBLE);
         NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.simple_note), 0);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
+        if (isSortCriteriaChanged) {
+            notesViewModel.setNotes(getString(R.string.simple_note), 0);
+        }
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
@@ -105,15 +107,18 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     }
 
     public void updateSimpleNotesFragment() {
+        setupViewModel(true);
     }
 
     @Override
-    public void onItemClick(Note note) {
-        Intent detailActivityIntent = new Intent(getActivity(), NoteDetailActivity.class);
-        detailActivityIntent.putExtra(Intent.EXTRA_TEXT, note);
-        detailActivityIntent.putExtra(getString(R.string.note_type), note.getNoteType());
-        startActivity(detailActivityIntent);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    public void onItemClick(int noteId, String noteType) {
+        SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
+        simpleNotesDetailFragment.setNoteId(noteId);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fragment_layout, simpleNotesDetailFragment)
+                .commit();
     }
 
     @Override
@@ -133,7 +138,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
                                 showSnackBar(note);
                             }
                         };
-                        ViewUtils.showDeleteConfirmationDialog(deleteListener);
+                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
                         break;
                     case R.id.share_note:
                         NoteUtils.shareNote(getActivity(), note.getDescription());
@@ -154,7 +159,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
                 Snackbar.make(mAddButton, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
         snackbar.show();
     }
 }
