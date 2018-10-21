@@ -44,22 +44,11 @@ public class NoteWidgetProvider extends AppWidgetProvider {
         final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.note_widget);
         views.setTextViewText(R.id.tv_note_title, note.getNoteTitle());
         String description = note.getDescription();
-        if (note.getNoteType().equals(context.getString(R.string.checklist))) {
-            StringBuilder builder = new StringBuilder();
-            List<ChecklistItem> checklistItems = new Gson().fromJson(note.getDescription(), new TypeToken<List<ChecklistItem>>() {
-            }.getType());
-            for (ChecklistItem item : checklistItems) {
-                builder.append(item.getTitle());
-                if (item.isChecked()) {
-                    builder.append(" ").append(context.getString(R.string.checkmark_unicode));
-                }
-                builder.append("\n");
-            }
-            description = builder.toString();
-        } else if (note.getNoteType().equals(context.getString(R.string.image_note))) {
+        if (note.getNoteType().equals(context.getString(R.string.image_note))) {
             views.setViewVisibility(R.id.tv_note_description, View.INVISIBLE);
             views.setViewVisibility(R.id.note_image_view, View.VISIBLE);
-            final File image = new File(note.getDescription());
+            views.setContentDescription(R.id.note_image_view, note.getNoteTitle());
+            final File image = new File(description);
             if (image.exists()) {
                 AppWidgetTarget awt = new AppWidgetTarget(context, R.id.note_image_view, views, appWidgetId) {
                     @Override
@@ -78,6 +67,19 @@ public class NoteWidgetProvider extends AppWidgetProvider {
                         .into(awt);
             }
         } else {
+            if (note.getNoteType().equals(context.getString(R.string.checklist))) {
+                StringBuilder builder = new StringBuilder();
+                List<ChecklistItem> checklistItems = new Gson().fromJson(note.getDescription(), new TypeToken<List<ChecklistItem>>() {
+                }.getType());
+                for (ChecklistItem item : checklistItems) {
+                    builder.append(item.getTitle());
+                    if (item.isChecked()) {
+                        builder.append(" ").append(context.getString(R.string.checkmark_unicode));
+                    }
+                    builder.append("\n");
+                }
+                description = builder.toString();
+            }
             views.setViewVisibility(R.id.tv_note_description, View.VISIBLE);
             views.setViewVisibility(R.id.note_image_view, View.INVISIBLE);
             views.setTextViewText(R.id.tv_note_description, description);

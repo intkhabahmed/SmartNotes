@@ -59,6 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/primary_container_ll"
         android:layout_marginTop="8dp"
+        android:contentDescription="@string/image_note"
         android:padding="8dp"
         android:visibility="invisible" />
 

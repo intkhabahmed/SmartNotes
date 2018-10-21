@@ -40,6 +40,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.services.NoteService;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.BitmapUtils;
 import com.intkhabahmed.smartnotes.utils.DateTimeListener;
@@ -336,7 +337,7 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
         if (timeToRemind < 0 && isNotificationEnabled) {
             Toast.makeText(this, getString(R.string.notification_time_error), Toast.LENGTH_LONG).show();
             return;
-        } else if (isNotificationEnabled && timeToRemind == 0){
+        } else if (isNotificationEnabled && timeToRemind == 0) {
             Toast.makeText(this, getString(R.string.notification_error), Toast.LENGTH_LONG).show();
             return;
         } else if (isNotificationEnabled) {
@@ -383,6 +384,7 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
                                 ReminderUtils.scheduleNoteReminder(AddImageNote.this, note);
                             }
                             Toast.makeText(AddImageNote.this, getString(R.string.note_updated_msg), Toast.LENGTH_LONG).show();
+                            NoteService.startActionUpdateWidget(AddImageNote.this);
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         }
