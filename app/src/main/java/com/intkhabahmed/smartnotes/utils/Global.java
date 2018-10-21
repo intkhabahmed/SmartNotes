@@ -43,4 +43,16 @@ public class Global extends Application {
     public static boolean getDarkThemeStatus() {
         return sSharedPreferences.getBoolean(sGlobalInstance.getString(R.string.dark_theme_key), false);
     }
+
+    public static void setDataForWidgetId(String key, int value) {
+        sSharedPreferences.edit().putInt(key, value).apply();
+    }
+
+    public static int getDataForWidgetId(String key) {
+        return sSharedPreferences.getInt(key, 0);
+    }
+
+    public static void deleteDataForWidgetId(String key) {
+        sSharedPreferences.edit().remove(key).apply();
+    }
 }

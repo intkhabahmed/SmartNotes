@@ -182,7 +182,10 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
         if (timeToRemind < 0 && isNotificationEnabled) {
             Toast.makeText(this, getString(R.string.notification_time_error), Toast.LENGTH_LONG).show();
             return;
-        } else if (isNotificationEnabled && timeToRemind > 0) {
+        } else if (isNotificationEnabled && timeToRemind == 0){
+            Toast.makeText(this, getString(R.string.notification_error), Toast.LENGTH_LONG).show();
+            return;
+        } else if (isNotificationEnabled) {
             note.setRemainingTimeToRemind(timeToRemind);
             note.setReminderDateTime(dateTimeString);
         }

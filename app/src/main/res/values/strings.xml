@@ -82,4 +82,6 @@
     <string name="notification_time_error">Date and Time cannot be in past</string>
     <string name="image_note_notification_message">You have some work pending, see your image note.</string>
     <string name="enable_notification_message">Want to set reminder notification?</string>
+    <string name="notification_error">Select a date and time for notification</string>
+    <string name="select_note_btn">Select a note to display</string>
 </resources>

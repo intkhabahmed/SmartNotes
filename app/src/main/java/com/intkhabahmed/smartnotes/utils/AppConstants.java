@@ -14,4 +14,6 @@ public interface AppConstants {
     CharSequence NOTIFICATION_CHANNEL_NAME = "Reminder Notifications";
     String NOTIFICATION_INTENT_EXTRA = "notification_intent_extra";
     String NOTE_EXTRA = "job_note_extra";
+    String PREF = "pref_";
+    int WIDGET_IMAGE_SIZE = 1000;
 }
