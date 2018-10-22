@@ -1,10 +1,12 @@
 package com.intkhabahmed.smartnotes.ui;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,9 +17,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.fragments.ChecklistNotesDetailFragment;
 import com.intkhabahmed.smartnotes.fragments.HomePageFragment;
+import com.intkhabahmed.smartnotes.fragments.ImageNotesDetailFragment;
 import com.intkhabahmed.smartnotes.fragments.SettingsFragment;
+import com.intkhabahmed.smartnotes.fragments.SimpleNotesDetailFragment;
 import com.intkhabahmed.smartnotes.fragments.TrashFragment;
+import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.utils.AppConstants;
 import com.intkhabahmed.smartnotes.utils.CurrentFragmentListener;
 import com.intkhabahmed.smartnotes.utils.Global;
 
@@ -51,7 +58,34 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
             mFragmentManager.beginTransaction()
                     .replace(R.id.fragment_layout, new HomePageFragment(), HomePageFragment.class.getSimpleName())
                     .commit();
+            Intent intent = getIntent();
+            if (intent != null && intent.hasExtra(AppConstants.NOTIFICATION_INTENT_EXTRA)) {
+                Note note = intent.getParcelableExtra(AppConstants.NOTIFICATION_INTENT_EXTRA);
+                launchRespectiveDetailFragment(note);
+            }
         }
+    }
+
+    private void launchRespectiveDetailFragment(Note note) {
+        Fragment fragment;
+        if (note.getNoteType().equals(getString(R.string.checklist))) {
+            ChecklistNotesDetailFragment checklistNotesDetailFragment = new ChecklistNotesDetailFragment();
+            checklistNotesDetailFragment.setNoteId(note.getNoteId());
+            fragment = checklistNotesDetailFragment;
+        } else if (note.getNoteType().equals(getString(R.string.image_note))) {
+            ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
+            imageNotesDetailFragment.setNoteId(note.getNoteId());
+            fragment = imageNotesDetailFragment;
+        } else {
+            SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
+            simpleNotesDetailFragment.setNoteId(note.getNoteId());
+            fragment = simpleNotesDetailFragment;
+        }
+        getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fragment_layout, fragment)
+                .commit();
     }
 
     @Override

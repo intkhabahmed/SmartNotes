@@ -98,32 +98,25 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
 
     @Override
     public void onItemClick(int noteId, String noteType) {
+        Fragment fragment;
         if (noteType.equals(getString(R.string.checklist))) {
             ChecklistNotesDetailFragment checklistNotesDetailFragment = new ChecklistNotesDetailFragment();
             checklistNotesDetailFragment.setNoteId(noteId);
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .addToBackStack(null)
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                    .replace(R.id.fragment_layout, checklistNotesDetailFragment)
-                    .commit();
-            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            fragment = checklistNotesDetailFragment;
         } else if (noteType.equals(getString(R.string.image_note))) {
             ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
             imageNotesDetailFragment.setNoteId(noteId);
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .addToBackStack(null)
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                    .replace(R.id.fragment_layout, imageNotesDetailFragment)
-                    .commit();
+            fragment = imageNotesDetailFragment;
         } else {
             SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
             simpleNotesDetailFragment.setNoteId(noteId);
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .addToBackStack(null)
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                    .replace(R.id.fragment_layout, simpleNotesDetailFragment)
-                    .commit();
+            fragment = simpleNotesDetailFragment;
         }
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fragment_layout, fragment)
+                .commit();
     }
 
     @Override

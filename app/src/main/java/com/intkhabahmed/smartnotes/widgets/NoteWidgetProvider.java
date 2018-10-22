@@ -26,6 +26,7 @@ import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.services.NoteService;
+import com.intkhabahmed.smartnotes.ui.MainActivity;
 import com.intkhabahmed.smartnotes.ui.WidgetConfigureActivity;
 import com.intkhabahmed.smartnotes.utils.AppConstants;
 import com.intkhabahmed.smartnotes.utils.Global;
@@ -84,12 +85,19 @@ public class NoteWidgetProvider extends AppWidgetProvider {
             views.setViewVisibility(R.id.note_image_view, View.INVISIBLE);
             views.setTextViewText(R.id.tv_note_description, description);
         }
-        Intent intent = new Intent(context, WidgetConfigureActivity.class);
+        //setting Pending intent for starting configure activity to set the note for the widget
+        Intent startConfigureActivityIntent = new Intent(context, WidgetConfigureActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        intent.putExtras(bundle);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        startConfigureActivityIntent.putExtras(bundle);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, startConfigureActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.note_pickup_btn, pendingIntent);
+
+        //setting Pending intent for starting the detail page of the note
+        Intent startDetailActivityIntent = new Intent(context, MainActivity.class);
+        startDetailActivityIntent.putExtra(AppConstants.NOTIFICATION_INTENT_EXTRA, note);
+        PendingIntent detailPendingIntent = PendingIntent.getActivity(context, appWidgetId, startDetailActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.tv_note_title, detailPendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

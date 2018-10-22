@@ -36,7 +36,6 @@ public class ImageNotesDetailFragment extends Fragment {
     private int mNoteId;
     private static final String BUNDLE_DATA = "bundle-data";
     private TextView noteTitleTextView;
-    private TextView noteDescriptionTextView;
     private TextView noteCreatedDateTextView;
     private TextView noteModifiedDateTextView;
     private ImageView noteImageView;

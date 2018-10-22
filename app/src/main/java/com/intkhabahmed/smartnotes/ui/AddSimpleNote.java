@@ -207,7 +207,6 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
                                     ReminderUtils.scheduleNoteReminder(AddSimpleNote.this, note);
                                 }
                                 Toast.makeText(AddSimpleNote.this, getString(R.string.note_created_msg), Toast.LENGTH_LONG).show();
-                                NoteService.startActionUpdateWidget(AddSimpleNote.this);
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             }
@@ -229,6 +228,7 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
                                 ReminderUtils.scheduleNoteReminder(AddSimpleNote.this, note);
                             }
                             Toast.makeText(AddSimpleNote.this, getString(R.string.note_updated_msg), Toast.LENGTH_LONG).show();
+                            NoteService.startActionUpdateWidget(AddSimpleNote.this);
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         }

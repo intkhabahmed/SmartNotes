@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -17,12 +20,12 @@ import android.widget.ProgressBar;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.services.NoteService;
 import com.intkhabahmed.smartnotes.utils.AppConstants;
 import com.intkhabahmed.smartnotes.utils.Global;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
-import com.intkhabahmed.smartnotes.widgets.NoteWidgetProvider;
 
 import java.util.List;
 
@@ -37,8 +40,27 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.notes_recycler_view);
+        setContentView(R.layout.acivity_widget_configure);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setupUi();
+        setupViewModel();
+
+    }
+
+    private void setupUi() {
         setResult(RESULT_CANCELED);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_white_black_24dp);
+            actionBar.setTitle(R.string.select_note_btn);
+        }
         mRecyclerView = findViewById(R.id.recycler_view);
         mEmptyView = findViewById(R.id.empty_view);
         mProgressBar = findViewById(R.id.progress_bar);
@@ -47,8 +69,6 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-        setTitle(getString(R.string.select_note_btn));
-        setupViewModel();
         Intent intent = getIntent();
         if (intent != null) {
             Bundle bundle = intent.getExtras();
@@ -90,16 +110,30 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onMenuItemClick(View view, final Note note) {
-        view.setVisibility(View.INVISIBLE);
+        setNoteForWidget(note.getNoteId());
     }
 
     @Override
     public void onItemClick(int noteId, String noteType) {
+        setNoteForWidget(noteId);
+    }
+
+    private void setNoteForWidget(int noteId) {
         Global.setDataForWidgetId(AppConstants.PREF + widgetId, noteId);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        NoteWidgetProvider.updateAllWidgets(this, appWidgetManager, new int[]{widgetId});
-//        NoteService.startActionUpdateWidget(this);
+        NoteService.startActionUpdateWidget(this);
         Intent intent = new Intent();
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         setResult(RESULT_OK, intent);
