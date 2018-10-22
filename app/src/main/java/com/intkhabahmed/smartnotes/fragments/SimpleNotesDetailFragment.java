@@ -1,6 +1,7 @@
 package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.ui.AddSimpleNote;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
+import com.intkhabahmed.smartnotes.viewmodels.NoteViewModel;
+import com.intkhabahmed.smartnotes.viewmodels.NoteViewModelFactory;
 
 public class SimpleNotesDetailFragment extends Fragment {
 
@@ -69,23 +72,24 @@ public class SimpleNotesDetailFragment extends Fragment {
         noteCreatedDateTextView = view.findViewById(R.id.tv_date_created);
         noteModifiedDateTextView = view.findViewById(R.id.tv_date_modified);
         editButton = view.findViewById(R.id.edit_note_button);
-        setupNote();
+        setupNoteViewModel();
     }
 
-    private void setupNote() {
-        NoteRepository.getInstance().getNoteById(mNoteId)
-                .observe(this, new Observer<Note>() {
-                    @Override
-                    public void onChanged(@Nullable Note note) {
-                        if (note != null) {
-                            mNote = note;
-                            if (mNote.getTrashed() == 1) {
-                                setHasOptionsMenu(false);
-                            }
-                            setupUI();
-                        }
+    private void setupNoteViewModel() {
+        NoteViewModelFactory factory = new NoteViewModelFactory(mNoteId);
+        NoteViewModel noteViewModel = ViewModelProviders.of(this, factory).get(NoteViewModel.class);
+        noteViewModel.getNote().observe(this, new Observer<Note>() {
+            @Override
+            public void onChanged(@Nullable Note note) {
+                if (note != null) {
+                    mNote = note;
+                    if (mNote.getTrashed() == 1) {
+                        setHasOptionsMenu(false);
                     }
-                });
+                    setupUI();
+                }
+            }
+        });
     }
 
     private void setupUI() {

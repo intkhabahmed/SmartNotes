@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.services.NoteService;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.DateTimeListener;
 import com.intkhabahmed.smartnotes.utils.Global;
@@ -182,7 +183,10 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
         if (timeToRemind < 0 && isNotificationEnabled) {
             Toast.makeText(this, getString(R.string.notification_time_error), Toast.LENGTH_LONG).show();
             return;
-        } else if (isNotificationEnabled && timeToRemind > 0) {
+        } else if (isNotificationEnabled && timeToRemind == 0) {
+            Toast.makeText(this, getString(R.string.notification_error), Toast.LENGTH_LONG).show();
+            return;
+        } else if (isNotificationEnabled) {
             note.setRemainingTimeToRemind(timeToRemind);
             note.setReminderDateTime(dateTimeString);
         }
@@ -224,6 +228,7 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
                                 ReminderUtils.scheduleNoteReminder(AddSimpleNote.this, note);
                             }
                             Toast.makeText(AddSimpleNote.this, getString(R.string.note_updated_msg), Toast.LENGTH_LONG).show();
+                            NoteService.startActionUpdateWidget(AddSimpleNote.this);
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         }

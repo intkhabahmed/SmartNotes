@@ -1,6 +1,7 @@
 package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -27,6 +28,8 @@ import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.ui.AddImageNote;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
+import com.intkhabahmed.smartnotes.viewmodels.NoteViewModel;
+import com.intkhabahmed.smartnotes.viewmodels.NoteViewModelFactory;
 
 import java.io.File;
 
@@ -36,7 +39,6 @@ public class ImageNotesDetailFragment extends Fragment {
     private int mNoteId;
     private static final String BUNDLE_DATA = "bundle-data";
     private TextView noteTitleTextView;
-    private TextView noteDescriptionTextView;
     private TextView noteCreatedDateTextView;
     private TextView noteModifiedDateTextView;
     private ImageView noteImageView;
@@ -75,23 +77,24 @@ public class ImageNotesDetailFragment extends Fragment {
         noteModifiedDateTextView = view.findViewById(R.id.tv_date_modified);
         noteImageView = view.findViewById(R.id.image_note_view);
         editButton = view.findViewById(R.id.edit_note_button);
-        setupNote();
+        setupNoteViewModel();
     }
 
-    private void setupNote() {
-        NoteRepository.getInstance().getNoteById(mNoteId)
-                .observe(this, new Observer<Note>() {
-                    @Override
-                    public void onChanged(@Nullable Note note) {
-                        if (note != null) {
-                            mNote = note;
-                            if (mNote.getTrashed() == 1) {
-                                setHasOptionsMenu(false);
-                            }
-                            setupUI();
-                        }
+    private void setupNoteViewModel() {
+        NoteViewModelFactory factory = new NoteViewModelFactory(mNoteId);
+        NoteViewModel noteViewModel = ViewModelProviders.of(this, factory).get(NoteViewModel.class);
+        noteViewModel.getNote().observe(this, new Observer<Note>() {
+            @Override
+            public void onChanged(@Nullable Note note) {
+                if (note != null) {
+                    mNote = note;
+                    if (mNote.getTrashed() == 1) {
+                        setHasOptionsMenu(false);
                     }
-                });
+                    setupUI();
+                }
+            }
+        });
     }
 
     private void setupUI() {
