@@ -28,8 +28,8 @@
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/medium_icon_size"
+            android:layout_height="@dimen/medium_icon_size"
             android:layout_centerInParent="true" />
     </RelativeLayout>
 </layout>

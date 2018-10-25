@@ -11,7 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"
             android:background="?attr/colorPrimary"
-            app:contentInsetStart="72dp"
+            app:contentInsetStart="@dimen/toolbar_inset_space"
             app:titleTextColor="@android:color/white" />
 
         <include

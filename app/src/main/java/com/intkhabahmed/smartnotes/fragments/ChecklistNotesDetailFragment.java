@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -108,10 +109,10 @@ public class ChecklistNotesDetailFragment extends Fragment {
         mDetailBinding.editNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddAndEditChecklist.class);
+                Intent intent = new Intent(getParentActivity(), AddAndEditChecklist.class);
                 intent.putExtra(Intent.EXTRA_TEXT, mNote);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                getParentActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }
@@ -136,8 +137,8 @@ public class ChecklistNotesDetailFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     NoteRepository.getInstance().moveNoteToTrash(mNote);
-                    Toast.makeText(getActivity(), getString(R.string.moved_to_trash), Toast.LENGTH_LONG).show();
-                    getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    Toast.makeText(getParentActivity(), getString(R.string.moved_to_trash), Toast.LENGTH_LONG).show();
+                    getParentActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
             };
             ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
@@ -150,11 +151,11 @@ public class ChecklistNotesDetailFragment extends Fragment {
             List<ChecklistItem> checklistItems = new Gson().fromJson(mNote.getDescription(), new TypeToken<List<ChecklistItem>>() {
             }.getType());
             for (int i = 0; i < checklistItems.size(); i++) {
-                TextView checklistItem = new TextView(getActivity());
+                TextView checklistItem = new TextView(getParentActivity());
                 checklistItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT));
                 checklistItem.setTextSize(24);
-                checklistItem.setTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.secondaryTextColor));
+                checklistItem.setTextColor(ViewUtils.getColorFromAttribute(getParentActivity(), R.attr.secondaryTextColor));
                 checklistItem.setText(checklistItems.get(i).getTitle());
                 if (checklistItems.get(i).isChecked()) {
                     checklistItem.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
@@ -162,5 +163,9 @@ public class ChecklistNotesDetailFragment extends Fragment {
                 mDetailBinding.checklistContainer.addView(checklistItem);
             }
         }
+    }
+
+    public FragmentActivity getParentActivity() {
+        return getActivity();
     }
 }

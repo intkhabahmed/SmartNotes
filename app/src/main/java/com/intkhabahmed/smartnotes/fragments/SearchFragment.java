@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -67,8 +68,8 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         mRecyclerView = mNotesBinding.recyclerView;
-        mNotesAdapter = new NotesAdapter(getActivity(), this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mNotesAdapter = new NotesAdapter(getParentActivity(), this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getParentActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
@@ -98,7 +99,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.search_menu, menu);
+        getParentActivity().getMenuInflater().inflate(R.menu.search_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
         MenuItem searchViewItem = menu.findItem(R.id.search_menu);
         searchViewItem.expandActionView();
@@ -123,7 +124,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
             @Override
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                 mSearchView.setQuery("", false);
-                getActivity().getSupportFragmentManager().popBackStack(HomePageFragment.class.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getParentActivity().getSupportFragmentManager().popBackStack(HomePageFragment.class.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 return true;
             }
         });
@@ -157,7 +158,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     @Override
     public void onMenuItemClick(View view, final Note note) {
-        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+        PopupMenu popupMenu = new PopupMenu(getParentActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -170,7 +171,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
                         break;
                     case R.id.share_note:
                         String noteDescription = note.getDescription();
-                        NoteUtils.shareNote(getActivity(), noteDescription);
+                        NoteUtils.shareNote(getParentActivity(), noteDescription);
                         break;
                 }
                 return false;
@@ -195,7 +196,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
             simpleNotesDetailFragment.setNoteId(noteId);
             fragment = simpleNotesDetailFragment;
         }
-        getActivity().getSupportFragmentManager().beginTransaction()
+        getParentActivity().getSupportFragmentManager().beginTransaction()
                 .addToBackStack(null)
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(R.id.fragment_layout, fragment)
@@ -211,7 +212,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
                 Snackbar.make(mNotesBinding.rootFrameLayout, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getParentActivity(), R.attr.colorAccent));
         snackbar.show();
     }
 
@@ -219,5 +220,9 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(BUNDLE_EXTRA, mFilterText);
         super.onSaveInstanceState(outState);
+    }
+
+    public FragmentActivity getParentActivity() {
+        return getActivity();
     }
 }

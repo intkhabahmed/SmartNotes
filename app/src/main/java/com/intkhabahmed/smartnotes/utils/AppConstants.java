@@ -16,4 +16,5 @@ public interface AppConstants {
     String NOTE_EXTRA = "job_note_extra";
     String PREF = "pref_";
     int WIDGET_IMAGE_SIZE = 1000;
+    String INVALID_VIEW_TYPE = "Unknown ViewType";
 }

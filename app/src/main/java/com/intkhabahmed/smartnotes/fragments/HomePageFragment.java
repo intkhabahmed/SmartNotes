@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,7 +48,7 @@ public class HomePageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mNotesFragmentPagerAdapter = new NotesFragmentPagerAdapter(getChildFragmentManager(), getActivity());
+        mNotesFragmentPagerAdapter = new NotesFragmentPagerAdapter(getChildFragmentManager(), getParentActivity());
         setHasOptionsMenu(true);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -76,19 +77,19 @@ public class HomePageFragment extends Fragment {
                 mHomeBinding.progressBar.setVisibility(View.INVISIBLE);
             }
         }, 100);
-        getActivity().setTitle(R.string.app_name);
+        getParentActivity().setTitle(R.string.app_name);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        CurrentFragmentListener listener = ((MainActivity) getActivity()).getCurrentFragmentListener();
+        CurrentFragmentListener listener = ((MainActivity) getParentActivity()).getCurrentFragmentListener();
         listener.setCurrentFragment(HomePageFragment.class.getSimpleName());
     }
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
+        getParentActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
         menu.getItem(1).getSubMenu().getItem(Global.getSortId() - 1).setChecked(true);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -98,7 +99,7 @@ public class HomePageFragment extends Fragment {
         int itemId = item.getItemId();
         switch (itemId) {
             case R.id.search_menu:
-                getActivity().getSupportFragmentManager().beginTransaction()
+                getParentActivity().getSupportFragmentManager().beginTransaction()
                         .addToBackStack(HomePageFragment.class.getName()).replace(R.id.fragment_layout, new SearchFragment())
                         .commit();
                 return true;
@@ -140,5 +141,9 @@ public class HomePageFragment extends Fragment {
 
     public ViewPager getViewPager() {
         return mHomeBinding.viewPager;
+    }
+
+    public FragmentActivity getParentActivity() {
+        return getActivity();
     }
 }

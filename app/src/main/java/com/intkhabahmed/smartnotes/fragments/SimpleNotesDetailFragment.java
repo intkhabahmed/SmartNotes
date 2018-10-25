@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -97,10 +98,10 @@ public class SimpleNotesDetailFragment extends Fragment {
         mDetailBinding.editNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddSimpleNote.class);
+                Intent intent = new Intent(getParentActivity(), AddSimpleNote.class);
                 intent.putExtra(Intent.EXTRA_TEXT, mNote);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                getParentActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }
@@ -125,12 +126,16 @@ public class SimpleNotesDetailFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     NoteRepository.getInstance().moveNoteToTrash(mNote);
-                    Toast.makeText(getActivity(), getString(R.string.moved_to_trash), Toast.LENGTH_LONG).show();
-                    getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    Toast.makeText(getParentActivity(), getString(R.string.moved_to_trash), Toast.LENGTH_LONG).show();
+                    getParentActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
             };
             ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public FragmentActivity getParentActivity() {
+        return getActivity();
     }
 }

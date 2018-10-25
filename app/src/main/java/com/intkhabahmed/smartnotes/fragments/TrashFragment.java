@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -56,12 +57,12 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = mNotesBinding.recyclerView;
-        mNotesAdapter = new NotesAdapter(getActivity(), this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mNotesAdapter = new NotesAdapter(getParentActivity(), this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getParentActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-        getActivity().setTitle(R.string.trash);
+        getParentActivity().setTitle(R.string.trash);
         setupViewModel();
     }
 
@@ -87,7 +88,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     @Override
     public void onResume() {
         super.onResume();
-        CurrentFragmentListener listener = ((MainActivity) getActivity()).getCurrentFragmentListener();
+        CurrentFragmentListener listener = ((MainActivity) getParentActivity()).getCurrentFragmentListener();
         listener.setCurrentFragment(TrashFragment.class.getSimpleName());
     }
 
@@ -107,7 +108,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
             simpleNotesDetailFragment.setNoteId(noteId);
             fragment = simpleNotesDetailFragment;
         }
-        getActivity().getSupportFragmentManager().beginTransaction()
+        getParentActivity().getSupportFragmentManager().beginTransaction()
                 .addToBackStack(null)
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(R.id.fragment_layout, fragment)
@@ -116,7 +117,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
 
     @Override
     public void onMenuItemClick(View view, final Note note) {
-        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+        PopupMenu popupMenu = new PopupMenu(getParentActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.getMenu().getItem(0).setTitle(getString(R.string.delete_forever));
         popupMenu.getMenu().getItem(1).setTitle(getString(R.string.restore));
@@ -127,23 +128,27 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
                 switch (id) {
                     case R.id.delete_note:
                         String imagePath = note.getDescription();
-                        BitmapUtils.deleteImageFile(getActivity(), imagePath);
+                        BitmapUtils.deleteImageFile(getParentActivity(), imagePath);
                         AppExecutors.getInstance().diskIO().execute(new Runnable() {
                             @Override
                             public void run() {
                                 NoteRepository.getInstance().deleteNote(note);
                             }
                         });
-                        Toast.makeText(getActivity(), getString(R.string.deleted_permanently), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getParentActivity(), getString(R.string.deleted_permanently), Toast.LENGTH_LONG).show();
                         break;
                     case R.id.share_note:
                         NoteRepository.getInstance().recoverNoteFromTrash(note);
-                        Toast.makeText(getActivity(), getString(R.string.restored), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getParentActivity(), getString(R.string.restored), Toast.LENGTH_LONG).show();
                         break;
                 }
                 return false;
             }
         });
         popupMenu.show();
+    }
+
+    public FragmentActivity getParentActivity() {
+        return getActivity();
     }
 }

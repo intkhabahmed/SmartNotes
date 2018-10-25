@@ -1,6 +1,7 @@
 package com.intkhabahmed.smartnotes.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -57,7 +58,7 @@ public class NotesFragmentPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public int getItemPosition(Object object) {
+    public int getItemPosition(@NonNull Object object) {
         if (object instanceof SimpleNotesFragment) {
             ((SimpleNotesFragment) object).updateSimpleNotesFragment();
         } else if (object instanceof ChecklistFragment) {

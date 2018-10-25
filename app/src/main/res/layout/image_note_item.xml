@@ -28,12 +28,12 @@
 
             <TextView
                 android:id="@+id/tv_note_title"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/no_space"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginStart="@dimen/large_space"
+                android:layout_marginLeft="@dimen/large_space"
+                android:layout_marginEnd="@dimen/medium_space"
+                android:layout_marginRight="@dimen/medium_space"
                 android:ellipsize="marquee"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.AppCompat.Headline"
@@ -45,11 +45,11 @@
 
             <TextView
                 android:id="@+id/tv_note_date_created"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/no_space"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="@dimen/medium_space"
+                android:layout_marginRight="@dimen/medium_space"
+                android:layout_marginBottom="@dimen/medium_space"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="?attr/secondaryTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -60,8 +60,8 @@
 
             <ImageButton
                 android:id="@+id/note_menu_button"
-                android:layout_width="48dp"
-                android:layout_height="0dp"
+                android:layout_width="@dimen/small_icon_size"
+                android:layout_height="@dimen/no_space"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/menu_button"
                 android:tint="?attr/iconPlaceHolder"

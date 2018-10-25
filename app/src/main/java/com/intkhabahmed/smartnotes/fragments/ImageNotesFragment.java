@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -52,9 +53,9 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = mNotesBinding.recyclerView;
-        mNotesAdapter = new NotesAdapter(getActivity(), this);
-        int noOfColumns = getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 3;
-        GridLayoutManager linearLayoutManager = new GridLayoutManager(getActivity(), noOfColumns);
+        mNotesAdapter = new NotesAdapter(getParentActivity(), this);
+        int noOfColumns = getParentActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 2 : 3;
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(getParentActivity(), noOfColumns);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
@@ -62,9 +63,9 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
         mNotesBinding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddImageNote.class);
+                Intent intent = new Intent(getParentActivity(), AddImageNote.class);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                getParentActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
         setupViewModel(false);
@@ -106,7 +107,7 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
     public void onItemClick(int noteId, String noteType) {
         ImageNotesDetailFragment imageNotesDetailFragment = new ImageNotesDetailFragment();
         imageNotesDetailFragment.setNoteId(noteId);
-        getActivity().getSupportFragmentManager().beginTransaction()
+        getParentActivity().getSupportFragmentManager().beginTransaction()
                 .addToBackStack(null)
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(R.id.fragment_layout, imageNotesDetailFragment)
@@ -116,7 +117,7 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
     @Override
     public void onMenuItemClick(View view, final Note note) {
 
-        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+        PopupMenu popupMenu = new PopupMenu(getParentActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -135,7 +136,7 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
                         break;
                     case R.id.share_note:
                         String imagePath = note.getDescription();
-                        BitmapUtils.shareImage(getActivity(), imagePath);
+                        BitmapUtils.shareImage(getParentActivity(), imagePath);
                         break;
                 }
                 return false;
@@ -153,7 +154,11 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
                 Snackbar.make(mNotesBinding.addButton, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getParentActivity(), R.attr.colorAccent));
         snackbar.show();
+    }
+
+    public FragmentActivity getParentActivity() {
+        return getActivity();
     }
 }

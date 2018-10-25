@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -92,7 +93,7 @@ public class ImageNotesDetailFragment extends Fragment {
         mDetailBinding.imageNoteView.setVisibility(View.VISIBLE);
         File imageFile = new File(mNote.getDescription());
         if (imageFile.exists()) {
-            Glide.with(getActivity()).load(Uri.fromFile(imageFile)).into(mDetailBinding.imageNoteView);
+            Glide.with(getParentActivity()).load(Uri.fromFile(imageFile)).into(mDetailBinding.imageNoteView);
         }
         mDetailBinding.tvNoteTitle.setText(mNote.getNoteTitle());
         mDetailBinding.tvDateCreated.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
@@ -103,10 +104,10 @@ public class ImageNotesDetailFragment extends Fragment {
         mDetailBinding.editNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddImageNote.class);
+                Intent intent = new Intent(getParentActivity(), AddImageNote.class);
                 intent.putExtra(Intent.EXTRA_TEXT, mNote);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                getParentActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }
@@ -131,12 +132,16 @@ public class ImageNotesDetailFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     NoteRepository.getInstance().moveNoteToTrash(mNote);
-                    Toast.makeText(getActivity(), getString(R.string.moved_to_trash), Toast.LENGTH_LONG).show();
-                    getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    Toast.makeText(getParentActivity(), getString(R.string.moved_to_trash), Toast.LENGTH_LONG).show();
+                    getParentActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
             };
             ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public FragmentActivity getParentActivity() {
+        return getActivity();
     }
 }

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -55,8 +56,8 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = mNotesBinding.recyclerView;
-        mNotesAdapter = new NotesAdapter(getActivity(), this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mNotesAdapter = new NotesAdapter(getParentActivity(), this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getParentActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
@@ -64,9 +65,9 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
         mNotesBinding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddSimpleNote.class);
+                Intent intent = new Intent(getParentActivity(), AddSimpleNote.class);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                getParentActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
         setupViewModel(false);
@@ -108,7 +109,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     public void onItemClick(int noteId, String noteType) {
         SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
         simpleNotesDetailFragment.setNoteId(noteId);
-        getActivity().getSupportFragmentManager().beginTransaction()
+        getParentActivity().getSupportFragmentManager().beginTransaction()
                 .addToBackStack(null)
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(R.id.fragment_layout, simpleNotesDetailFragment)
@@ -117,7 +118,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
 
     @Override
     public void onMenuItemClick(View view, final Note note) {
-        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+        PopupMenu popupMenu = new PopupMenu(getParentActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -135,7 +136,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
                         ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
                         break;
                     case R.id.share_note:
-                        NoteUtils.shareNote(getActivity(), note.getDescription());
+                        NoteUtils.shareNote(getParentActivity(), note.getDescription());
                         break;
                 }
                 return false;
@@ -153,7 +154,11 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
                 Snackbar.make(mNotesBinding.addButton, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getParentActivity(), R.attr.colorAccent));
         snackbar.show();
+    }
+
+    public FragmentActivity getParentActivity() {
+        return getActivity();
     }
 }

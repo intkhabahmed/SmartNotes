@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"
             android:background="?attr/colorPrimary"
-            app:contentInsetStart="72dp"
+            app:contentInsetStart="@dimen/toolbar_inset_space"
             app:titleTextColor="@android:color/white" />
 
         <android.support.v4.widget.NestedScrollView
@@ -29,11 +29,11 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/noteItemInputLayout"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/no_space"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="@dimen/medium_space"
+                    android:layout_marginEnd="@dimen/medium_space"
+                    android:layout_marginRight="@dimen/medium_space"
                     android:hint="@string/checklist_item"
                     android:textColorHint="?attr/secondaryTextColor"
                     app:hintTextAppearance="?attr/hintColor"
@@ -47,17 +47,17 @@
                         android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentLeft="true"
-                        android:layout_margin="0dp"
+                        android:layout_margin="@dimen/no_space"
                         android:background="@drawable/edit_text_background"
                         android:inputType="textPersonName"
-                        android:padding="16dp"
+                        android:padding="@dimen/large_space"
                         android:textColor="?attr/primaryTextColor" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/add_checklist_button"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="@dimen/medium_icon_size"
+                    android:layout_height="@dimen/medium_icon_size"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:contentDescription="@string/add_checklist_button"
@@ -69,13 +69,13 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/titleInputLayout"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/no_space"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="@dimen/large_space"
+                    android:layout_marginLeft="@dimen/large_space"
+                    android:layout_marginTop="@dimen/medium_space"
+                    android:layout_marginEnd="@dimen/large_space"
+                    android:layout_marginRight="@dimen/large_space"
                     android:hint="@string/checklist_title"
                     android:textColorHint="?attr/secondaryTextColor"
                     app:hintTextAppearance="?attr/hintColor"
@@ -87,23 +87,23 @@
                         android:id="@+id/checklist_title"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="0dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
+                        android:layout_margin="@dimen/no_space"
+                        android:layout_marginStart="@dimen/medium_space"
+                        android:layout_marginLeft="@dimen/medium_space"
                         android:background="@drawable/edit_text_background"
-                        android:ems="10"
+                        android:ems="@integer/edit_text_em"
                         android:inputType="textPersonName"
-                        android:padding="16dp"
+                        android:padding="@dimen/large_space"
                         android:textColor="?attr/primaryTextColor" />
                 </android.support.design.widget.TextInputLayout>
 
                 <TextView
                     android:id="@+id/items_label_tv"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/no_space"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="@dimen/medium_space"
+                    android:layout_marginLeft="@dimen/medium_space"
+                    android:layout_marginTop="@dimen/large_space"
                     android:text="@string/items"
                     android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                     android:textColor="?attr/primaryTextColor"
@@ -112,12 +112,12 @@
                     app:layout_constraintTop_toBottomOf="@+id/noteItemInputLayout" />
 
                 <android.support.v7.widget.CardView
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/no_space"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_margin="@dimen/medium_space"
                     app:cardBackgroundColor="?attr/cardViewBackground"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
+                    app:cardCornerRadius="@dimen/medium_space"
+                    app:cardElevation="@dimen/cardview_default_elevation"
                     app:cardUseCompatPadding="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -129,14 +129,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:padding="8dp" />
+                        android:padding="@dimen/medium_space" />
                 </android.support.v7.widget.CardView>
 
                 <CheckBox
                     android:id="@+id/enable_notification_cb"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/no_space"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/large_space"
                     android:text="@string/enable_notification_message"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                     android:textColor="?attr/primaryTextColor"
@@ -147,9 +147,9 @@
                 <ImageButton
                     android:id="@+id/date_time_picker_btn"
                     style="@style/Base.Widget.AppCompat.Button.Borderless"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_width="@dimen/medium_icon_size"
+                    android:layout_height="@dimen/medium_icon_size"
+                    android:layout_marginTop="@dimen/medium_space"
                     android:contentDescription="@string/notification_desc"
                     android:scaleType="centerCrop"
                     app:layout_constraintStart_toStartOf="@+id/titleInputLayout"
@@ -158,10 +158,10 @@
 
                 <TextView
                     android:id="@+id/date_time_tv"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/no_space"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="@dimen/medium_space"
+                    android:layout_marginLeft="@dimen/medium_space"
                     android:text="@string/notification_desc"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="?attr/primaryTextColor"
