@@ -3,11 +3,11 @@ package com.intkhabahmed.smartnotes.ui;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.databinding.DataBindingUtil;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.app.ActionBar;
@@ -22,16 +22,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.databinding.ActivityAddAndEditChecklistBinding;
 import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.services.NoteService;
@@ -47,28 +46,22 @@ import java.util.TreeMap;
 
 public class AddAndEditChecklist extends AppCompatActivity implements DateTimeListener {
 
-    private EditText mChecklistEditText;
-    private LinearLayout mChecklistContainer;
-    private EditText mChecklistTitleEditText;
     private boolean mIsEditing;
     private Note mNote;
     private boolean mIsChanged;
     private int mTrashed;
-    private ImageButton mAddChecklistItemButton;
     private MenuItem menuItem;
     private TreeMap<String, ChecklistItem> mItems;
     private String dateTime;
-    private TextView dateTimeTv;
-    private Group notificationGroup;
     private boolean isNotificationEnabled;
-    private CheckBox notificationCb;
+    private ActivityAddAndEditChecklistBinding mChecklistBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_and_edit_checklist);
+        mChecklistBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_and_edit_checklist);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = mChecklistBinding.toolbar;
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -86,8 +79,8 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (mTrashed == 0) {
-                    mIsChanged = !TextUtils.isEmpty(mChecklistEditText.getText().toString().trim())
-                            || !TextUtils.isEmpty(mChecklistTitleEditText.getText().toString().trim());
+                    mIsChanged = !TextUtils.isEmpty(mChecklistBinding.checklistItem.getText().toString().trim())
+                            || !TextUtils.isEmpty(mChecklistBinding.checklistTitle.getText().toString().trim());
                 }
             }
 
@@ -97,13 +90,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
             }
         };
 
-        notificationGroup = findViewById(R.id.notification_group);
-        mAddChecklistItemButton = findViewById(R.id.add_checklist_button);
-        mChecklistEditText = findViewById(R.id.checklist_item);
-        mChecklistContainer = findViewById(R.id.checklist_container);
-        mChecklistTitleEditText = findViewById(R.id.checklist_title);
-        mChecklistTitleEditText.addTextChangedListener(textWatcher);
-        dateTimeTv = findViewById(R.id.date_time_tv);
+        mChecklistBinding.checklistTitle.addTextChangedListener(textWatcher);
 
         ImageButton dateTimePickerBtn = findViewById(R.id.date_time_picker_btn);
         dateTimePickerBtn.setOnClickListener(new View.OnClickListener() {
@@ -113,15 +100,15 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
             }
         });
 
-        mAddChecklistItemButton.setOnClickListener(new View.OnClickListener() {
+        mChecklistBinding.addChecklistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String checklistItem = mChecklistEditText.getText().toString().trim().toLowerCase();
+                String checklistItem = mChecklistBinding.checklistItem.getText().toString().trim().toLowerCase();
                 if (TextUtils.isEmpty(checklistItem)) {
                     Toast.makeText(AddAndEditChecklist.this, getString(R.string.empty_item_error),
                             Toast.LENGTH_LONG).show();
                 } else if (!mItems.containsKey(checklistItem)) {
-                    mChecklistEditText.setText("");
+                    mChecklistBinding.checklistItem.setText("");
                     mIsChanged = true;
                     addChecklist(checklistItem, false);
                 } else {
@@ -130,7 +117,6 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                 }
             }
         });
-        notificationCb = findViewById(R.id.enable_notification_cb);
         ColorStateList colorStateList = new ColorStateList(
                 new int[][]{
                         new int[]{-android.R.attr.state_checked}, // unchecked
@@ -141,15 +127,15 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                         ViewUtils.getColorFromAttribute(this, R.attr.colorAccent),
                 }
         );
-        CompoundButtonCompat.setButtonTintList(notificationCb, colorStateList);
-        notificationCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        CompoundButtonCompat.setButtonTintList(mChecklistBinding.enableNotificationCb, colorStateList);
+        mChecklistBinding.enableNotificationCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isNotificationEnabled = isChecked;
                 if (isChecked) {
-                    notificationGroup.setVisibility(View.VISIBLE);
+                    mChecklistBinding.notificationGroup.setVisibility(View.VISIBLE);
                 } else {
-                    notificationGroup.setVisibility(View.GONE);
+                    mChecklistBinding.notificationGroup.setVisibility(View.GONE);
                 }
             }
         });
@@ -209,7 +195,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
         CompoundButtonCompat.setButtonTintList(checkBox, colorStateList);
         checkBox.setTextColor(ViewUtils.getColorFromAttribute(this, R.attr.primaryTextColor));
         removeButton.setColorFilter(ViewUtils.getColorFromAttribute(this, R.attr.iconPlaceHolder));
-        mChecklistContainer.addView(checkBoxContainer);
+        mChecklistBinding.checklistContainer.addView(checkBoxContainer);
         mItems.put(checklistItem, new ChecklistItem(checklistItem, checkBox.isChecked()));
         if (mTrashed == 0) {
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -233,7 +219,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                 if (mTrashed == 0) {
                     mItems.remove(checklistItem);
                     mIsChanged = true;
-                    mChecklistContainer.removeView(checkBoxContainer);
+                    mChecklistBinding.checklistContainer.removeView(checkBoxContainer);
                     if (mItems.size() == 0 && !mIsEditing) {
                         mIsChanged = false;
                     }
@@ -282,8 +268,8 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
             return;
         }
         String checklistData = new Gson().toJson(mItems.values());
-        String checklistTitle = mChecklistTitleEditText.getText().toString().trim();
-        String dateTimeString = dateTimeTv.getText().toString();
+        String checklistTitle = mChecklistBinding.checklistTitle.getText().toString().trim();
+        String dateTimeString = mChecklistBinding.dateTimeTv.getText().toString();
 
         if (TextUtils.isEmpty(checklistTitle)) {
             Toast.makeText(this, getString(R.string.list_title_error), Toast.LENGTH_LONG).show();
@@ -356,18 +342,18 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
         if (mNote != null) {
             mTrashed = mNote.getTrashed();
             if (mTrashed == 1) {
-                mChecklistTitleEditText.setEnabled(false);
-                mChecklistEditText.setVisibility(View.GONE);
-                mAddChecklistItemButton.setVisibility(View.GONE);
+                mChecklistBinding.checklistTitle.setEnabled(false);
+                mChecklistBinding.checklistItem.setVisibility(View.GONE);
+                mChecklistBinding.addChecklistButton.setVisibility(View.GONE);
                 menuItem.setVisible(false);
             }
-            mChecklistTitleEditText.setText(mNote.getNoteTitle());
+            mChecklistBinding.checklistTitle.setText(mNote.getNoteTitle());
             if (!TextUtils.isEmpty(mNote.getReminderDateTime()) && NoteUtils.getRelativeTimeFromNow(mNote.getReminderDateTime()) > 0) {
-                dateTimeTv.setText(mNote.getReminderDateTime());
-                notificationCb.setChecked(true);
+                mChecklistBinding.dateTimeTv.setText(mNote.getReminderDateTime());
+                mChecklistBinding.enableNotificationCb.setChecked(true);
             } else {
-                dateTimeTv.setText(getString(R.string.notification_desc));
-                notificationCb.setChecked(false);
+                mChecklistBinding.dateTimeTv.setText(getString(R.string.notification_desc));
+                mChecklistBinding.enableNotificationCb.setChecked(false);
             }
             List<ChecklistItem> checklistItems = new Gson().fromJson(mNote.getDescription(), new TypeToken<List<ChecklistItem>>() {
             }.getType());
@@ -400,7 +386,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
     @Override
     public void dateTimeSelected(boolean isSelected) {
         if (isSelected) {
-            dateTimeTv.setText(dateTime);
+            mChecklistBinding.dateTimeTv.setText(dateTime);
         }
     }
 }

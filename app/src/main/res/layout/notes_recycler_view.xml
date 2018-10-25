@@ -1,115 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
-        android:id="@+id/root_frame_layout"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <FrameLayout
+            android:id="@+id/root_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layoutAnimation="@anim/layout_slide_in_bottom" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="invisible"
-            tools:ignore="UseCompoundDrawables">
-
-            <ImageView
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:contentDescription="@string/trash_empty_view_description"
-                app:srcCompat="@drawable/ic_note_add_24dp" />
-
-            <TextView
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/enpty_view_description"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                android:textColor="?attr/primaryTextColor" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:layoutAnimation="@anim/layout_slide_in_bottom" />
 
-        <LinearLayout
-            android:id="@+id/trash_empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="invisible"
-            tools:ignore="UseCompoundDrawables">
-
-            <ImageView
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:contentDescription="@string/trash_empty_view_description"
-                app:srcCompat="@drawable/ic_empty_trash_black_24dp" />
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/empty_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/trash_empty_view_description"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                android:textColor="?attr/primaryTextColor" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                tools:ignore="UseCompoundDrawables">
 
-        <LinearLayout
-            android:id="@+id/search_error_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="invisible"
-            tools:ignore="UseCompoundDrawables">
+                <ImageView
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:contentDescription="@string/trash_empty_view_description"
+                    app:srcCompat="@drawable/ic_note_add_24dp" />
 
-            <ImageView
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:contentDescription="@string/search_error_view_description"
-                app:srcCompat="@drawable/ic_error_24dp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/empty_view_description"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:textColor="?attr/primaryTextColor" />
+            </LinearLayout>
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/trash_empty_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/search_error_view_description"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                android:textColor="?attr/primaryTextColor" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                tools:ignore="UseCompoundDrawables">
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:visibility="gone" />
+                <ImageView
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:contentDescription="@string/trash_empty_view_description"
+                    app:srcCompat="@drawable/ic_empty_trash_black_24dp" />
 
-    </FrameLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/trash_empty_view_description"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:textColor="?attr/primaryTextColor" />
+            </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_button"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_add_black_24dp" />
-</android.support.design.widget.CoordinatorLayout>
+            <LinearLayout
+                android:id="@+id/search_error_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="invisible"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:contentDescription="@string/search_error_view_description"
+                    app:srcCompat="@drawable/ic_error_24dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/search_error_view_description"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:textColor="?attr/primaryTextColor" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_button"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_add_black_24dp" />
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

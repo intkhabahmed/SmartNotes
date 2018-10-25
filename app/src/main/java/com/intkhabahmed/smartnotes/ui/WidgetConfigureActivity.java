@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -14,11 +15,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
+import com.intkhabahmed.smartnotes.databinding.AcivityWidgetConfigureBinding;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.services.NoteService;
 import com.intkhabahmed.smartnotes.utils.AppConstants;
@@ -33,14 +33,13 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
 
     private NotesAdapter mNotesAdapter;
     private RecyclerView mRecyclerView;
-    private LinearLayout mEmptyView;
-    private ProgressBar mProgressBar;
     private int widgetId;
+    private AcivityWidgetConfigureBinding mWidgetBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.acivity_widget_configure);
+        mWidgetBinding = DataBindingUtil.setContentView(this, R.layout.acivity_widget_configure);
     }
 
     @Override
@@ -53,7 +52,7 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
 
     private void setupUi() {
         setResult(RESULT_CANCELED);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = mWidgetBinding.toolbar;
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -61,9 +60,7 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_white_black_24dp);
             actionBar.setTitle(R.string.select_note_btn);
         }
-        mRecyclerView = findViewById(R.id.recycler_view);
-        mEmptyView = findViewById(R.id.empty_view);
-        mProgressBar = findViewById(R.id.progress_bar);
+        mRecyclerView = mWidgetBinding.included.recyclerView;
         mNotesAdapter = new NotesAdapter(this, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -79,19 +76,19 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
     }
 
     private void setupViewModel() {
-        mProgressBar.setVisibility(View.VISIBLE);
+        mWidgetBinding.included.progressBar.setVisibility(View.VISIBLE);
         NotesViewModelFactory factory = new NotesViewModelFactory(null, 0);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
-                mProgressBar.setVisibility(View.GONE);
+                mWidgetBinding.included.progressBar.setVisibility(View.GONE);
                 if (notes != null && notes.size() > 0) {
-                    ViewUtils.hideEmptyView(mRecyclerView, mEmptyView);
+                    ViewUtils.hideEmptyView(mRecyclerView, mWidgetBinding.included.emptyView);
                     mNotesAdapter.setNotes(notes);
                 } else {
                     mNotesAdapter.setNotes(null);
-                    ViewUtils.showEmptyView(mRecyclerView, mEmptyView);
+                    ViewUtils.showEmptyView(mRecyclerView, mWidgetBinding.included.emptyView);
                 }
             }
         });

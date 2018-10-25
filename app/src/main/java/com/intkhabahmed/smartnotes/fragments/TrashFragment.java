@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,14 +13,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.databinding.NotesRecyclerViewBinding;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.ui.MainActivity;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
@@ -35,8 +35,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
 
     private NotesAdapter mNotesAdapter;
     private RecyclerView mRecyclerView;
-    private LinearLayout mEmptyView;
-    private ProgressBar mProgressBar;
+    private NotesRecyclerViewBinding mNotesBinding;
 
     public TrashFragment() {
     }
@@ -49,41 +48,37 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.notes_recycler_view, container, false);
+        mNotesBinding = DataBindingUtil.inflate(inflater, R.layout.notes_recycler_view, container, false);
+        return mNotesBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView = view.findViewById(R.id.recycler_view);
-        mEmptyView = view.findViewById(R.id.trash_empty_view);
-        mProgressBar = view.findViewById(R.id.progress_bar);
-
+        mRecyclerView = mNotesBinding.recyclerView;
         mNotesAdapter = new NotesAdapter(getActivity(), this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-        mProgressBar.setVisibility(View.VISIBLE);
-        mEmptyView.setVisibility(View.INVISIBLE);
         getActivity().setTitle(R.string.trash);
         setupViewModel();
     }
 
     private void setupViewModel() {
-        mProgressBar.setVisibility(View.VISIBLE);
+        mNotesBinding.progressBar.setVisibility(View.VISIBLE);
         NotesViewModelFactory factory = new NotesViewModelFactory(null, 1);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
-                mProgressBar.setVisibility(View.GONE);
+                mNotesBinding.progressBar.setVisibility(View.GONE);
                 if (notes != null && notes.size() > 0) {
-                    ViewUtils.hideEmptyView(mRecyclerView, mEmptyView);
+                    ViewUtils.hideEmptyView(mRecyclerView, mNotesBinding.trashEmptyView);
                     mNotesAdapter.setNotes(notes);
                 } else {
                     mNotesAdapter.setNotes(null);
-                    ViewUtils.showEmptyView(mRecyclerView, mEmptyView);
+                    ViewUtils.showEmptyView(mRecyclerView, mNotesBinding.trashEmptyView);
                 }
             }
         });

@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.Group;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -25,13 +25,9 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +35,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.databinding.ActivityAddImageNoteBinding;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.services.NoteService;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
@@ -56,27 +53,22 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
     private static final int RC_STORAGE_PERMISSION = 100;
     private static final String FILEPROVIDER_AUTHORITY = "com.intkhabahmed.fileprovider";
     private static final int RC_CAPTURE_IMAGE = 101;
-    private ImageButton mCaptureImageButton;
-    private EditText mNoteTitleEditText;
-    private ImageView mImageView;
     private String mTempImagePath;
     private String mBackupTempImagePath;
     private Bitmap mResultBitmap;
-    private Button mChangeImageButton;
     private boolean mIsChanged;
     private Note mNote;
     private boolean mIsEditing;
     private boolean mIsImageChanged;
     private String mOldDescription;
     private String dateTime;
-    private TextView dateTimeTv;
-    private Group notificationGroup;
     private boolean isNotificationEnabled;
+    private ActivityAddImageNoteBinding mImageBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_image_note);
+        mImageBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_image_note);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -95,7 +87,7 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mIsChanged = !TextUtils.isEmpty(mNoteTitleEditText.getText().toString().trim());
+                mIsChanged = !TextUtils.isEmpty(mImageBinding.noteTitleInput.getText().toString().trim());
             }
 
             @Override
@@ -104,13 +96,7 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
             }
         };
 
-        notificationGroup = findViewById(R.id.notification_group);
-        mCaptureImageButton = findViewById(R.id.capture_image_button);
-        mNoteTitleEditText = findViewById(R.id.note_title_input);
-        mImageView = findViewById(R.id.iv_image_note);
-        mChangeImageButton = findViewById(R.id.change_image_button);
-        mNoteTitleEditText.addTextChangedListener(textWatcher);
-        dateTimeTv = findViewById(R.id.date_time_tv);
+        mImageBinding.noteTitleInput.addTextChangedListener(textWatcher);
 
         CheckBox notificationCb = findViewById(R.id.enable_notification_cb);
         ColorStateList colorStateList = new ColorStateList(
@@ -129,9 +115,9 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isNotificationEnabled = isChecked;
                 if (isChecked) {
-                    notificationGroup.setVisibility(View.VISIBLE);
+                    mImageBinding.notificationGroup.setVisibility(View.VISIBLE);
                 } else {
-                    notificationGroup.setVisibility(View.GONE);
+                    mImageBinding.notificationGroup.setVisibility(View.GONE);
                 }
             }
         });
@@ -144,7 +130,7 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
             }
         });
 
-        mChangeImageButton.setOnClickListener(new View.OnClickListener() {
+        mImageBinding.changeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mBackupTempImagePath = mTempImagePath;
@@ -152,7 +138,7 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
             }
         });
 
-        mCaptureImageButton.setOnClickListener(new View.OnClickListener() {
+        mImageBinding.captureImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 checkCameraPermission();
@@ -163,18 +149,18 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
             mIsEditing = true;
             mNote = intent.getParcelableExtra(Intent.EXTRA_TEXT);
             if (mNote != null) {
-                mNoteTitleEditText.setText(mNote.getNoteTitle());
+                mImageBinding.noteTitleInput.setText(mNote.getNoteTitle());
                 mOldDescription = mNote.getDescription();
                 if (!TextUtils.isEmpty(mNote.getReminderDateTime()) && NoteUtils.getRelativeTimeFromNow(mNote.getReminderDateTime()) > 0) {
-                    dateTimeTv.setText(mNote.getReminderDateTime());
+                    mImageBinding.dateTimeTv.setText(mNote.getReminderDateTime());
                     notificationCb.setChecked(true);
                 } else {
-                    dateTimeTv.setText(getString(R.string.notification_desc));
+                    mImageBinding.dateTimeTv.setText(getString(R.string.notification_desc));
                     notificationCb.setChecked(false);
                 }
                 File image = new File(mNote.getDescription());
                 if (image.exists()) {
-                    Glide.with(this).asDrawable().load(Uri.fromFile(image)).into(mImageView);
+                    Glide.with(this).asDrawable().load(Uri.fromFile(image)).into(mImageBinding.ivImageNote);
                     Glide.with(this).asBitmap().load(Uri.fromFile(image)).into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -183,13 +169,13 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
                     });
                 }
             }
-            mChangeImageButton.setVisibility(View.VISIBLE);
-            mCaptureImageButton.setVisibility(View.GONE);
-            mImageView.setVisibility(View.VISIBLE);
+            mImageBinding.changeImageButton.setVisibility(View.VISIBLE);
+            mImageBinding.captureImageButton.setVisibility(View.GONE);
+            mImageBinding.ivImageNote.setVisibility(View.VISIBLE);
         } else {
             mIsEditing = false;
-            mImageView.setVisibility(View.GONE);
-            mChangeImageButton.setVisibility(View.INVISIBLE);
+            mImageBinding.ivImageNote.setVisibility(View.GONE);
+            mImageBinding.changeImageButton.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -261,14 +247,14 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
     }
 
     private void processAndSetImage() {
-        mImageView.setVisibility(View.VISIBLE);
-        mCaptureImageButton.setVisibility(View.GONE);
+        mImageBinding.ivImageNote.setVisibility(View.VISIBLE);
+        mImageBinding.captureImageButton.setVisibility(View.GONE);
         mResultBitmap = BitmapUtils.resamplePic(this, mTempImagePath);
         if (mBackupTempImagePath != null && new File(mBackupTempImagePath).exists()) {
             BitmapUtils.deleteImageFile(AddImageNote.this, mBackupTempImagePath);
         }
-        mImageView.setImageBitmap(mResultBitmap);
-        mChangeImageButton.setVisibility(View.VISIBLE);
+        mImageBinding.ivImageNote.setImageBitmap(mResultBitmap);
+        mImageBinding.changeImageButton.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -315,8 +301,8 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
     }
 
     private void insertImageNote() {
-        String noteTitle = mNoteTitleEditText.getText().toString().trim();
-        String dateTimeString = dateTimeTv.getText().toString();
+        String noteTitle = mImageBinding.noteTitleInput.getText().toString().trim();
+        String dateTimeString = mImageBinding.dateTimeTv.getText().toString();
         if (!noteTitle.matches("[A-Za-z0-9 ]+") || noteTitle.matches("[0-9 ]+")) {
             Toast.makeText(this, getString(R.string.title_regex_error), Toast.LENGTH_LONG).show();
             return;
@@ -412,7 +398,7 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
     @Override
     public void dateTimeSelected(boolean isSelected) {
         if (isSelected) {
-            dateTimeTv.setText(dateTime);
+            mImageBinding.dateTimeTv.setText(dateTime);
         }
     }
 }

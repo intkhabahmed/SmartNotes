@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.databinding.NoteDetailLayoutBinding;
 import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
@@ -40,11 +42,7 @@ public class ChecklistNotesDetailFragment extends Fragment {
     private Note mNote;
     private int mNoteId;
     private static final String BUNDLE_DATA = "bundle-data";
-    private TextView noteTitleTextView;
-    private LinearLayout checklistContainer;
-    private TextView noteCreatedDateTextView;
-    private TextView noteModifiedDateTextView;
-    private FloatingActionButton editButton;
+    private NoteDetailLayoutBinding mDetailBinding;
 
     public ChecklistNotesDetailFragment() {
     }
@@ -65,17 +63,13 @@ public class ChecklistNotesDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.note_detail_layout, container, false);
+        mDetailBinding = DataBindingUtil.inflate(inflater, R.layout.note_detail_layout, container, false);
+        return mDetailBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        noteTitleTextView = view.findViewById(R.id.tv_note_title);
-        checklistContainer = view.findViewById(R.id.checklist_container);
-        noteCreatedDateTextView = view.findViewById(R.id.tv_date_created);
-        noteModifiedDateTextView = view.findViewById(R.id.tv_date_modified);
-        editButton = view.findViewById(R.id.edit_note_button);
         setupNoteViewModel();
     }
 
@@ -90,7 +84,7 @@ public class ChecklistNotesDetailFragment extends Fragment {
                     if (mNote.getTrashed() == 1) {
                         setHasOptionsMenu(false);
                     }
-                    checklistContainer.removeAllViews();
+                    mDetailBinding.checklistContainer.removeAllViews();
                     setupUI();
                 }
             }
@@ -98,20 +92,20 @@ public class ChecklistNotesDetailFragment extends Fragment {
     }
 
     private void setupUI() {
-        checklistContainer.setVisibility(View.VISIBLE);
-        noteTitleTextView.setText(mNote.getNoteTitle());
+        mDetailBinding.checklistContainer.setVisibility(View.VISIBLE);
+        mDetailBinding.tvNoteTitle.setText(mNote.getNoteTitle());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 populateChecklistData();
             }
         }, 200);
-        noteCreatedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
-        noteModifiedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
+        mDetailBinding.tvDateCreated.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
+        mDetailBinding.tvDateModified.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
         if (mNote.getTrashed() == 1) {
-            editButton.setVisibility(View.GONE);
+            mDetailBinding.editNoteButton.setVisibility(View.GONE);
         }
-        editButton.setOnClickListener(new View.OnClickListener() {
+        mDetailBinding.editNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AddAndEditChecklist.class);
@@ -165,7 +159,7 @@ public class ChecklistNotesDetailFragment extends Fragment {
                 if (checklistItems.get(i).isChecked()) {
                     checklistItem.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
                 }
-                checklistContainer.addView(checklistItem);
+                mDetailBinding.checklistContainer.addView(checklistItem);
             }
         }
     }

@@ -3,8 +3,8 @@ package com.intkhabahmed.smartnotes.ui;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.constraint.Group;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,13 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.databinding.ActivityAddSimpleNoteBinding;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.services.NoteService;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
@@ -35,20 +34,17 @@ import com.intkhabahmed.smartnotes.utils.ViewUtils;
 
 public class AddSimpleNote extends AppCompatActivity implements DateTimeListener {
 
-    private EditText mNoteTitleEditText;
-    private EditText mNoteDescriptionEditText;
     private boolean mIsEditing;
     private Note mNote;
     private boolean mIsChanged;
     private String dateTime;
-    private TextView dateTimeTv;
-    private Group notificationGroup;
     private boolean isNotificationEnabled;
+    private ActivityAddSimpleNoteBinding mSimpleBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_simple_note);
+        mSimpleBinding = DataBindingUtil.setContentView(this, R.layout.activity_add_simple_note);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,8 +63,8 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mIsChanged = !TextUtils.isEmpty(mNoteTitleEditText.getText().toString().trim())
-                        || !TextUtils.isEmpty(mNoteDescriptionEditText.getText().toString().trim());
+                mIsChanged = !TextUtils.isEmpty(mSimpleBinding.noteTitleInput.getText().toString().trim())
+                        || !TextUtils.isEmpty(mSimpleBinding.noteDescriptionInput.getText().toString().trim());
             }
 
             @Override
@@ -77,12 +73,8 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
             }
         };
 
-        mNoteTitleEditText = findViewById(R.id.note_title_input);
-        notificationGroup = findViewById(R.id.notification_group);
-        mNoteDescriptionEditText = findViewById(R.id.note_description_input);
-        dateTimeTv = findViewById(R.id.date_time_tv);
-        mNoteTitleEditText.addTextChangedListener(textWatcher);
-        mNoteDescriptionEditText.addTextChangedListener(textWatcher);
+        mSimpleBinding.noteTitleInput.addTextChangedListener(textWatcher);
+        mSimpleBinding.noteDescriptionInput.addTextChangedListener(textWatcher);
         CheckBox notificationCb = findViewById(R.id.enable_notification_cb);
         ColorStateList colorStateList = new ColorStateList(
                 new int[][]{
@@ -100,9 +92,9 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isNotificationEnabled = isChecked;
                 if (isChecked) {
-                    notificationGroup.setVisibility(View.VISIBLE);
+                    mSimpleBinding.notificationGroup.setVisibility(View.VISIBLE);
                 } else {
-                    notificationGroup.setVisibility(View.GONE);
+                    mSimpleBinding.notificationGroup.setVisibility(View.GONE);
                 }
             }
         });
@@ -112,13 +104,13 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
             mIsEditing = true;
             mNote = intent.getParcelableExtra(Intent.EXTRA_TEXT);
             if (mNote != null) {
-                mNoteTitleEditText.setText(mNote.getNoteTitle());
-                mNoteDescriptionEditText.setText(mNote.getDescription());
+                mSimpleBinding.noteTitleInput.setText(mNote.getNoteTitle());
+                mSimpleBinding.noteDescriptionInput.setText(mNote.getDescription());
                 if (!TextUtils.isEmpty(mNote.getReminderDateTime()) && NoteUtils.getRelativeTimeFromNow(mNote.getReminderDateTime()) > 0) {
-                    dateTimeTv.setText(mNote.getReminderDateTime());
+                    mSimpleBinding.dateTimeTv.setText(mNote.getReminderDateTime());
                     notificationCb.setChecked(true);
                 } else {
-                    dateTimeTv.setText(getString(R.string.notification_desc));
+                    mSimpleBinding.dateTimeTv.setText(getString(R.string.notification_desc));
                     notificationCb.setChecked(false);
                 }
             }
@@ -168,9 +160,9 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
     }
 
     public void insertSimpleNote() {
-        String noteTitle = mNoteTitleEditText.getText().toString().trim();
-        String noteDescription = mNoteDescriptionEditText.getText().toString().trim();
-        String dateTimeString = dateTimeTv.getText().toString();
+        String noteTitle = mSimpleBinding.noteTitleInput.getText().toString().trim();
+        String noteDescription = mSimpleBinding.noteDescriptionInput.getText().toString().trim();
+        String dateTimeString = mSimpleBinding.dateTimeTv.getText().toString();
 
         if (TextUtils.isEmpty(noteTitle) || TextUtils.isEmpty(noteDescription)) {
             Toast.makeText(this, getString(R.string.mandatory_fields_error), Toast.LENGTH_LONG).show();
@@ -261,7 +253,7 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
     @Override
     public void dateTimeSelected(boolean isSelected) {
         if (isSelected) {
-            dateTimeTv.setText(dateTime);
+            mSimpleBinding.dateTimeTv.setText(dateTime);
         }
     }
 }

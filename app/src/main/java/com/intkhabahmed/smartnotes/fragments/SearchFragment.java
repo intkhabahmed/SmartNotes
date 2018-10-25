@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,14 +21,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.databinding.NotesRecyclerViewBinding;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
@@ -40,11 +40,10 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     private NotesAdapter mNotesAdapter;
     private RecyclerView mRecyclerView;
-    private LinearLayout mEmptyView;
     private SearchView mSearchView;
     private String mFilterText;
-    private FrameLayout mRootFrameLayout;
     private static final String BUNDLE_EXTRA = "search-query";
+    private NotesRecyclerViewBinding mNotesBinding;
 
     public SearchFragment() {
     }
@@ -60,15 +59,14 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.notes_recycler_view, container, false);
+        mNotesBinding = DataBindingUtil.inflate(inflater, R.layout.notes_recycler_view, container, false);
+        return mNotesBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        mRootFrameLayout = view.findViewById(R.id.root_frame_layout);
-        mRecyclerView = view.findViewById(R.id.recycler_view);
-        mEmptyView = view.findViewById(R.id.search_error_view);
+        mRecyclerView = mNotesBinding.recyclerView;
         mNotesAdapter = new NotesAdapter(getActivity(), this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -146,15 +144,15 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     private void showEmptyView() {
         mRecyclerView.setVisibility(View.INVISIBLE);
-        mEmptyView.setVisibility(View.INVISIBLE);
+        mNotesBinding.searchErrorView.setVisibility(View.INVISIBLE);
         if (!TextUtils.isEmpty(mFilterText)) {
-            mEmptyView.setVisibility(View.VISIBLE);
+            mNotesBinding.emptyView.setVisibility(View.VISIBLE);
         }
     }
 
     private void hideEmptyView() {
         mRecyclerView.setVisibility(View.VISIBLE);
-        mEmptyView.setVisibility(View.INVISIBLE);
+        mNotesBinding.searchErrorView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -205,12 +203,12 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     }
 
     private void showSnackBar(final Note note) {
-        Snackbar snackbar = Snackbar.make(mRootFrameLayout, getString(R.string.moved_to_trash), Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(mNotesBinding.rootFrameLayout, getString(R.string.moved_to_trash), Snackbar.LENGTH_LONG);
         snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NoteRepository.getInstance().recoverNoteFromTrash(note);
-                Snackbar.make(mRootFrameLayout, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mNotesBinding.rootFrameLayout, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
         snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));

@@ -4,10 +4,10 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -16,11 +16,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.databinding.NoteDetailLayoutBinding;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.ui.AddSimpleNote;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
@@ -33,11 +33,7 @@ public class SimpleNotesDetailFragment extends Fragment {
     private Note mNote;
     private int mNoteId;
     private static final String BUNDLE_DATA = "bundle-data";
-    private TextView noteTitleTextView;
-    private TextView noteDescriptionTextView;
-    private TextView noteCreatedDateTextView;
-    private TextView noteModifiedDateTextView;
-    private FloatingActionButton editButton;
+    private NoteDetailLayoutBinding mDetailBinding;
 
 
     public SimpleNotesDetailFragment() {
@@ -61,17 +57,13 @@ public class SimpleNotesDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.note_detail_layout, container, false);
+        mDetailBinding = DataBindingUtil.inflate(inflater, R.layout.note_detail_layout, container, false);
+        return mDetailBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        noteTitleTextView = view.findViewById(R.id.tv_note_title);
-        noteDescriptionTextView = view.findViewById(R.id.tv_note_description);
-        noteCreatedDateTextView = view.findViewById(R.id.tv_date_created);
-        noteModifiedDateTextView = view.findViewById(R.id.tv_date_modified);
-        editButton = view.findViewById(R.id.edit_note_button);
         setupNoteViewModel();
     }
 
@@ -93,16 +85,16 @@ public class SimpleNotesDetailFragment extends Fragment {
     }
 
     private void setupUI() {
-        noteDescriptionTextView.setVisibility(View.VISIBLE);
-        noteTitleTextView.setText(mNote.getNoteTitle());
-        noteDescriptionTextView.setText(mNote.getDescription());
-        noteCreatedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
-        noteModifiedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
+        mDetailBinding.tvNoteDescription.setVisibility(View.VISIBLE);
+        mDetailBinding.tvNoteTitle.setText(mNote.getNoteTitle());
+        mDetailBinding.tvNoteDescription.setText(mNote.getDescription());
+        mDetailBinding.tvDateCreated.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
+        mDetailBinding.tvDateModified.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
         if (mNote.getTrashed() == 1) {
-            editButton.setVisibility(View.GONE);
+            mDetailBinding.editNoteButton.setVisibility(View.GONE);
         }
 
-        editButton.setOnClickListener(new View.OnClickListener() {
+        mDetailBinding.editNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AddSimpleNote.class);

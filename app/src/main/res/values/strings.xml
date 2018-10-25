@@ -8,7 +8,7 @@
     <string name="about">About</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
-    <string name="enpty_view_description">No notes to show, click on add button to add a new note</string>
+    <string name="empty_view_description">No notes to show, click on add button to add a new note</string>
     <string name="image_note">Image Note</string>
     <string name="title">Title</string>
     <string name="note_title">Note Title</string>
