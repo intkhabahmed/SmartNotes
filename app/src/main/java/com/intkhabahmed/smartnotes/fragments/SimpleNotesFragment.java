@@ -4,25 +4,25 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.databinding.NotesRecyclerViewBinding;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.ui.AddSimpleNote;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
@@ -40,9 +40,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
 
     private NotesAdapter mNotesAdapter;
     private RecyclerView mRecyclerView;
-    private LinearLayout mEmptyView;
-    private ProgressBar mProgressBar;
-    private FloatingActionButton mAddButton;
+    private NotesRecyclerViewBinding mNotesBinding;
 
     public SimpleNotesFragment() {
     }
@@ -50,36 +48,33 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.notes_recycler_view, container, false);
+        mNotesBinding = DataBindingUtil.inflate(inflater, R.layout.notes_recycler_view, container, false);
+        return mNotesBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mRecyclerView = view.findViewById(R.id.recycler_view);
-        mEmptyView = view.findViewById(R.id.empty_view);
-        mProgressBar = view.findViewById(R.id.progress_bar);
-        mNotesAdapter = new NotesAdapter(getActivity(), this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView = mNotesBinding.recyclerView;
+        mNotesAdapter = new NotesAdapter(getParentActivity(), this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getParentActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-        mEmptyView.setVisibility(View.INVISIBLE);
-        mAddButton = view.findViewById(R.id.add_button);
-        mAddButton.setVisibility(View.VISIBLE);
-        mAddButton.setOnClickListener(new View.OnClickListener() {
+        mNotesBinding.addButton.setVisibility(View.VISIBLE);
+        mNotesBinding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddSimpleNote.class);
+                Intent intent = new Intent(getParentActivity(), AddSimpleNote.class);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                getParentActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
         setupViewModel(false);
     }
 
     private void setupViewModel(boolean isSortCriteriaChanged) {
-        mProgressBar.setVisibility(View.VISIBLE);
+        mNotesBinding.progressBar.setVisibility(View.VISIBLE);
         NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.simple_note), 0);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
         if (isSortCriteriaChanged) {
@@ -88,13 +83,13 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
-                mProgressBar.setVisibility(View.GONE);
+                mNotesBinding.progressBar.setVisibility(View.GONE);
                 if (notes != null && notes.size() > 0) {
-                    ViewUtils.hideEmptyView(mRecyclerView, mEmptyView);
+                    ViewUtils.hideEmptyView(mRecyclerView, mNotesBinding.emptyView);
                     mNotesAdapter.setNotes(notes);
                 } else {
                     mNotesAdapter.setNotes(null);
-                    ViewUtils.showEmptyView(mRecyclerView, mEmptyView);
+                    ViewUtils.showEmptyView(mRecyclerView, mNotesBinding.emptyView);
                 }
             }
         });
@@ -103,7 +98,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     @Override
     public void onResume() {
         super.onResume();
-        mAddButton.setVisibility(View.VISIBLE);
+        mNotesBinding.addButton.setVisibility(View.VISIBLE);
     }
 
     public void updateSimpleNotesFragment() {
@@ -114,7 +109,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     public void onItemClick(int noteId, String noteType) {
         SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
         simpleNotesDetailFragment.setNoteId(noteId);
-        getActivity().getSupportFragmentManager().beginTransaction()
+        getParentActivity().getSupportFragmentManager().beginTransaction()
                 .addToBackStack(null)
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(R.id.fragment_layout, simpleNotesDetailFragment)
@@ -123,7 +118,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
 
     @Override
     public void onMenuItemClick(View view, final Note note) {
-        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+        PopupMenu popupMenu = new PopupMenu(getParentActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -141,7 +136,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
                         ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
                         break;
                     case R.id.share_note:
-                        NoteUtils.shareNote(getActivity(), note.getDescription());
+                        NoteUtils.shareNote(getParentActivity(), note.getDescription());
                         break;
                 }
                 return false;
@@ -151,15 +146,19 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     }
 
     private void showSnackBar(final Note note) {
-        Snackbar snackbar = Snackbar.make(mAddButton, getString(R.string.moved_to_trash), Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(mNotesBinding.addButton, getString(R.string.moved_to_trash), Snackbar.LENGTH_LONG);
         snackbar.setAction(getString(R.string.undo), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NoteRepository.getInstance().recoverNoteFromTrash(note);
-                Snackbar.make(mAddButton, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mNotesBinding.addButton, getString(R.string.restored), Snackbar.LENGTH_LONG).show();
             }
         });
-        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getActivity(), R.attr.colorAccent));
+        snackbar.setActionTextColor(ViewUtils.getColorFromAttribute(getParentActivity(), R.attr.colorAccent));
         snackbar.show();
+    }
+
+    public FragmentActivity getParentActivity() {
+        return getActivity();
     }
 }

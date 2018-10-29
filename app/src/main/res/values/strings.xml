@@ -8,7 +8,7 @@
     <string name="about">About</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
-    <string name="enpty_view_description">No notes to show, click on add button to add a new note</string>
+    <string name="empty_view_description">No notes to show, click on add button to add a new note</string>
     <string name="image_note">Image Note</string>
     <string name="title">Title</string>
     <string name="note_title">Note Title</string>
@@ -84,4 +84,33 @@
     <string name="enable_notification_message">Want to set reminder notification?</string>
     <string name="notification_error">Select a date and time for notification</string>
     <string name="select_note_btn">Select a note to display</string>
+    <string name="app_desc">\"Smart Notes is a simple and awesome notepad app. It gives you a quick and simple notepad
+    editing experience when you write notes, shopping lists, to-do lists and image notes. Making
+        notes in this app is very easy.\"</string>
+    <string name="app_features"><b><big><u>Features:</u></big></b> \n\n The main features of this app are: \n
+        <big>&#8226;</big> Makes simple text note in just two clicks \n
+        <big>&#8226;</big> Take Pictures and save as a note \n
+        <big>&#8226;</big> Makes checklist notes for To-do list &amp; Shopping list. \n
+        <big>&#8226;</big> Notification reminder for the notes \n
+        <big>&#8226;</big> Search notes by Title \n
+        <big>&#8226;</big> Easy share notes via SMS, E-mail, Twitter or any other platform \n
+        <big>&#8226;</big> Sticky note memo widget (Put your notes on your home screen)</string>
+    <string name="note_making_steps"><b><big><u>Taking a text note:</u></big></b> \n\n
+    Just click on the ‘+’ button and select the text note option from the dialog box. Then just write
+the title and the text and click on the save button. You can write as many words as you want, there is no limit to that. Once saved, you can edit , share, set a reminder or delete using the
+item menu by clicking on the three vertical dots on the list item. Once deleted, it will be moved to
+trash and from there you can either restore it or delete it permanently. \n\n
+        <b><big><u>Making To-do List or Shopping List:</u></big></b> \n\n
+    Just click on the ‘+’ button and select the checklist note option from the dialog box. In Checklist
+mode, you can add the title and add as many items as you want for your list. After the list is
+finished, click on save button to save it. You can toggle the checkbox of each item in this mode
+and after finishing, just save it. On checking the list item, the item will be line slashed indicating
+it is finished. Once all items are checked, the list’s title will be slashed as well. Rest features
+like sharing, deleting, setting reminder are same as text note. \n\n
+        <b><big><u>Taking a image note:</u></big></b> \n\n
+        Just click on the ‘+’ button and select the image note option from the dialog box. Enter the title
+and click on camera icon. Then take image from your camera and click on save button to save
+it. You can also click on change button to change the image before saving or while editing. Rest
+features like sharing, deleting, setting reminder are same as text note.
+    </string>
 </resources>

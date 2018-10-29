@@ -4,12 +4,13 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,13 +18,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
+import com.intkhabahmed.smartnotes.databinding.NoteDetailLayoutBinding;
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.ui.AddImageNote;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
@@ -38,11 +38,7 @@ public class ImageNotesDetailFragment extends Fragment {
     private Note mNote;
     private int mNoteId;
     private static final String BUNDLE_DATA = "bundle-data";
-    private TextView noteTitleTextView;
-    private TextView noteCreatedDateTextView;
-    private TextView noteModifiedDateTextView;
-    private ImageView noteImageView;
-    private FloatingActionButton editButton;
+    private NoteDetailLayoutBinding mDetailBinding;
 
 
     public ImageNotesDetailFragment() {
@@ -66,17 +62,13 @@ public class ImageNotesDetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.note_detail_layout, container, false);
+        mDetailBinding = DataBindingUtil.inflate(inflater, R.layout.note_detail_layout, container, false);
+        return mDetailBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        noteTitleTextView = view.findViewById(R.id.tv_note_title);
-        noteCreatedDateTextView = view.findViewById(R.id.tv_date_created);
-        noteModifiedDateTextView = view.findViewById(R.id.tv_date_modified);
-        noteImageView = view.findViewById(R.id.image_note_view);
-        editButton = view.findViewById(R.id.edit_note_button);
         setupNoteViewModel();
     }
 
@@ -98,24 +90,24 @@ public class ImageNotesDetailFragment extends Fragment {
     }
 
     private void setupUI() {
-        noteImageView.setVisibility(View.VISIBLE);
+        mDetailBinding.imageNoteView.setVisibility(View.VISIBLE);
         File imageFile = new File(mNote.getDescription());
         if (imageFile.exists()) {
-            Glide.with(getActivity()).load(Uri.fromFile(imageFile)).into(noteImageView);
+            Glide.with(getParentActivity()).load(Uri.fromFile(imageFile)).into(mDetailBinding.imageNoteView);
         }
-        noteTitleTextView.setText(mNote.getNoteTitle());
-        noteCreatedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
-        noteModifiedDateTextView.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
+        mDetailBinding.tvNoteTitle.setText(mNote.getNoteTitle());
+        mDetailBinding.tvDateCreated.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
+        mDetailBinding.tvDateModified.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
         if (mNote.getTrashed() == 1) {
-            editButton.setVisibility(View.GONE);
+            mDetailBinding.editNoteButton.setVisibility(View.GONE);
         }
-        editButton.setOnClickListener(new View.OnClickListener() {
+        mDetailBinding.editNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddImageNote.class);
+                Intent intent = new Intent(getParentActivity(), AddImageNote.class);
                 intent.putExtra(Intent.EXTRA_TEXT, mNote);
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                getParentActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
     }
@@ -140,12 +132,16 @@ public class ImageNotesDetailFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     NoteRepository.getInstance().moveNoteToTrash(mNote);
-                    Toast.makeText(getActivity(), getString(R.string.moved_to_trash), Toast.LENGTH_LONG).show();
-                    getActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    Toast.makeText(getParentActivity(), getString(R.string.moved_to_trash), Toast.LENGTH_LONG).show();
+                    getParentActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
             };
             ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public FragmentActivity getParentActivity() {
+        return getActivity();
     }
 }

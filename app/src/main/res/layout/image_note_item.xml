@@ -1,78 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <ImageView
-        android:id="@+id/note_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="196dp"
-        android:contentDescription="@string/image"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_insert_photo_black_24dp" />
+    xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/note_image_view">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_note_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:singleLine="true"
-            android:ellipsize="marquee"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-            android:textColor="?attr/primaryTextColor"
-            app:layout_constraintBottom_toTopOf="@+id/tv_note_date_created"
-            app:layout_constraintEnd_toStartOf="@+id/note_menu_button"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="My Title" />
-
-        <TextView
-            android:id="@+id/tv_note_date_created"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="?attr/secondaryTextColor"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/note_menu_button"
-            app:layout_constraintStart_toStartOf="@+id/tv_note_title"
-            tools:text="2017-08-21" />
-
-
-        <ImageButton
-            android:id="@+id/note_menu_button"
-            android:layout_width="48dp"
-            android:layout_height="0dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/menu_button"
-            android:tint="?attr/iconPlaceHolder"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <ImageView
+            android:id="@+id/note_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="196dp"
+            android:contentDescription="@string/image"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_note_title"
-            app:srcCompat="@drawable/ic_more_vert_black_24dp" />
-    </android.support.constraint.ConstraintLayout>
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_insert_photo_black_24dp" />
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/greyHighlight"
-        app:layout_constraintBottom_toBottomOf="parent" />
-</android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/note_image_view">
+
+            <TextView
+                android:id="@+id/tv_note_title"
+                android:layout_width="@dimen/no_space"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/large_space"
+                android:layout_marginLeft="@dimen/large_space"
+                android:layout_marginEnd="@dimen/medium_space"
+                android:layout_marginRight="@dimen/medium_space"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textColor="?attr/primaryTextColor"
+                app:layout_constraintBottom_toTopOf="@+id/tv_note_date_created"
+                app:layout_constraintEnd_toStartOf="@+id/note_menu_button"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="My Title" />
+
+            <TextView
+                android:id="@+id/tv_note_date_created"
+                android:layout_width="@dimen/no_space"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/medium_space"
+                android:layout_marginRight="@dimen/medium_space"
+                android:layout_marginBottom="@dimen/medium_space"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textColor="?attr/secondaryTextColor"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/note_menu_button"
+                app:layout_constraintStart_toStartOf="@+id/tv_note_title"
+                tools:text="2017-08-21" />
+
+
+            <ImageButton
+                android:id="@+id/note_menu_button"
+                android:layout_width="@dimen/small_icon_size"
+                android:layout_height="@dimen/no_space"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/menu_button"
+                android:tint="?attr/iconPlaceHolder"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_note_title"
+                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+        </android.support.constraint.ConstraintLayout>
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyHighlight"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.utils.AppConstants;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 
 import java.io.File;
@@ -55,7 +56,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 view = LayoutInflater.from(mContext).inflate(R.layout.image_note_item, parent, false);
                 return new ImageNotesViewHolder(view);
             default:
-                throw new IllegalArgumentException("Unknown ViewType");
+                throw new IllegalArgumentException(AppConstants.INVALID_VIEW_TYPE);
         }
     }
 

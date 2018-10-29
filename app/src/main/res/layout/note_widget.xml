@@ -13,22 +13,23 @@
 
         <TextView
             android:id="@+id/tv_note_title"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/no_space"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="2"
-            android:paddingStart="8dp"
-            android:paddingLeft="8dp"
-            android:paddingEnd="8dp"
-            android:paddingRight="8dp"
+            android:paddingStart="@dimen/medium_space"
+            android:paddingLeft="@dimen/medium_space"
+            android:paddingEnd="@dimen/medium_space"
+            android:paddingRight="@dimen/medium_space"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
-            tools:text="@string/note_title" />
+            tools:text="@string/note_title"
+            tools:ignore="InefficientWeight" />
 
         <ImageButton
             android:id="@+id/note_pickup_btn"
             style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/small_icon_size"
+            android:layout_height="@dimen/small_icon_size"
             android:contentDescription="@string/select_note_btn"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_settings_24dp"
@@ -46,10 +47,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/primary_container_ll"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/medium_space"
         android:ellipsize="end"
         android:maxLines="7"
-        android:padding="8dp"
+        android:padding="@dimen/medium_space"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         tools:text="@tools:sample/lorem/random" />
 
@@ -58,9 +59,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/primary_container_ll"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/medium_space"
         android:contentDescription="@string/image_note"
-        android:padding="8dp"
+        android:padding="@dimen/medium_space"
         android:visibility="invisible" />
 
 </RelativeLayout>

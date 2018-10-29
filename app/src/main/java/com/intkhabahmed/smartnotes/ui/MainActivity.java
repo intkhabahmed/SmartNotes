@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes.ui;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -17,7 +18,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.intkhabahmed.smartnotes.R;
+import com.intkhabahmed.smartnotes.databinding.ActivityMainBinding;
+import com.intkhabahmed.smartnotes.fragments.AboutFragment;
 import com.intkhabahmed.smartnotes.fragments.ChecklistNotesDetailFragment;
+import com.intkhabahmed.smartnotes.fragments.HelpFragment;
 import com.intkhabahmed.smartnotes.fragments.HomePageFragment;
 import com.intkhabahmed.smartnotes.fragments.ImageNotesDetailFragment;
 import com.intkhabahmed.smartnotes.fragments.SettingsFragment;
@@ -36,16 +40,17 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
     private FragmentManager mFragmentManager;
     private Handler handler;
     private NavigationView navigationView;
+    private ActivityMainBinding mMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mDrawerLayout = mMainBinding.drawerLayout;
         mToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, R.string.open, R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = mMainBinding.toolbar;
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -91,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
     @Override
     protected void onStart() {
         super.onStart();
-        navigationView = findViewById(R.id.navigation_view);
+        navigationView = mMainBinding.navigationView;
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -121,6 +126,20 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
                                 item.setChecked(true);
                                 mFragmentManager.beginTransaction()
                                         .replace(R.id.fragment_layout, new SettingsFragment(), SettingsFragment.class.getSimpleName())
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.help:
+                                item.setChecked(true);
+                                mFragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_layout, new HelpFragment(), HelpFragment.class.getSimpleName())
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.about:
+                                item.setChecked(true);
+                                mFragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_layout, new AboutFragment(), AboutFragment.class.getSimpleName())
                                         .addToBackStack(null)
                                         .commit();
                                 break;
@@ -187,6 +206,10 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
             navigationView.getMenu().getItem(1).setChecked(true);
         } else if (fragmentName.equals(SettingsFragment.class.getSimpleName())) {
             navigationView.getMenu().getItem(2).setChecked(true);
+        } else if (fragmentName.equals(HelpFragment.class.getSimpleName())) {
+            navigationView.getMenu().getItem(3).setChecked(true);
+        } else if (fragmentName.equals(AboutFragment.class.getSimpleName())) {
+            navigationView.getMenu().getItem(4).setChecked(true);
         }
     }
 }
