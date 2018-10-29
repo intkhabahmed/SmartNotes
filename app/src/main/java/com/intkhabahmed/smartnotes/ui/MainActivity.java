@@ -19,7 +19,9 @@ import android.view.MenuItem;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.databinding.ActivityMainBinding;
+import com.intkhabahmed.smartnotes.fragments.AboutFragment;
 import com.intkhabahmed.smartnotes.fragments.ChecklistNotesDetailFragment;
+import com.intkhabahmed.smartnotes.fragments.HelpFragment;
 import com.intkhabahmed.smartnotes.fragments.HomePageFragment;
 import com.intkhabahmed.smartnotes.fragments.ImageNotesDetailFragment;
 import com.intkhabahmed.smartnotes.fragments.SettingsFragment;
@@ -127,6 +129,20 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+                            case R.id.help:
+                                item.setChecked(true);
+                                mFragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_layout, new HelpFragment(), HelpFragment.class.getSimpleName())
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
+                            case R.id.about:
+                                item.setChecked(true);
+                                mFragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_layout, new AboutFragment(), AboutFragment.class.getSimpleName())
+                                        .addToBackStack(null)
+                                        .commit();
+                                break;
                         }
                     }
                 }, 300);
@@ -190,6 +206,10 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
             navigationView.getMenu().getItem(1).setChecked(true);
         } else if (fragmentName.equals(SettingsFragment.class.getSimpleName())) {
             navigationView.getMenu().getItem(2).setChecked(true);
+        } else if (fragmentName.equals(HelpFragment.class.getSimpleName())) {
+            navigationView.getMenu().getItem(3).setChecked(true);
+        } else if (fragmentName.equals(AboutFragment.class.getSimpleName())) {
+            navigationView.getMenu().getItem(4).setChecked(true);
         }
     }
 }
