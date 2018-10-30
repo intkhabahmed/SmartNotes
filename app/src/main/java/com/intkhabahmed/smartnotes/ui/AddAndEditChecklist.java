@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.app.ActionBar;
@@ -252,7 +253,11 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                onBackPressed();
+                if (mIsChanged) {
+                    onBackPressed();
+                } else {
+                    NavUtils.navigateUpFromSameTask(this);
+                }
                 break;
             case R.id.save_action:
                 insertChecklist();

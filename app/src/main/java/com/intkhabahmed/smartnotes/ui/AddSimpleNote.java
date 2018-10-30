@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -150,7 +151,11 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home:
-                onBackPressed();
+                if (mIsChanged) {
+                    onBackPressed();
+                } else {
+                    NavUtils.navigateUpFromSameTask(this);
+                }
                 return true;
             case R.id.save_action:
                 insertSimpleNote();

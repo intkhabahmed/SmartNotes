@@ -51,12 +51,22 @@
         </activity>
         <activity
             android:name=".ui.AddAndEditChecklist"
+            android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeLight" />
+            android:theme="@style/AppThemeLight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
         <activity
             android:name=".ui.AddImageNote"
+            android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeLight" />
+            android:theme="@style/AppThemeLight">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
 
         <service
             android:name=".services.NoteJobService"
@@ -77,10 +87,11 @@
                 android:resource="@xml/note_widget_info" />
         </receiver>
 
-        <activity android:name=".ui.WidgetConfigureActivity"
+        <activity
+            android:name=".ui.WidgetConfigureActivity"
             android:theme="@style/AppThemeLight">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
     </application>
