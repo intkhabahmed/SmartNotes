@@ -19,17 +19,17 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         dataBinding.enabled = true
-        /*javaCompileOptions {
+        javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation":
                                      "$projectDir/schemas".toString()]
             }
-        }*/
+        }
     }
-    /*sourceSets {
+    sourceSets {
         androidTest.assets.srcDirs +=
                 files("$projectDir/schemas".toString())
-    }*/
+    }
     buildTypes {
         release {
             minifyEnabled true
