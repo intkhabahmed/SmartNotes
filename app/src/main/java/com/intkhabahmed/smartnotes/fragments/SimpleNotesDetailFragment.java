@@ -91,6 +91,9 @@ public class SimpleNotesDetailFragment extends Fragment {
         mDetailBinding.tvNoteDescription.setText(mNote.getDescription());
         mDetailBinding.tvDateCreated.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
         mDetailBinding.tvDateModified.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
+        mDetailBinding.tvNotification.setText(mNote.getReminderDateTime() != null ? NoteUtils.getFormattedTime
+                (NoteUtils.getRelativeTimeFromNow(mNote.getReminderDateTime()) * 1000 + System.currentTimeMillis(),
+                        System.currentTimeMillis()) : getString(R.string.notification_not_set));
         if (mNote.getTrashed() == 1) {
             mDetailBinding.editNoteButton.setVisibility(View.GONE);
         }

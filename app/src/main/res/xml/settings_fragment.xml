@@ -7,9 +7,4 @@
             android:summaryOff="@string/disabled"
             android:summaryOn="@string/enabled"
             android:title="@string/dark_theme"/>
-        <EditTextPreference
-            android:id="@+id/font_size_preference"
-            android:defaultValue="@string/default_font_size"
-            android:key="@string/font_size_key"
-            android:title="@string/font_size"/>
 </PreferenceScreen>

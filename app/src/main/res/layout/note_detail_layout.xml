@@ -96,10 +96,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/medium_space"
-                        android:layout_marginBottom="@dimen/large_space"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="?attr/secondaryTextColor"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/tv_date_created_label"
                         app:layout_constraintStart_toEndOf="@+id/tv_date_created_label"
                         app:layout_constraintTop_toBottomOf="@+id/tv_date_created_label"
@@ -108,13 +106,43 @@
                     <TextView
                         android:id="@+id/tv_date_modified"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="20dp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="?attr/secondaryTextColor"
                         app:layout_constraintBaseline_toBaselineOf="@+id/tv_date_created"
                         app:layout_constraintEnd_toStartOf="@+id/tv_date_modified_label"
                         app:layout_constraintStart_toEndOf="@+id/tv_date_modified_label"
                         tools:text="2018-08-21" />
+
+                    <TextView
+                        android:id="@+id/tv_notification_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:drawableStart="@drawable/ic_notifications_active_24dp"
+                        android:drawableLeft="@drawable/ic_notifications_active_24dp"
+                        android:text="@string/notification"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                        android:textColor="?attr/primaryTextColor"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/tv_date_created"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_date_created" />
+
+                    <TextView
+                        android:id="@+id/tv_notification"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:textColor="?attr/secondaryTextColor"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_notification_label"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tv_notification_label"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_notification_label" />
                 </android.support.constraint.ConstraintLayout>
 
             </android.support.v7.widget.CardView>
