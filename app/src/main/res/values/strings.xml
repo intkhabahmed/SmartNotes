@@ -113,4 +113,6 @@ and click on camera icon. Then take image from your camera and click on save but
 it. You can also click on change button to change the image before saving or while editing. Rest
 features like sharing, deleting, setting reminder are same as text note.
     </string>
+    <string name="notification">Notification:</string>
+    <string name="notification_not_set">Not set</string>
 </resources>

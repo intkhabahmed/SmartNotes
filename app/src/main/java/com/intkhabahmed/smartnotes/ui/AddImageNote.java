@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.widget.CompoundButtonCompat;
@@ -282,7 +283,11 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                onBackPressed();
+                if (mIsChanged) {
+                    onBackPressed();
+                } else {
+                    NavUtils.navigateUpFromSameTask(this);
+                }
                 break;
             case R.id.save_action:
                 insertImageNote();
