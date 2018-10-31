@@ -15,7 +15,7 @@ public class NoteViewModel extends ViewModel {
         }
     }
 
-    public void setNote(int noteId) {
+    private void setNote(int noteId) {
         note = NoteRepository.getInstance().getNoteById(noteId);
     }
 

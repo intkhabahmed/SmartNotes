@@ -158,7 +158,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
         snackbar.show();
     }
 
-    public FragmentActivity getParentActivity() {
+    private FragmentActivity getParentActivity() {
         return getActivity();
     }
 }

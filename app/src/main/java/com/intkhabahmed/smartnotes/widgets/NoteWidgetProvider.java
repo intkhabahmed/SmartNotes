@@ -39,8 +39,8 @@ import java.util.List;
  */
 public class NoteWidgetProvider extends AppWidgetProvider {
 
-    static void updateAppWidget(final Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId, Note note) {
+    private static void updateAppWidget(final Context context, AppWidgetManager appWidgetManager,
+                                        int appWidgetId, Note note) {
         // Construct the RemoteViews object
         final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.note_widget);
         views.setTextViewText(R.id.tv_note_title, note.getNoteTitle());

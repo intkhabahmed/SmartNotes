@@ -57,7 +57,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    public FragmentActivity getParentActivity() {
+    private FragmentActivity getParentActivity() {
         return getActivity();
     }
 }

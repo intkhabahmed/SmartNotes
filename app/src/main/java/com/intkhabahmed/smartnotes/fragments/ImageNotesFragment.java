@@ -158,7 +158,7 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
         snackbar.show();
     }
 
-    public FragmentActivity getParentActivity() {
+    private FragmentActivity getParentActivity() {
         return getActivity();
     }
 }

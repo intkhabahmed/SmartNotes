@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.intkhabahmed.smartnotes">
 
+    <!--suppress DeprecatedClassUsageInspection -->
     <uses-feature
         android:name="android.hardware.Camera"
         android:required="true" />

@@ -267,7 +267,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
         return super.onOptionsItemSelected(item);
     }
 
-    public void insertChecklist() {
+    private void insertChecklist() {
         if (mItems.size() < 1) {
             Toast.makeText(this, getString(R.string.empty_task_list_error), Toast.LENGTH_LONG).show();
             return;
@@ -343,7 +343,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
         });
     }
 
-    public void populateChecklist() {
+    private void populateChecklist() {
         if (mNote != null) {
             mTrashed = mNote.getTrashed();
             if (mTrashed == 1) {

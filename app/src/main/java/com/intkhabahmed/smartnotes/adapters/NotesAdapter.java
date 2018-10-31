@@ -128,7 +128,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyDataSetChanged();
     }
 
-    public class TextNotesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class TextNotesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView noteTitleTextView;
         TextView noteDescriptionTextView;
         TextView noteCreateDateTextView;
@@ -156,7 +156,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    public class ImageNotesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ImageNotesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView noteTitleTextView;
         ImageView noteImageView;
         TextView noteCreateDateTextView;

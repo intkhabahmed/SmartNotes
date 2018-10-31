@@ -144,7 +144,7 @@ public class ImageNotesDetailFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public FragmentActivity getParentActivity() {
+    private FragmentActivity getParentActivity() {
         return getActivity();
     }
 }

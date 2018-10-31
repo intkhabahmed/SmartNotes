@@ -36,7 +36,7 @@ public class AboutFragment extends Fragment {
         listener.setCurrentFragment(AboutFragment.class.getSimpleName());
     }
 
-    public FragmentActivity getParentActivity() {
+    private FragmentActivity getParentActivity() {
         return getActivity();
     }
 }

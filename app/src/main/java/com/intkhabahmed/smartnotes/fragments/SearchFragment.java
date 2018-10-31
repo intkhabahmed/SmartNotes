@@ -222,7 +222,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         super.onSaveInstanceState(outState);
     }
 
-    public FragmentActivity getParentActivity() {
+    private FragmentActivity getParentActivity() {
         return getActivity();
     }
 }

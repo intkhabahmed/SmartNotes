@@ -36,7 +36,7 @@ public class HelpFragment extends Fragment {
         listener.setCurrentFragment(HelpFragment.class.getSimpleName());
     }
 
-    public FragmentActivity getParentActivity() {
+    private FragmentActivity getParentActivity() {
         return getActivity();
     }
 }

@@ -164,7 +164,7 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
         return super.onOptionsItemSelected(item);
     }
 
-    public void insertSimpleNote() {
+    private void insertSimpleNote() {
         String noteTitle = mSimpleBinding.noteTitleInput.getText().toString().trim();
         String noteDescription = mSimpleBinding.noteDescriptionInput.getText().toString().trim();
         String dateTimeString = mSimpleBinding.dateTimeTv.getText().toString();

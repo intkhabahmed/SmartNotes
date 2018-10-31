@@ -10,19 +10,14 @@
     <string name="close">Close</string>
     <string name="empty_view_description">No notes to show, click on add button to add a new note</string>
     <string name="image_note">Image Note</string>
-    <string name="title">Title</string>
     <string name="note_title">Note Title</string>
-    <string name="description">Description</string>
     <string name="description_hint">Description of note</string>
     <string name="save">Save</string>
     <string name="sort">Sort</string>
     <string name="date_created_ascending">Date Created (Old first)</string>
     <string name="date_created_descending">Date Created (New First)</string>
     <string name="title_ascending">Title (Ascending)</string>
-    <string name="sort_criteria">Sort Criteria</string>
-    <string name="sort_criteria_id">Sort Id</string>
     <string name="checklist_item">Checklist Item</string>
-    <string name="add_checklist">Add</string>
     <string name="delete_note">Delete Note</string>
     <string name="share_note">Share Note</string>
     <string name="date_created">Created On</string>
@@ -33,7 +28,6 @@
     <string name="error">Error deleting Temp Image</string>
     <string name="change">Change</string>
     <string name="home">Home</string>
-    <string name="note_type">Note Type</string>
     <string name="search">Search</string>
     <string name="trash_empty_view_description">No Item in trash....</string>
     <string name="delete_forever">Delete Forever</string>
@@ -42,10 +36,6 @@
     <string name="dark_theme_key">dark_theme_key</string>
     <string name="disabled">Disabled</string>
     <string name="enabled">Enabled</string>
-    <string name="font_size_key">font_size_key</string>
-    <string name="font_size">Font Size</string>
-    <string name="default_font_size">16</string>
-    <string name="appearance">Appearance</string>
     <string name="title_descending">Title (Descending)</string>
     <string name="search_hint">Search here</string>
     <string name="search_error_view_description">No result found for the given query</string>
@@ -115,4 +105,5 @@ features like sharing, deleting, setting reminder are same as text note.
     </string>
     <string name="notification">Notification:</string>
     <string name="notification_not_set">Not set</string>
+    <string name="add_note_button">Add note button</string>
 </resources>

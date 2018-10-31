@@ -385,7 +385,7 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
         });
     }
 
-    public String saveImageToStorage() {
+    private String saveImageToStorage() {
         // Save the image
         return BitmapUtils.saveImage(this, mResultBitmap);
     }

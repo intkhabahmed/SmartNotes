@@ -172,7 +172,7 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
         snackbar.show();
     }
 
-    public FragmentActivity getParentActivity() {
+    private FragmentActivity getParentActivity() {
         return getActivity();
     }
 }

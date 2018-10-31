@@ -147,7 +147,7 @@ public class ChecklistNotesDetailFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void populateChecklistData() {
+    private void populateChecklistData() {
         if (mNote != null) {
             List<ChecklistItem> checklistItems = new Gson().fromJson(mNote.getDescription(), new TypeToken<List<ChecklistItem>>() {
             }.getType());
@@ -166,7 +166,7 @@ public class ChecklistNotesDetailFragment extends Fragment {
         }
     }
 
-    public FragmentActivity getParentActivity() {
+    private FragmentActivity getParentActivity() {
         return getActivity();
     }
 }
