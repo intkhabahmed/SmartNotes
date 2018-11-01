@@ -17,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.databinding.ActivityMainBinding;
 import com.intkhabahmed.smartnotes.fragments.AboutFragment;
@@ -45,6 +47,11 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MobileAds.initialize(this, getString(R.string.admob_app_id));
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle params = new Bundle();
+        params.putLong(AppConstants.APP_OPEN_TIME, System.currentTimeMillis());
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, params);
         mMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mDrawerLayout = mMainBinding.drawerLayout;
         mToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, R.string.open, R.string.close);

@@ -4,8 +4,11 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NotesDatabase;
+
+import io.fabric.sdk.android.Fabric;
 
 public class Global extends Application {
     private static Global sGlobalInstance;
@@ -14,6 +17,7 @@ public class Global extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         sGlobalInstance = (Global) getApplicationContext();
         sSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }

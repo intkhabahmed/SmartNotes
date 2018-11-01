@@ -106,4 +106,7 @@ features like sharing, deleting, setting reminder are same as text note.
     <string name="notification">Notification:</string>
     <string name="notification_not_set">Not set</string>
     <string name="add_note_button">Add note button</string>
+    <string name="note_edit_button">Note editing button</string>
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admob_adunit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

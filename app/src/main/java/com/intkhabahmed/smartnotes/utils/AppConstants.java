@@ -17,4 +17,5 @@ public interface AppConstants {
     String PREF = "pref_";
     int WIDGET_IMAGE_SIZE = 1000;
     String INVALID_VIEW_TYPE = "Unknown ViewType";
+    String APP_OPEN_TIME = "app_open_time";
 }

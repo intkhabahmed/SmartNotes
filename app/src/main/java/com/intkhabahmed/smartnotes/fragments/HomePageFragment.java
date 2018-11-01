@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdRequest;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.databinding.HomePageLayoutBinding;
@@ -73,6 +74,8 @@ public class HomePageFragment extends Fragment {
             }
         }, 100);
         getParentActivity().setTitle(R.string.app_name);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mHomeBinding.adView.loadAd(adRequest);
     }
 
     @Override

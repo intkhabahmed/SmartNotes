@@ -19,6 +19,7 @@
                 android:layout_gravity="bottom|end"
                 android:layout_marginEnd="@dimen/medium_space"
                 android:layout_marginRight="@dimen/medium_space"
+                android:contentDescription="@string/note_edit_button"
                 app:layout_constraintBottom_toTopOf="@+id/note_secondary_detail"
                 app:layout_constraintEnd_toEndOf="@+id/note_secondary_detail"
                 app:layout_constraintTop_toTopOf="@+id/note_secondary_detail"
