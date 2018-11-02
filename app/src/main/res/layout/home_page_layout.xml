@@ -42,7 +42,7 @@
             android:layout_marginEnd="@dimen/medium_space"
             android:layout_marginRight="@dimen/medium_space"
             ads:adSize="BANNER"
-            ads:adUnitId="@string/admob_adunit_id"
+            ads:adUnitId="@string/release_admob_adunit_id"
             ads:layout_constraintBottom_toBottomOf="parent"
             ads:layout_constraintEnd_toEndOf="parent"
             ads:layout_constraintStart_toStartOf="parent" />
