@@ -8,7 +8,9 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.intkhabahmed.smartnotes.BuildConfig;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.ui.MainActivity;
 import com.intkhabahmed.smartnotes.utils.CurrentFragmentListener;
@@ -27,6 +29,8 @@ public class AboutFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getParentActivity().setTitle(R.string.about);
+        TextView appVersion = view.findViewById(R.id.app_version);
+        appVersion.setText(String.format("V. %s", BuildConfig.VERSION_NAME));
     }
 
     @Override
