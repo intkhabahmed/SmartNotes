@@ -66,3 +66,4 @@ freeline/
 freeline_project_description.json
 app/fabric.properties
 secret.xml
+app/keystore.properties
