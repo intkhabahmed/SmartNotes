@@ -25,11 +25,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.databinding.NotesRecyclerViewBinding;
+import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.utils.BitmapUtils;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.SearchNotesViewModel;
@@ -147,7 +151,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         mRecyclerView.setVisibility(View.INVISIBLE);
         mNotesBinding.searchErrorView.setVisibility(View.INVISIBLE);
         if (!TextUtils.isEmpty(mFilterText)) {
-            mNotesBinding.emptyView.setVisibility(View.VISIBLE);
+            mNotesBinding.searchErrorView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -170,8 +174,23 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
                         showSnackBar(note);
                         break;
                     case R.id.share_note:
-                        String noteDescription = note.getDescription();
-                        NoteUtils.shareNote(getParentActivity(), noteDescription);
+                        if (note.getNoteType().equals(getString(R.string.image_note))) {
+                            BitmapUtils.shareImage(getParentActivity(), note.getDescription());
+                        } else if (note.getNoteType().equals(getString(R.string.checklist))) {
+                            StringBuilder tasks = new StringBuilder();
+                            tasks.append(note.getNoteTitle());
+                            tasks.append("\n_____________________");
+                            List<ChecklistItem> checklistItems = new Gson().fromJson(note.getDescription(), new TypeToken<List<ChecklistItem>>() {
+                            }.getType());
+                            for (ChecklistItem item : checklistItems) {
+                                tasks.append("\n");
+                                tasks.append(item.getTitle());
+                            }
+                            NoteUtils.shareNote(getParentActivity(), tasks.toString());
+                        } else {
+                            NoteUtils.shareNote(getParentActivity(), note.getDescription());
+                        }
+
                         break;
                 }
                 return false;
