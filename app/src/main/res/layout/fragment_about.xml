@@ -1,43 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/app_version"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_app_desc"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/medium_space"
-            android:layout_marginLeft="@dimen/medium_space"
-            android:layout_marginTop="@dimen/medium_space"
-            android:layout_marginEnd="@dimen/medium_space"
-            android:layout_marginRight="@dimen/medium_space"
-            android:text="@string/app_desc"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-            android:textColor="?attr/primaryTextColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/medium_space"
-            android:layout_marginLeft="@dimen/medium_space"
-            android:layout_marginTop="@dimen/medium_space"
-            android:layout_marginEnd="@dimen/medium_space"
-            android:layout_marginRight="@dimen/medium_space"
-            android:text="@string/app_features"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-            android:textColor="?attr/primaryTextColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_app_desc" />
+            <TextView
+                android:id="@+id/tv_app_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_space"
+                android:layout_marginLeft="@dimen/medium_space"
+                android:layout_marginTop="@dimen/medium_space"
+                android:layout_marginEnd="@dimen/medium_space"
+                android:layout_marginRight="@dimen/medium_space"
+                android:text="@string/app_desc"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                android:textColor="?attr/primaryTextColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
-</android.support.v4.widget.NestedScrollView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_space"
+                android:layout_marginLeft="@dimen/medium_space"
+                android:layout_marginTop="@dimen/medium_space"
+                android:layout_marginEnd="@dimen/medium_space"
+                android:layout_marginRight="@dimen/medium_space"
+                android:text="@string/app_features"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                android:textColor="?attr/primaryTextColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_app_desc" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/app_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+        android:textColor="?attr/primaryTextColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="V. 1.0" />
+</android.support.constraint.ConstraintLayout>

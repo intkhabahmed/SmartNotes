@@ -47,11 +47,6 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
-        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        Bundle params = new Bundle();
-        params.putLong(AppConstants.APP_OPEN_TIME, System.currentTimeMillis());
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, params);
         mMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mDrawerLayout = mMainBinding.drawerLayout;
         mToggle = new ActionBarDrawerToggle(MainActivity.this, mDrawerLayout, R.string.open, R.string.close);
@@ -103,6 +98,16 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
     @Override
     protected void onStart() {
         super.onStart();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MobileAds.initialize(MainActivity.this, getString(R.string.admob_app_id));
+                FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(MainActivity.this);
+                Bundle params = new Bundle();
+                params.putLong(AppConstants.APP_OPEN_TIME, System.currentTimeMillis());
+                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, params);
+            }
+        }, 200);
         navigationView = mMainBinding.navigationView;
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {

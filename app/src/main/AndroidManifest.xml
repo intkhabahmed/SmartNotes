@@ -3,11 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.intkhabahmed.smartnotes">
 
-    <!--suppress DeprecatedClassUsageInspection -->
-    <uses-feature
-        android:name="android.hardware.Camera"
-        android:required="true" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -25,13 +20,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:launchMode="singleTop"
-            android:theme="@style/AppThemeLight">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppThemeLight" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -99,6 +88,16 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/admob_app_id" />
+            android:value="@string/release_admob_app_id" />
+
+        <activity
+            android:name=".ui.SplashActivity"
+            android:theme="@style/SplashScreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
+
 </manifest>
