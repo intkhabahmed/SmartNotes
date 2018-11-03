@@ -211,6 +211,7 @@ public class AddSimpleNote extends AppCompatActivity implements DateTimeListener
                     });
                 }
             });
+            return;
         }
         note.setDateModified(System.currentTimeMillis());
         AppExecutors.getInstance().diskIO().execute(new Runnable() {

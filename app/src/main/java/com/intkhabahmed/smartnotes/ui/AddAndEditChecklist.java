@@ -319,6 +319,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                     });
                 }
             });
+            return;
         }
         note.setDateModified(System.currentTimeMillis());
         AppExecutors.getInstance().diskIO().execute(new Runnable() {

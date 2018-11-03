@@ -360,6 +360,7 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
                     });
                 }
             });
+            return;
         }
         note.setDateModified(System.currentTimeMillis());
         mIsImageChanged = true;
