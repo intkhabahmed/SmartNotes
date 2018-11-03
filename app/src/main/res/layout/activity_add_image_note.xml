@@ -117,7 +117,7 @@
 
                 <ImageButton
                     android:id="@+id/date_time_picker_btn"
-                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    style="@style/Base.Widget.AppCompat.Button.Colored"
                     android:layout_width="@dimen/medium_icon_size"
                     android:layout_height="@dimen/medium_icon_size"
                     android:layout_marginTop="@dimen/medium_space"

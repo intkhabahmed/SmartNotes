@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.MobileAds;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NotesDatabase;
 
@@ -17,6 +18,7 @@ public class Global extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        MobileAds.initialize(this, getString(R.string.release_admob_app_id));
         Fabric.with(this, new Crashlytics());
         sGlobalInstance = (Global) getApplicationContext();
         sSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

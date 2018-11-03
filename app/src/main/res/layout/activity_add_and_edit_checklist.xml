@@ -107,6 +107,7 @@
                     android:text="@string/items"
                     android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                     android:textColor="?attr/primaryTextColor"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="@+id/noteItemInputLayout"
                     app:layout_constraintStart_toStartOf="@+id/noteItemInputLayout"
                     app:layout_constraintTop_toBottomOf="@+id/noteItemInputLayout" />
@@ -129,7 +130,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:padding="@dimen/medium_space" />
+                        android:padding="@dimen/medium_space"
+                        android:visibility="gone" />
                 </android.support.v7.widget.CardView>
 
                 <CheckBox
@@ -146,7 +148,7 @@
 
                 <ImageButton
                     android:id="@+id/date_time_picker_btn"
-                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    style="@style/Base.Widget.AppCompat.Button.Colored"
                     android:layout_width="@dimen/medium_icon_size"
                     android:layout_height="@dimen/medium_icon_size"
                     android:layout_marginTop="@dimen/medium_space"
