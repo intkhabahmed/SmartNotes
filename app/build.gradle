@@ -46,6 +46,10 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+            resValue("bool", "FIREBASE_API", "true")
+        }
+        debug {
+            resValue("bool", "FIREBASE_API", "false")
         }
     }
     productFlavors {

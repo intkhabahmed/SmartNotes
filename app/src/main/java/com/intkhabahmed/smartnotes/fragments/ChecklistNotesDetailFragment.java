@@ -4,8 +4,10 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.databinding.DataBindingUtil;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,13 +15,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.CompoundButtonCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -29,19 +33,24 @@ import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.databinding.NoteDetailLayoutBinding;
 import com.intkhabahmed.smartnotes.models.ChecklistItem;
 import com.intkhabahmed.smartnotes.models.Note;
+import com.intkhabahmed.smartnotes.services.NoteService;
 import com.intkhabahmed.smartnotes.ui.AddAndEditChecklist;
+import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NoteViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.NoteViewModelFactory;
 
 import java.util.List;
+import java.util.TreeMap;
 
 public class ChecklistNotesDetailFragment extends Fragment {
     private Note mNote;
     private int mNoteId;
     private static final String BUNDLE_DATA = "bundle-data";
     private NoteDetailLayoutBinding mDetailBinding;
+    private TreeMap<String, ChecklistItem> mItems;
+    private boolean isChecklistPressed;
 
     public ChecklistNotesDetailFragment() {
     }
@@ -83,8 +92,11 @@ public class ChecklistNotesDetailFragment extends Fragment {
                     if (mNote.getTrashed() == 1) {
                         setHasOptionsMenu(false);
                     }
-                    mDetailBinding.checklistContainer.removeAllViews();
-                    setupUI();
+                    if (!isChecklistPressed) {
+                        mItems = new TreeMap<>();
+                        mDetailBinding.checklistContainer.removeAllViews();
+                        setupUI();
+                    }
                 }
             }
         });
@@ -151,17 +163,56 @@ public class ChecklistNotesDetailFragment extends Fragment {
         if (mNote != null) {
             List<ChecklistItem> checklistItems = new Gson().fromJson(mNote.getDescription(), new TypeToken<List<ChecklistItem>>() {
             }.getType());
-            for (int i = 0; i < checklistItems.size(); i++) {
-                TextView checklistItem = new TextView(getParentActivity());
-                checklistItem.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
-                checklistItem.setTextSize(24);
-                checklistItem.setTextColor(ViewUtils.getColorFromAttribute(getParentActivity(), R.attr.secondaryTextColor));
-                checklistItem.setText(checklistItems.get(i).getTitle());
-                if (checklistItems.get(i).isChecked()) {
-                    checklistItem.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            for (final ChecklistItem item : checklistItems) {
+                final CheckBox checkBox = new CheckBox(getParentActivity());
+                checkBox.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                checkBox.setText(item.getTitle());
+                checkBox.setChecked(item.isChecked());
+                if (item.isChecked()) {
+                    checkBox.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
                 }
-                mDetailBinding.checklistContainer.addView(checklistItem);
+                mDetailBinding.checklistContainer.addView(checkBox);
+                if (Build.VERSION.SDK_INT >= 23) {
+                    checkBox.setTextAppearance(R.style.TextAppearance_AppCompat_Large);
+                }
+                ColorStateList colorStateList = new ColorStateList(
+                        new int[][]{
+                                new int[]{-android.R.attr.state_checked}, // unchecked
+                                new int[]{android.R.attr.state_checked}, // checked
+                        },
+                        new int[]{
+                                ViewUtils.getColorFromAttribute(getParentActivity(), R.attr.primaryTextColor),
+                                ViewUtils.getColorFromAttribute(getParentActivity(), R.attr.colorAccent),
+                        }
+                );
+                CompoundButtonCompat.setButtonTintList(checkBox, colorStateList);
+                checkBox.setTextColor(ViewUtils.getColorFromAttribute(getParentActivity(), R.attr.primaryTextColor));
+                mItems.put(item.getTitle(), new ChecklistItem(item.getTitle(), checkBox.isChecked()));
+                if (mNote.getTrashed() == 0) {
+                    checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            if (b) {
+                                checkBox.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+                            } else {
+                                checkBox.setPaintFlags(0);
+                            }
+                            isChecklistPressed = true;
+                            mItems.get(item.getTitle()).setChecked(b);
+                            mNote.setDescription(new Gson().toJson(mItems.values()));
+                            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (NoteRepository.getInstance().updateNote(mNote) > 0) {
+                                        NoteService.startActionUpdateWidget(getParentActivity());
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    checkBox.setEnabled(false);
+                }
             }
         }
     }
