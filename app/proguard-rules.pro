@@ -20,3 +20,12 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class android.support.v7.widget.SearchView { *; }
+# For Google Play Services
+-keep public class com.google.android.gms.ads.**{
+   public *;
+}
+
+# For old ads classes
+-keep public class com.google.ads.**{
+   public *;
+}
