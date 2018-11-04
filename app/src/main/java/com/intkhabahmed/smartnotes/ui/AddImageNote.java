@@ -288,7 +288,7 @@ public class AddImageNote extends AppCompatActivity implements DateTimeListener 
                 } else {
                     NavUtils.navigateUpFromSameTask(this);
                 }
-                break;
+                return true;
             case R.id.save_action:
                 insertImageNote();
         }

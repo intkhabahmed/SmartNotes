@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.databinding.ActivityMainBinding;
@@ -101,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                MobileAds.initialize(MainActivity.this, getString(R.string.release_admob_app_id));
                 FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(MainActivity.this);
                 Bundle params = new Bundle();
                 params.putLong(AppConstants.APP_OPEN_TIME, System.currentTimeMillis());

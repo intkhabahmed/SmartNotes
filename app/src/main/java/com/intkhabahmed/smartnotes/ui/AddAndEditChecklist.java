@@ -100,7 +100,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                 ViewUtils.showDatePicker(AddAndEditChecklist.this, AddAndEditChecklist.this);
             }
         });
-
+        mItems = new TreeMap<>();
         mChecklistBinding.addChecklistButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,6 +111,10 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                 } else if (!mItems.containsKey(checklistItem)) {
                     mChecklistBinding.checklistItem.setText("");
                     mIsChanged = true;
+                    if (mItems.size() == 0) {
+                        mChecklistBinding.itemsLabelTv.setVisibility(View.VISIBLE);
+                        mChecklistBinding.checklistContainer.setVisibility(View.VISIBLE);
+                    }
                     addChecklist(checklistItem, false);
                 } else {
                     Toast.makeText(AddAndEditChecklist.this, getString(R.string.duplicate_entry_error),
@@ -140,7 +144,6 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                 }
             }
         });
-        mItems = new TreeMap<>();
         Intent intent = getIntent();
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             mNote = intent.getParcelableExtra(Intent.EXTRA_TEXT);
@@ -221,8 +224,12 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                     mItems.remove(checklistItem);
                     mIsChanged = true;
                     mChecklistBinding.checklistContainer.removeView(checkBoxContainer);
-                    if (mItems.size() == 0 && !mIsEditing) {
-                        mIsChanged = false;
+                    if (mItems.size() == 0) {
+                        if (!mIsEditing) {
+                            mIsChanged = false;
+                        }
+                        mChecklistBinding.itemsLabelTv.setVisibility(View.GONE);
+                        mChecklistBinding.checklistContainer.setVisibility(View.GONE);
                     }
                 }
             }
@@ -258,11 +265,10 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
                 } else {
                     NavUtils.navigateUpFromSameTask(this);
                 }
-                break;
+                return true;
             case R.id.save_action:
                 insertChecklist();
                 break;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -363,6 +369,10 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
             }
             List<ChecklistItem> checklistItems = new Gson().fromJson(mNote.getDescription(), new TypeToken<List<ChecklistItem>>() {
             }.getType());
+            if (checklistItems.size() > 0) {
+                mChecklistBinding.itemsLabelTv.setVisibility(View.VISIBLE);
+                mChecklistBinding.checklistContainer.setVisibility(View.VISIBLE);
+            }
             for (ChecklistItem item : checklistItems) {
                 addChecklist(item.getTitle(), item.isChecked());
             }

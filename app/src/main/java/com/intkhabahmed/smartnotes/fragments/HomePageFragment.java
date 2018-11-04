@@ -74,7 +74,7 @@ public class HomePageFragment extends Fragment {
             }
         }, 100);
         getParentActivity().setTitle(R.string.app_name);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
         mHomeBinding.adView.loadAd(adRequest);
     }
 

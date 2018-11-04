@@ -23,8 +23,8 @@ android {
         applicationId "com.intkhabahmed.smartnotes"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 6
-        versionName "1.0.2"
+        versionCode 7
+        versionName "1.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         dataBinding.enabled = true
@@ -46,6 +46,10 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+            resValue("bool", "FIREBASE_API", "true")
+        }
+        debug {
+            resValue("bool", "FIREBASE_API", "false")
         }
     }
     productFlavors {
