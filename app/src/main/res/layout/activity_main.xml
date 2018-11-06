@@ -42,8 +42,9 @@
             android:background="?attr/backgroundColor"
             app:headerLayout="@layout/navigation_header"
             app:itemBackground="@drawable/navigation_drawer_item_selector"
-            app:itemTextAppearance="@style/TextAppearance.AppCompat.Menu"
+            app:itemIconTint="?attr/primaryTextColor"
             app:itemTextColor="?attr/primaryTextColor"
+            app:itemTextAppearance="@style/TextAppearance.AppCompat.Title"
             app:menu="@menu/navigation_view_menu" />
     </android.support.v4.widget.DrawerLayout>
 </layout>

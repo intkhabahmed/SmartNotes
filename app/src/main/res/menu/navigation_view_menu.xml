@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
-        <item android:id="@+id/home_page"
+        <item
+            android:id="@+id/home_page"
+            android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/home" />
-        <item android:id="@+id/trash"
-            android:title="@string/trash"/>
-        <item android:id="@+id/settings"
-            android:title="@string/settings"/>
-        <item android:id="@+id/help"
-            android:title="@string/help"/>
-        <item android:id="@+id/about"
-            android:title="@string/about"/>
+        <item
+            android:id="@+id/trash"
+            android:icon="@drawable/ic_empty_trash_black_24dp"
+            android:title="@string/trash" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_24dp"
+            android:title="@string/settings" />
+        <item
+            android:id="@+id/help"
+            android:icon="@drawable/ic_help_black_24dp"
+            android:title="@string/help" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="@string/about" />
     </group>
 </menu>

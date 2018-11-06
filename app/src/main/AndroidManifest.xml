@@ -66,7 +66,9 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
-        <service android:name=".services.NoteService" />
+        <service
+            android:name=".services.NoteService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver android:name=".widgets.NoteWidgetProvider">
             <intent-filter>

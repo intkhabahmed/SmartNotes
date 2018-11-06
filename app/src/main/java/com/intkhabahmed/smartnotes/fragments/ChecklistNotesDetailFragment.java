@@ -112,7 +112,7 @@ public class ChecklistNotesDetailFragment extends Fragment {
             }
         }, 200);
         mDetailBinding.tvDateCreated.setText(NoteUtils.getFormattedTime(mNote.getDateCreated()));
-        mDetailBinding.tvDateModified.setText(NoteUtils.getFormattedTime(mNote.getDateModified()));
+        mDetailBinding.tvDateModified.setText(mNote.getDateModified() != 0 ? NoteUtils.getFormattedTime(mNote.getDateModified()) : "-");
         mDetailBinding.tvNotification.setText(mNote.getReminderDateTime() != null ? NoteUtils.getFormattedTime
                 (NoteUtils.getRelativeTimeFromNow(mNote.getReminderDateTime()) * 1000 + System.currentTimeMillis(),
                         System.currentTimeMillis()) : getString(R.string.notification_not_set));
