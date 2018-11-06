@@ -1,33 +1,27 @@
 package com.intkhabahmed.smartnotes.services;
 
-import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.app.JobIntentService;
 
 import com.intkhabahmed.smartnotes.widgets.NoteWidgetProvider;
 
-public class NoteService extends IntentService {
+public class NoteService extends JobIntentService {
 
     private static final String ACTION_WIDGET_UPDATE = "com.intkhabahmed.smartnotes.action.update_widget";
-
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     */
-    public NoteService() {
-        super(NoteService.class.getSimpleName());
-    }
+    private static final int JOB_ID = 1000;
 
     public static void startActionUpdateWidget(Context context) {
         Intent intent = new Intent(context, NoteService.class);
         intent.setAction(ACTION_WIDGET_UPDATE);
-        context.startService(intent);
+        enqueueWork(context, NoteService.class, JOB_ID, intent);
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
+    protected void onHandleWork(@Nullable Intent intent) {
         if (intent != null) {
             String action = intent.getAction();
             if (ACTION_WIDGET_UPDATE.equals(action)) {
