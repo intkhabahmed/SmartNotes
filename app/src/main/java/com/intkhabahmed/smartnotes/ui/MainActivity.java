@@ -17,6 +17,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
+import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.databinding.ActivityMainBinding;
@@ -42,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
     private Handler handler;
     private NavigationView navigationView;
     private ActivityMainBinding mMainBinding;
+    private PublisherInterstitialAd mInterstitialAd;
+    private boolean isAdTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,17 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
                 launchRespectiveDetailFragment(note);
             }
         }
+    }
+
+    private void setupInterstitialAd() {
+        mInterstitialAd = new PublisherInterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.release_admob_interstitial_adunit_id));
+        mInterstitialAd.loadAd(new PublisherAdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build());
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+            }
+        });
     }
 
     private void launchRespectiveDetailFragment(Note note) {
@@ -159,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
                 return false;
             }
         });
+        setupInterstitialAd();
     }
 
     public CurrentFragmentListener getCurrentFragmentListener() {
@@ -198,6 +216,12 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
                 homePageFragment.getViewPager().setCurrentItem(0);
                 return;
             }
+            isAdTime = true;
+        }
+        if (isAdTime) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
         }
         super.onBackPressed();
     }
@@ -212,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
     public void setCurrentFragment(String fragmentName) {
         if (fragmentName.equals(HomePageFragment.class.getSimpleName())) {
             navigationView.getMenu().getItem(0).setChecked(true);
+            isAdTime = false;
         } else if (fragmentName.equals(TrashFragment.class.getSimpleName())) {
             navigationView.getMenu().getItem(1).setChecked(true);
         } else if (fragmentName.equals(SettingsFragment.class.getSimpleName())) {
