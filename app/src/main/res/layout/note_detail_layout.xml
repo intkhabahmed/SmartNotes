@@ -180,6 +180,7 @@
                         android:textColor="?attr/secondaryTextColor"
                         android:textIsSelectable="true"
                         android:visibility="gone"
+                        android:autoLink="web"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
