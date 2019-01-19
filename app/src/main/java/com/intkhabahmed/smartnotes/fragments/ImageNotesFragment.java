@@ -59,7 +59,7 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-        mNotesBinding.addButton.setVisibility(View.VISIBLE);
+        mNotesBinding.addButton.show();
         mNotesBinding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,7 +96,7 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
     @Override
     public void onResume() {
         super.onResume();
-        mNotesBinding.addButton.setVisibility(View.VISIBLE);
+        mNotesBinding.addButton.show();
     }
 
     public void updateImageNotesFragment() {
