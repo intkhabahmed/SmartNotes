@@ -124,7 +124,9 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void setNotes(List<Note> notes) {
-        mNotes = notes;
+        if (notes != null) {
+            mNotes = notes;
+        }
         notifyDataSetChanged();
     }
 

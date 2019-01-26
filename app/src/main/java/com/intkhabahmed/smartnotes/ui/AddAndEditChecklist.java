@@ -356,7 +356,7 @@ public class AddAndEditChecklist extends AppCompatActivity implements DateTimeLi
             if (mTrashed == 1) {
                 mChecklistBinding.checklistTitle.setEnabled(false);
                 mChecklistBinding.checklistItem.setVisibility(View.GONE);
-                mChecklistBinding.addChecklistButton.setVisibility(View.GONE);
+                mChecklistBinding.addChecklistButton.hide();
                 menuItem.setVisible(false);
             }
             mChecklistBinding.checklistTitle.setText(mNote.getNoteTitle());

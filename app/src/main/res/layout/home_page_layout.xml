@@ -41,8 +41,9 @@
             android:layout_marginLeft="@dimen/medium_space"
             android:layout_marginEnd="@dimen/medium_space"
             android:layout_marginRight="@dimen/medium_space"
-            ads:adSize="BANNER"
+            ads:adSize="SMART_BANNER"
             ads:adUnitId="@string/release_admob_adunit_id"
+            ads:barrierDirection="top"
             ads:layout_constraintBottom_toBottomOf="parent"
             ads:layout_constraintEnd_toEndOf="parent"
             ads:layout_constraintStart_toStartOf="parent" />

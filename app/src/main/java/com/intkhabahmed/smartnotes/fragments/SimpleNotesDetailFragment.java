@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.databinding.NoteDetailLayoutBinding;
@@ -95,7 +96,7 @@ public class SimpleNotesDetailFragment extends Fragment {
                 (NoteUtils.getRelativeTimeFromNow(mNote.getReminderDateTime()) * 1000 + System.currentTimeMillis(),
                         System.currentTimeMillis()) : getString(R.string.notification_not_set));
         if (mNote.getTrashed() == 1) {
-            mDetailBinding.editNoteButton.setVisibility(View.GONE);
+            mDetailBinding.editNoteButton.hide();
         }
 
         mDetailBinding.editNoteButton.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +108,8 @@ public class SimpleNotesDetailFragment extends Fragment {
                 getParentActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
+        mDetailBinding.adView2.loadAd(adRequest);
     }
 
     @Override

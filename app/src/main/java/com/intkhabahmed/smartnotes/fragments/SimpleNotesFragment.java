@@ -61,7 +61,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
         mRecyclerView.setHasFixedSize(true);
-        mNotesBinding.addButton.setVisibility(View.VISIBLE);
+        mNotesBinding.addButton.show();
         mNotesBinding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +98,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     @Override
     public void onResume() {
         super.onResume();
-        mNotesBinding.addButton.setVisibility(View.VISIBLE);
+        mNotesBinding.addButton.show();
     }
 
     public void updateSimpleNotesFragment() {
