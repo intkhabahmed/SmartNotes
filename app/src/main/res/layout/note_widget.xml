@@ -54,7 +54,7 @@
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         tools:text="@tools:sample/lorem/random" />
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/note_image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

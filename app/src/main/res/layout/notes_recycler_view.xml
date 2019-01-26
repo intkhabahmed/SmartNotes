@@ -29,7 +29,7 @@
                 android:visibility="invisible"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:contentDescription="@string/trash_empty_view_description"
@@ -54,7 +54,7 @@
                 android:visibility="invisible"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:contentDescription="@string/trash_empty_view_description"
@@ -79,7 +79,7 @@
                 android:visibility="invisible"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:contentDescription="@string/search_error_view_description"

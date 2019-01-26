@@ -23,8 +23,8 @@ android {
         applicationId "com.intkhabahmed.smartnotes"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 10
-        versionName "1.0.6"
+        versionCode 11
+        versionName "1.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         dataBinding.enabled = true
@@ -44,8 +44,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            useProguard false
-            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
             resValue("bool", "FIREBASE_API", "true")
         }
