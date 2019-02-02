@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes.database;
 
 import android.arch.lifecycle.LiveData;
 import android.text.TextUtils;
+
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.AppConstants;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
@@ -72,5 +73,14 @@ public class NoteRepository {
 
     public LiveData<Note> getNoteById(int noteId) {
         return Global.getDbInstance().notesDao().getNoteById(noteId);
+    }
+
+    public void emptyTrash() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Global.getDbInstance().notesDao().deleteAll();
+            }
+        });
     }
 }

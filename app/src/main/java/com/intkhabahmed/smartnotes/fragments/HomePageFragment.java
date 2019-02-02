@@ -16,7 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.ads.AdRequest;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.databinding.HomePageLayoutBinding;
@@ -30,6 +31,7 @@ public class HomePageFragment extends Fragment {
     private NotesFragmentPagerAdapter mNotesFragmentPagerAdapter;
     private boolean isFirstViewPagerPage;
     private HomePageLayoutBinding mHomeBinding;
+    private AdView bannerAdView;
 
     public HomePageFragment() {
     }
@@ -74,8 +76,13 @@ public class HomePageFragment extends Fragment {
             }
         }, 100);
         getParentActivity().setTitle(R.string.app_name);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
-        mHomeBinding.adView.loadAd(adRequest);
+        bannerAdView = new AdView(getParentActivity(), getString(R.string.banner_placement_id), AdSize.BANNER_HEIGHT_50);
+
+        // Add the ad view to your activity layout
+        mHomeBinding.adView.addView(bannerAdView);
+
+        // Request an ad
+        bannerAdView.loadAd();
     }
 
     @Override
@@ -83,6 +90,15 @@ public class HomePageFragment extends Fragment {
         super.onResume();
         CurrentFragmentListener listener = ((MainActivity) getParentActivity()).getCurrentFragmentListener();
         listener.setCurrentFragment(HomePageFragment.class.getSimpleName());
+    }
+
+    @Override
+    public void onDestroy() {
+        if (bannerAdView != null) {
+            bannerAdView.destroy();
+            mHomeBinding.adView.removeView(bannerAdView);
+        }
+        super.onDestroy();
     }
 
     @Override

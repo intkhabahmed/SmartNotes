@@ -21,7 +21,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.ads.AdRequest;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NoteRepository;
 import com.intkhabahmed.smartnotes.databinding.NoteDetailLayoutBinding;
@@ -40,6 +41,7 @@ public class ImageNotesDetailFragment extends Fragment {
     private int mNoteId;
     private static final String BUNDLE_DATA = "bundle-data";
     private NoteDetailLayoutBinding mDetailBinding;
+    private AdView bannerAdView;
 
 
     public ImageNotesDetailFragment() {
@@ -114,8 +116,13 @@ public class ImageNotesDetailFragment extends Fragment {
                 getParentActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
-        mDetailBinding.adView2.loadAd(adRequest);
+        bannerAdView = new AdView(getParentActivity(), getString(R.string.image_detail_banner_placement_id), AdSize.BANNER_HEIGHT_50);
+
+        // Add the ad view to your activity layout
+        mDetailBinding.adView2.addView(bannerAdView);
+
+        // Request an ad
+        bannerAdView.loadAd();
     }
 
     @Override
@@ -142,9 +149,18 @@ public class ImageNotesDetailFragment extends Fragment {
                     getParentActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
             };
-            ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
+            ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener, getString(R.string.delete_dialog_message));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (bannerAdView != null) {
+            bannerAdView.destroy();
+            mDetailBinding.adView2.removeView(bannerAdView);
+        }
+        super.onDestroy();
     }
 
     private FragmentActivity getParentActivity() {

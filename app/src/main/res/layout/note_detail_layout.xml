@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -240,7 +239,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <com.google.android.gms.ads.AdView
+        <FrameLayout
             android:id="@+id/adView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -248,11 +247,8 @@
             android:layout_marginLeft="@dimen/medium_space"
             android:layout_marginEnd="@dimen/medium_space"
             android:layout_marginRight="@dimen/medium_space"
-            ads:adSize="SMART_BANNER"
-            ads:adUnitId="@string/release_detail_admob_adunit_id"
-            ads:barrierDirection="top"
-            ads:layout_constraintBottom_toBottomOf="parent"
-            ads:layout_constraintEnd_toEndOf="parent"
-            ads:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
     </android.support.constraint.ConstraintLayout>
 </layout>

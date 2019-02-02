@@ -132,7 +132,7 @@ public class ImageNotesFragment extends Fragment implements NotesAdapter.OnItemC
                                 showSnackBar(note);
                             }
                         };
-                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
+                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener, getString(R.string.delete_dialog_message));
                         break;
                     case R.id.share_note:
                         String imagePath = note.getDescription();

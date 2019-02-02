@@ -47,4 +47,6 @@ interface NotesDao {
     @Delete
     void deleteNote(Note note);
 
+    @Query("DELETE FROM notes WHERE trash = 1")
+    void deleteAll();
 }

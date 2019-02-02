@@ -18,7 +18,7 @@
     <string name="date_created_descending">Date Created (New First)</string>
     <string name="title_ascending">Title (Ascending)</string>
     <string name="checklist_item">Checklist Item</string>
-    <string name="delete_note">Delete Note</string>
+    <string name="delete_confirmation">Delete Confirmation</string>
     <string name="share_note">Share Note</string>
     <string name="date_created">Created On</string>
     <string name="date_modified">Modified On</string>
@@ -46,7 +46,7 @@
     <string name="add_checklist_button">Add Checklist Button</string>
     <string name="chooser_title">Share Note with</string>
     <string name="share_type_text">text/plain</string>
-    <string name="delete_dialog_message">Do you want to delete it?</string>
+    <string name="delete_dialog_message">Item will be moved to trash, do you want to continue?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="menu_button">Menu button for extra options</string>
@@ -107,6 +107,9 @@ features like sharing, deleting, setting reminder are same as text note.
     <string name="notification_not_set">Not set</string>
     <string name="add_note_button">Add note button</string>
     <string name="note_edit_button">Note editing button</string>
-    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="admob_adunit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="permanently_delete_dialog_message">Item will be deleted permanently, do you want to continue?</string>
+    <string name="delete_note">Delete Note</string>
+    <string name="empty_trash">Empty Trash</string>
+    <string name="empty_trash_dialog_message">All items will be permanently deleted, continue?</string>
+    <string name="all_items_deleted">Deleted all items</string>
 </resources>

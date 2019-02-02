@@ -5,11 +5,13 @@ import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.ads.MobileAds;
+import com.facebook.ads.AdSettings;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NotesDatabase;
 
 import io.fabric.sdk.android.Fabric;
+
+import static com.facebook.ads.AdSettings.IntegrationErrorMode.INTEGRATION_ERROR_CRASH_DEBUG_MODE;
 
 public class Global extends Application {
     private static Global sGlobalInstance;
@@ -18,7 +20,8 @@ public class Global extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        MobileAds.initialize(this, getString(R.string.release_admob_app_id));
+        AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CRASH_DEBUG_MODE);
+        AdSettings.addTestDevice("9e563b43-5054-4817-8c8a-1ee730d9cca7");
         Fabric.with(this, new Crashlytics());
         sGlobalInstance = (Global) getApplicationContext();
         sSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

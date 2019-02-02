@@ -132,7 +132,7 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
                                 showSnackBar(note);
                             }
                         };
-                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
+                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener, getString(R.string.delete_dialog_message));
                         break;
                     case R.id.share_note:
                         String noteTitle = note.getNoteTitle();

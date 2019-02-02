@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +42,12 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     private NotesRecyclerViewBinding mNotesBinding;
 
     public TrashFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -73,6 +82,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
                     ViewUtils.hideEmptyView(mRecyclerView, mNotesBinding.trashEmptyView);
                     mNotesAdapter.setNotes(notes);
                 } else {
+                    setHasOptionsMenu(false);
                     mNotesAdapter.setNotes(null);
                     ViewUtils.showEmptyView(mRecyclerView, mNotesBinding.trashEmptyView);
                 }
@@ -85,6 +95,28 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
         super.onResume();
         CurrentFragmentListener listener = ((MainActivity) getParentActivity()).getCurrentFragmentListener();
         listener.setCurrentFragment(TrashFragment.class.getSimpleName());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.trash_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.empty_trash) {
+            DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    NoteRepository.getInstance().emptyTrash();
+                    Toast.makeText(getParentActivity(), getString(R.string.all_items_deleted), Toast.LENGTH_LONG).show();
+                }
+            };
+            ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener, getString(R.string.empty_trash_dialog_message));
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -122,15 +154,23 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
-                        String imagePath = note.getDescription();
-                        BitmapUtils.deleteImageFile(getParentActivity(), imagePath);
-                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
                             @Override
-                            public void run() {
-                                NoteRepository.getInstance().deleteNote(note);
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (note.getNoteType().equals(getString(R.string.image_note))) {
+                                    String imagePath = note.getDescription();
+                                    BitmapUtils.deleteImageFile(getParentActivity(), imagePath);
+                                }
+                                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        NoteRepository.getInstance().deleteNote(note);
+                                    }
+                                });
+                                Toast.makeText(getParentActivity(), getString(R.string.deleted_permanently), Toast.LENGTH_LONG).show();
                             }
-                        });
-                        Toast.makeText(getParentActivity(), getString(R.string.deleted_permanently), Toast.LENGTH_LONG).show();
+                        };
+                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener, getString(R.string.permanently_delete_dialog_message));
                         break;
                     case R.id.share_note:
                         NoteRepository.getInstance().recoverNoteFromTrash(note);

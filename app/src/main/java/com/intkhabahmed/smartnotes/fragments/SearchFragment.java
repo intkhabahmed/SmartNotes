@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -170,8 +171,14 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.delete_note:
-                        NoteRepository.getInstance().moveNoteToTrash(note);
-                        showSnackBar(note);
+                        DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                NoteRepository.getInstance().moveNoteToTrash(note);
+                                showSnackBar(note);
+                            }
+                        };
+                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener, getString(R.string.delete_dialog_message));
                         break;
                     case R.id.share_note:
                         if (note.getNoteType().equals(getString(R.string.image_note))) {
