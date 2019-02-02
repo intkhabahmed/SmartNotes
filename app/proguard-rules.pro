@@ -21,11 +21,6 @@
 #-renamesourcefileattribute SourceFile
 -keep class android.support.v7.widget.SearchView { *; }
 # For Google Play Services
--keep public class com.google.android.gms.ads.**{
-   public *;
-}
 
-# For old ads classes
--keep public class com.google.ads.**{
-   public *;
-}
+#Facebook Audience Network
+-keep class com.facebook.ads.** { *; }

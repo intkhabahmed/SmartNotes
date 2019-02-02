@@ -133,7 +133,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
                                 showSnackBar(note);
                             }
                         };
-                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
+                        ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener, getString(R.string.delete_dialog_message));
                         break;
                     case R.id.share_note:
                         NoteUtils.shareNote(getParentActivity(), note.getDescription());

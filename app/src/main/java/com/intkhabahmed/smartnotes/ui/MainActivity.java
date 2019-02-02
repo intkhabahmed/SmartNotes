@@ -17,11 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.doubleclick.PublisherAdRequest;
-import com.google.android.gms.ads.doubleclick.PublisherInterstitialAd;
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.facebook.ads.InterstitialAd;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.databinding.ActivityMainBinding;
 import com.intkhabahmed.smartnotes.fragments.AboutFragment;
@@ -46,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
     private Handler handler;
     private NavigationView navigationView;
     private ActivityMainBinding mMainBinding;
-    private PublisherInterstitialAd mInterstitialAd;
+    private InterstitialAd mInterstitialAd;
     private boolean isAdTime;
 
     @Override
@@ -79,14 +75,8 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
     }
 
     private void setupInterstitialAd() {
-        mInterstitialAd = new PublisherInterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.release_admob_interstitial_adunit_id));
-        mInterstitialAd.loadAd(new PublisherAdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build());
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-            }
-        });
+        mInterstitialAd = new InterstitialAd(this, getString(R.string.interstitial_placement_id));
+        mInterstitialAd.loadAd();
     }
 
     private void launchRespectiveDetailFragment(Note note) {
@@ -114,15 +104,6 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
     @Override
     protected void onStart() {
         super.onStart();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(MainActivity.this);
-                Bundle params = new Bundle();
-                params.putLong(AppConstants.APP_OPEN_TIME, System.currentTimeMillis());
-                firebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, params);
-            }
-        }, 200);
         navigationView = mMainBinding.navigationView;
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -218,10 +199,8 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
             }
             isAdTime = true;
         }
-        if (isAdTime) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            }
+        if (isAdTime && mInterstitialAd != null && mInterstitialAd.isAdLoaded()) {
+            mInterstitialAd.show();
         }
         super.onBackPressed();
     }
@@ -246,5 +225,13 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
         } else if (fragmentName.equals(AboutFragment.class.getSimpleName())) {
             navigationView.getMenu().getItem(4).setChecked(true);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mInterstitialAd != null) {
+            mInterstitialAd.destroy();
+        }
+        super.onDestroy();
     }
 }

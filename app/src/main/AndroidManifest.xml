@@ -91,10 +91,6 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/release_admob_app_id" />
-
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/SplashScreenTheme">

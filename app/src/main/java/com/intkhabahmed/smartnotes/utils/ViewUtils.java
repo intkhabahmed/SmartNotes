@@ -57,17 +57,17 @@ public class ViewUtils {
         alertDialog.show();
     }
 
-    public static void showDeleteConfirmationDialog(Context context, DialogInterface.OnClickListener deleteButtonListener) {
+    public static void showDeleteConfirmationDialog(Context context, DialogInterface.OnClickListener deleteButtonListener, String message) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
-        dialogBuilder.setPositiveButton(Global.getInstance().getString(R.string.yes), deleteButtonListener);
-        dialogBuilder.setNegativeButton(Global.getInstance().getString(R.string.no), new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(context.getString(R.string.yes), deleteButtonListener);
+        dialogBuilder.setNegativeButton(context.getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
             }
         });
-        dialogBuilder.setMessage(Global.getInstance().getString(R.string.delete_dialog_message));
-        dialogBuilder.setTitle(Global.getInstance().getString(R.string.delete_note));
+        dialogBuilder.setMessage(message);
+        dialogBuilder.setTitle(context.getString(R.string.delete_confirmation));
         AlertDialog alertDialog = dialogBuilder.create();
         WindowManager.LayoutParams params = alertDialog.getWindow().getAttributes();
         params.dimAmount = 0.7f;

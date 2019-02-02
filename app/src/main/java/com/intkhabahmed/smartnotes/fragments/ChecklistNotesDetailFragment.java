@@ -26,7 +26,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
@@ -52,6 +53,7 @@ public class ChecklistNotesDetailFragment extends Fragment {
     private NoteDetailLayoutBinding mDetailBinding;
     private TreeMap<String, ChecklistItem> mItems;
     private boolean isChecklistPressed;
+    private AdView bannerAdView;
 
     public ChecklistNotesDetailFragment() {
     }
@@ -129,8 +131,13 @@ public class ChecklistNotesDetailFragment extends Fragment {
                 getParentActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
-        mDetailBinding.adView2.loadAd(adRequest);
+        bannerAdView = new AdView(getParentActivity(), getString(R.string.checklist_detail_banner_placement_id), AdSize.BANNER_HEIGHT_50);
+
+        // Add the ad view to your activity layout
+        mDetailBinding.adView2.addView(bannerAdView);
+
+        // Request an ad
+        bannerAdView.loadAd();
     }
 
     @Override
@@ -157,7 +164,7 @@ public class ChecklistNotesDetailFragment extends Fragment {
                     getParentActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
             };
-            ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener);
+            ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener, getString(R.string.delete_dialog_message));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -218,6 +225,15 @@ public class ChecklistNotesDetailFragment extends Fragment {
                 }
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (bannerAdView != null) {
+            bannerAdView.destroy();
+            mDetailBinding.adView2.removeView(bannerAdView);
+        }
+        super.onDestroy();
     }
 
     private FragmentActivity getParentActivity() {
