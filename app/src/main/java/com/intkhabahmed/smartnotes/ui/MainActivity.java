@@ -3,6 +3,7 @@ package com.intkhabahmed.smartnotes.ui;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -151,6 +152,12 @@ public class MainActivity extends AppCompatActivity implements CurrentFragmentLi
                                         .addToBackStack(null)
                                         .commit();
                                 break;
+                            case R.id.privacy_policy:
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(getString(R.string.privacy_policy_link)));
+                                if (intent.resolveActivity(getPackageManager()) != null) {
+                                    startActivity(intent);
+                                }
                         }
                     }
                 }, 300);

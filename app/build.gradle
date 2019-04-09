@@ -21,10 +21,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.intkhabahmed.smartnotes"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
-        versionCode 12
-        versionName "1.0.8"
+        versionCode 13
+        versionName "1.0.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         dataBinding.enabled = true
