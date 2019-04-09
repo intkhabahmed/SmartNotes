@@ -112,4 +112,6 @@ features like sharing, deleting, setting reminder are same as text note.
     <string name="empty_trash">Empty Trash</string>
     <string name="empty_trash_dialog_message">All items will be permanently deleted, continue?</string>
     <string name="all_items_deleted">Deleted all items</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacy_policy_link">https://intkhabahmed.github.io/privacy-policy/</string>
 </resources>

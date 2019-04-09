@@ -71,7 +71,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 } else if (note.getNoteType().equals(mContext.getString(R.string.checklist))) {
                     List<ChecklistItem> checklistItems = new Gson().fromJson(note.getDescription(), new TypeToken<List<ChecklistItem>>() {
                     }.getType());
-                    int noOfItems = checklistItems.size() >= 2 ? 2 : checklistItems.size();
+                    int noOfItems = checklistItems != null ? checklistItems.size() >= 2 ? 2 : checklistItems.size() : 0;
                     textNotesViewHolder.noteDescriptionTextView.setText("");
                     for (int i = 0; i < noOfItems; i++) {
                         textNotesViewHolder.noteDescriptionTextView
@@ -84,7 +84,7 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             textNotesViewHolder.noteDescriptionTextView.append("\n");
                         }
                     }
-                    if (checklistItems.size() > 2) {
+                    if (checklistItems != null && checklistItems.size() > 2) {
                         textNotesViewHolder.noteDescriptionTextView.append(" ...");
                     }
                 }
