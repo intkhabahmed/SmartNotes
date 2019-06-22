@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -29,8 +30,6 @@ import com.intkhabahmed.smartnotes.utils.NoteUtils;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
-
-import java.util.List;
 
 /**
  * Created by INTKHAB on 01-10-2018.
@@ -80,15 +79,14 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
         if (isSortCriteriaChanged) {
             notesViewModel.setNotes(getString(R.string.simple_note), 0);
         }
-        notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
+        notesViewModel.getNotes().observe(getViewLifecycleOwner(), new Observer<PagedList<Note>>() {
             @Override
-            public void onChanged(@Nullable List<Note> notes) {
+            public void onChanged(@Nullable PagedList<Note> notes) {
                 mNotesBinding.progressBar.setVisibility(View.GONE);
+                mNotesAdapter.submitList(notes);
                 if (notes != null && notes.size() > 0) {
                     ViewUtils.hideEmptyView(mRecyclerView, mNotesBinding.emptyView);
-                    mNotesAdapter.setNotes(notes);
                 } else {
-                    mNotesAdapter.setNotes(null);
                     ViewUtils.showEmptyView(mRecyclerView, mNotesBinding.emptyView);
                 }
             }
@@ -106,7 +104,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     }
 
     @Override
-    public void onItemClick(int noteId, String noteType) {
+    public void onItemClick(int noteId, @NonNull String noteType) {
         SimpleNotesDetailFragment simpleNotesDetailFragment = new SimpleNotesDetailFragment();
         simpleNotesDetailFragment.setNoteId(noteId);
         getParentActivity().getSupportFragmentManager().beginTransaction()
@@ -117,7 +115,7 @@ public class SimpleNotesFragment extends Fragment implements NotesAdapter.OnItem
     }
 
     @Override
-    public void onMenuItemClick(View view, final Note note) {
+    public void onMenuItemClick(@NonNull View view, @NonNull final Note note) {
         PopupMenu popupMenu = new PopupMenu(getParentActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

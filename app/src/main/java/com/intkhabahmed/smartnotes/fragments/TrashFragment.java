@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -32,8 +33,6 @@ import com.intkhabahmed.smartnotes.utils.CurrentFragmentListener;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
-
-import java.util.List;
 
 public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickListener {
 
@@ -74,16 +73,15 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
         mNotesBinding.progressBar.setVisibility(View.VISIBLE);
         NotesViewModelFactory factory = new NotesViewModelFactory(null, 1);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
-        notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
+        notesViewModel.getNotes().observe(this, new Observer<PagedList<Note>>() {
             @Override
-            public void onChanged(@Nullable List<Note> notes) {
+            public void onChanged(@Nullable PagedList<Note> notes) {
                 mNotesBinding.progressBar.setVisibility(View.GONE);
+                mNotesAdapter.submitList(notes);
                 if (notes != null && notes.size() > 0) {
                     ViewUtils.hideEmptyView(mRecyclerView, mNotesBinding.trashEmptyView);
-                    mNotesAdapter.setNotes(notes);
                 } else {
                     setHasOptionsMenu(false);
-                    mNotesAdapter.setNotes(null);
                     ViewUtils.showEmptyView(mRecyclerView, mNotesBinding.trashEmptyView);
                 }
             }
@@ -120,7 +118,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     }
 
     @Override
-    public void onItemClick(int noteId, String noteType) {
+    public void onItemClick(int noteId, @NonNull String noteType) {
         Fragment fragment;
         if (noteType.equals(getString(R.string.checklist))) {
             ChecklistNotesDetailFragment checklistNotesDetailFragment = new ChecklistNotesDetailFragment();
@@ -143,7 +141,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     }
 
     @Override
-    public void onMenuItemClick(View view, final Note note) {
+    public void onMenuItemClick(@NonNull View view, @NonNull final Note note) {
         PopupMenu popupMenu = new PopupMenu(getParentActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.getMenu().getItem(0).setTitle(getString(R.string.delete_forever));
@@ -157,7 +155,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
                         DialogInterface.OnClickListener deleteListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                if (note.getNoteType().equals(getString(R.string.image_note))) {
+                                if (note.getNoteType() != null && note.getNoteType().equals(getString(R.string.image_note))) {
                                     String imagePath = note.getDescription();
                                     BitmapUtils.deleteImageFile(getParentActivity(), imagePath);
                                 }

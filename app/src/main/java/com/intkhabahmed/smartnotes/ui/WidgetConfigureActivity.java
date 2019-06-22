@@ -3,10 +3,12 @@ package com.intkhabahmed.smartnotes.ui;
 import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +28,6 @@ import com.intkhabahmed.smartnotes.utils.Global;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
-
-import java.util.List;
 
 public class WidgetConfigureActivity extends AppCompatActivity implements NotesAdapter.OnItemClickListener {
 
@@ -79,15 +79,14 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
         mWidgetBinding.included.progressBar.setVisibility(View.VISIBLE);
         NotesViewModelFactory factory = new NotesViewModelFactory(null, 0);
         NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
-        notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
+        notesViewModel.getNotes().observe(this, new Observer<PagedList<Note>>() {
             @Override
-            public void onChanged(@Nullable List<Note> notes) {
+            public void onChanged(@Nullable PagedList<Note> notes) {
                 mWidgetBinding.included.progressBar.setVisibility(View.GONE);
+                mNotesAdapter.submitList(notes);
                 if (notes != null && notes.size() > 0) {
                     ViewUtils.hideEmptyView(mRecyclerView, mWidgetBinding.included.emptyView);
-                    mNotesAdapter.setNotes(notes);
                 } else {
-                    mNotesAdapter.setNotes(null);
                     ViewUtils.showEmptyView(mRecyclerView, mWidgetBinding.included.emptyView);
                 }
             }
@@ -109,22 +108,19 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                break;
-
+        if (id == android.R.id.home) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onMenuItemClick(View view, final Note note) {
+    public void onMenuItemClick(@NonNull View view, @NonNull final Note note) {
         setNoteForWidget(note.getNoteId());
     }
 
     @Override
-    public void onItemClick(int noteId, String noteType) {
+    public void onItemClick(int noteId, @NonNull String noteType) {
         setNoteForWidget(noteId);
     }
 

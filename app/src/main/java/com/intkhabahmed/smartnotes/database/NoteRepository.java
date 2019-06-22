@@ -1,14 +1,13 @@
 package com.intkhabahmed.smartnotes.database;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
 import android.text.TextUtils;
 
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.AppConstants;
 import com.intkhabahmed.smartnotes.utils.AppExecutors;
 import com.intkhabahmed.smartnotes.utils.Global;
-
-import java.util.List;
 
 public class NoteRepository {
     private static NoteRepository sInstance;
@@ -23,7 +22,7 @@ public class NoteRepository {
         return sInstance;
     }
 
-    public LiveData<List<Note>> getNotesByTypeAndAvailability(String type, int trashed) {
+    public DataSource.Factory<Integer, Note> getNotesByTypeAndAvailability(String type, int trashed) {
         if (TextUtils.isEmpty(type)) {
             return Global.getDbInstance().notesDao().getNotesByAvailability(trashed);
         }
@@ -35,7 +34,7 @@ public class NoteRepository {
                 Global.getSortCriteria());
     }
 
-    public LiveData<List<Note>> getNotesByTitleAndAvailability(String title, int trashed) {
+    public DataSource.Factory<Integer, Note> getNotesByTitleAndAvailability(String title, int trashed) {
         return Global.getDbInstance().notesDao().getNotesByTitleAndAvailability(title, trashed);
     }
 

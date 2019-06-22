@@ -2,6 +2,7 @@ package com.intkhabahmed.smartnotes.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
@@ -88,14 +89,13 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         if (isQueryChanged) {
             notesViewModel.setNotes(mFilterText, 0);
         }
-        notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
+        notesViewModel.getNotes().observe(this, new Observer<PagedList<Note>>() {
             @Override
-            public void onChanged(@Nullable List<Note> notes) {
+            public void onChanged(@Nullable PagedList<Note> notes) {
+                mNotesAdapter.submitList(notes);
                 if (notes != null && notes.size() > 0) {
                     hideEmptyView();
-                    mNotesAdapter.setNotes(notes);
                 } else {
-                    mNotesAdapter.setNotes(null);
                     showEmptyView();
                 }
             }
@@ -162,7 +162,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     }
 
     @Override
-    public void onMenuItemClick(View view, final Note note) {
+    public void onMenuItemClick(@NonNull View view, @NonNull final Note note) {
         PopupMenu popupMenu = new PopupMenu(getParentActivity(), view);
         popupMenu.inflate(R.menu.item_menu);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -181,17 +181,19 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
                         ViewUtils.showDeleteConfirmationDialog(getContext(), deleteListener, getString(R.string.delete_dialog_message));
                         break;
                     case R.id.share_note:
-                        if (note.getNoteType().equals(getString(R.string.image_note))) {
+                        if (note.getNoteType() != null && note.getNoteType().equals(getString(R.string.image_note))) {
                             BitmapUtils.shareImage(getParentActivity(), note.getDescription());
-                        } else if (note.getNoteType().equals(getString(R.string.checklist))) {
+                        } else if (note.getNoteType() != null && note.getNoteType().equals(getString(R.string.checklist))) {
                             StringBuilder tasks = new StringBuilder();
                             tasks.append(note.getNoteTitle());
                             tasks.append("\n_____________________");
                             List<ChecklistItem> checklistItems = new Gson().fromJson(note.getDescription(), new TypeToken<List<ChecklistItem>>() {
                             }.getType());
-                            for (ChecklistItem item : checklistItems) {
-                                tasks.append("\n");
-                                tasks.append(item.getTitle());
+                            if (checklistItems != null) {
+                                for (ChecklistItem item : checklistItems) {
+                                    tasks.append("\n");
+                                    tasks.append(item.getTitle());
+                                }
                             }
                             NoteUtils.shareNote(getParentActivity(), tasks.toString());
                         } else {
@@ -207,7 +209,7 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
     }
 
     @Override
-    public void onItemClick(int noteId, String noteType) {
+    public void onItemClick(int noteId, @NonNull String noteType) {
         Fragment fragment;
         if (noteType.equals(getString(R.string.checklist))) {
             ChecklistNotesDetailFragment checklistNotesDetailFragment = new ChecklistNotesDetailFragment();
