@@ -2,10 +2,12 @@ package com.intkhabahmed.smartnotes.utils;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
+
+import androidx.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.ads.AdSettings;
+import com.intkhabahmed.smartnotes.BuildConfig;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NotesDatabase;
 
@@ -22,7 +24,9 @@ public class Global extends Application {
         super.onCreate();
         AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CRASH_DEBUG_MODE);
         AdSettings.addTestDevice("9e563b43-5054-4817-8c8a-1ee730d9cca7");
-        Fabric.with(this, new Crashlytics());
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, new Crashlytics());
+        }
         sGlobalInstance = (Global) getApplicationContext();
         sSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }

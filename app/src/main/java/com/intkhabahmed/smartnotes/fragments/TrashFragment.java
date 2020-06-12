@@ -1,17 +1,7 @@
 package com.intkhabahmed.smartnotes.fragments;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.arch.paging.PagedList;
 import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
@@ -71,9 +72,9 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
 
     private void setupViewModel() {
         mNotesBinding.progressBar.setVisibility(View.VISIBLE);
-        NotesViewModelFactory factory = new NotesViewModelFactory(null, 1);
-        NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
-        notesViewModel.getNotes().observe(this, new Observer<PagedList<Note>>() {
+        NotesViewModelFactory factory = new NotesViewModelFactory("", 1);
+        NotesViewModel notesViewModel = new ViewModelProvider(this, factory).get(NotesViewModel.class);
+        notesViewModel.getNotes().observe(getViewLifecycleOwner(), new Observer<PagedList<Note>>() {
             @Override
             public void onChanged(@Nullable PagedList<Note> notes) {
                 mNotesBinding.progressBar.setVisibility(View.GONE);
@@ -96,7 +97,7 @@ public class TrashFragment extends Fragment implements NotesAdapter.OnItemClickL
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.trash_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }

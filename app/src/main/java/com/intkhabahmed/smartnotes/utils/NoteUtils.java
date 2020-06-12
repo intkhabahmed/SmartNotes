@@ -3,8 +3,9 @@ package com.intkhabahmed.smartnotes.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.ShareCompat;
 import android.text.format.DateUtils;
+
+import androidx.core.app.ShareCompat;
 
 import com.intkhabahmed.smartnotes.R;
 

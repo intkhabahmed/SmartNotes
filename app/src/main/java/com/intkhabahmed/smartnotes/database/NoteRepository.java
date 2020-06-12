@@ -1,8 +1,9 @@
 package com.intkhabahmed.smartnotes.database;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.paging.DataSource;
 import android.text.TextUtils;
+
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
 
 import com.intkhabahmed.smartnotes.models.Note;
 import com.intkhabahmed.smartnotes.utils.AppConstants;

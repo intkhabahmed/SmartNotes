@@ -1,14 +1,7 @@
 package com.intkhabahmed.smartnotes.fragments;
 
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,8 +9,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
+import com.google.android.material.tabs.TabLayout;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesFragmentPagerAdapter;
 import com.intkhabahmed.smartnotes.databinding.HomePageLayoutBinding;
@@ -102,7 +103,7 @@ public class HomePageFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull final Menu menu, @NonNull MenuInflater inflater) {
         getParentActivity().getMenuInflater().inflate(R.menu.main_menu, menu);
         menu.getItem(1).getSubMenu().getItem(Global.getSortId() - 1).setChecked(true);
         super.onCreateOptionsMenu(menu, inflater);

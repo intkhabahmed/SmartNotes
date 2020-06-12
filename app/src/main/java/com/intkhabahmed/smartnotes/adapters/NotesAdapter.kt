@@ -1,16 +1,15 @@
 package com.intkhabahmed.smartnotes.adapters
 
-import android.arch.paging.PagedListAdapter
 import android.content.Context
 import android.net.Uri
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -25,7 +24,7 @@ import java.io.File
  * Created by INTKHAB on 23-03-2018.
  */
 
-class NotesAdapter(private val mContext: Context, private val mOnItemClickListener: OnItemClickListener) : PagedListAdapter<Note, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class NotesAdapter(private val mContext: Context, private val mOnItemClickListener: OnItemClickListener) : PagedListAdapter<Note, androidx.recyclerview.widget.RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     interface OnItemClickListener {
         fun onMenuItemClick(view: View, note: Note)
@@ -33,7 +32,7 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
         fun onItemClick(noteId: Int, noteType: String)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         val view: View
         return when (viewType) {
             0 -> {
@@ -48,7 +47,7 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
         val note = getItem(holder.adapterPosition)!!
         when (holder.itemViewType) {
             0 -> {
@@ -99,7 +98,7 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
         } else 1
     }
 
-    internal inner class TextNotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    internal inner class TextNotesViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView), View.OnClickListener {
         var noteTitleTextView: TextView = itemView.findViewById(R.id.note_title)
         var noteDescriptionTextView: TextView = itemView.findViewById(R.id.note_description)
         var noteCreateDateTextView: TextView = itemView.findViewById(R.id.note_create_date)
@@ -122,7 +121,7 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
         }
     }
 
-    internal inner class ImageNotesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    internal inner class ImageNotesViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView), View.OnClickListener {
         var noteTitleTextView: TextView = itemView.findViewById(R.id.tv_note_title)
         var noteImageView: ImageView = itemView.findViewById(R.id.note_image_view)
         var noteCreateDateTextView: TextView = itemView.findViewById(R.id.tv_note_date_created)

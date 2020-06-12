@@ -1,25 +1,26 @@
 package com.intkhabahmed.smartnotes.fragments;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.arch.paging.PagedList;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
@@ -80,11 +81,11 @@ public class ChecklistFragment extends Fragment implements NotesAdapter.OnItemCl
     private void setupViewModel(boolean isSortCriteriaChanged) {
         mNotesBinding.progressBar.setVisibility(View.VISIBLE);
         NotesViewModelFactory factory = new NotesViewModelFactory(getString(R.string.checklist), 0);
-        NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
+        NotesViewModel notesViewModel = new ViewModelProvider(this, factory).get(NotesViewModel.class);
         if (isSortCriteriaChanged) {
             notesViewModel.setNotes(getString(R.string.checklist), 0);
         }
-        notesViewModel.getNotes().observe(this, new Observer<PagedList<Note>>() {
+        notesViewModel.getNotes().observe(getViewLifecycleOwner(), new Observer<PagedList<Note>>() {
             @Override
             public void onChanged(@Nullable PagedList<Note> notes) {
                 mNotesBinding.progressBar.setVisibility(View.GONE);

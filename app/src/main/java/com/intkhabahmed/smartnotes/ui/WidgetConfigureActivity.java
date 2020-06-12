@@ -1,22 +1,23 @@
 package com.intkhabahmed.smartnotes.ui;
 
 import android.appwidget.AppWidgetManager;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.arch.paging.PagedList;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
@@ -78,7 +79,7 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
     private void setupViewModel() {
         mWidgetBinding.included.progressBar.setVisibility(View.VISIBLE);
         NotesViewModelFactory factory = new NotesViewModelFactory(null, 0);
-        NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
+        NotesViewModel notesViewModel = new ViewModelProvider(this, factory).get(NotesViewModel.class);
         notesViewModel.getNotes().observe(this, new Observer<PagedList<Note>>() {
             @Override
             public void onChanged(@Nullable PagedList<Note> notes) {

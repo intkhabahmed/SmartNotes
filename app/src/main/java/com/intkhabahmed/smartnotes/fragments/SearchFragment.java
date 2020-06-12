@@ -1,21 +1,8 @@
 package com.intkhabahmed.smartnotes.fragments;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.arch.paging.PagedList;
 import android.content.DialogInterface;
-import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +14,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.intkhabahmed.smartnotes.R;
@@ -45,11 +46,11 @@ import java.util.List;
 
 public class SearchFragment extends Fragment implements NotesAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
 
+    private static final String BUNDLE_EXTRA = "search-query";
     private NotesAdapter mNotesAdapter;
     private RecyclerView mRecyclerView;
     private SearchView mSearchView;
     private String mFilterText;
-    private static final String BUNDLE_EXTRA = "search-query";
     private NotesRecyclerViewBinding mNotesBinding;
 
     public SearchFragment() {
@@ -85,11 +86,11 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
 
     private void setupViewModel(boolean isQueryChanged) {
         SearchNotesViewModelFactory factory = new SearchNotesViewModelFactory(mFilterText, 0);
-        SearchNotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(SearchNotesViewModel.class);
+        SearchNotesViewModel notesViewModel = new ViewModelProvider(this, factory).get(SearchNotesViewModel.class);
         if (isQueryChanged) {
             notesViewModel.setNotes(mFilterText, 0);
         }
-        notesViewModel.getNotes().observe(this, new Observer<PagedList<Note>>() {
+        notesViewModel.getNotes().observe(getViewLifecycleOwner(), new Observer<PagedList<Note>>() {
             @Override
             public void onChanged(@Nullable PagedList<Note> notes) {
                 mNotesAdapter.submitList(notes);
@@ -110,10 +111,10 @@ public class SearchFragment extends Fragment implements NotesAdapter.OnItemClick
         searchViewItem.expandActionView();
         mSearchView = (SearchView) menu.findItem(R.id.search_menu).getActionView();
         mSearchView.setQueryHint(getString(R.string.search_hint));
-        EditText searchEditText = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        EditText searchEditText = mSearchView.findViewById(R.id.search_src_text);
         searchEditText.setHintTextColor(Color.WHITE);
         searchEditText.setTextColor(Color.WHITE);
-        ImageView closedBtn = mSearchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        ImageView closedBtn = mSearchView.findViewById(R.id.search_close_btn);
         closedBtn.setColorFilter(Color.WHITE);
         mSearchView.setMaxWidth(4000);
         mSearchView.setOnQueryTextListener(this);

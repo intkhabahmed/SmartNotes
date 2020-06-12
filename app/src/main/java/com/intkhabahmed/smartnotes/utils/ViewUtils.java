@@ -7,14 +7,15 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.support.annotation.AttrRes;
-import android.support.annotation.ColorInt;
-import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
+
+import androidx.annotation.AttrRes;
+import androidx.annotation.ColorInt;
+import androidx.appcompat.app.AlertDialog;
 
 import com.intkhabahmed.smartnotes.R;
 

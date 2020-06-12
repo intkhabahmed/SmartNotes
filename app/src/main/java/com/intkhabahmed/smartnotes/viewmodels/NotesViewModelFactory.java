@@ -1,8 +1,8 @@
 package com.intkhabahmed.smartnotes.viewmodels;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 public class NotesViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private String noteType;
@@ -16,6 +16,9 @@ public class NotesViewModelFactory extends ViewModelProvider.NewInstanceFactory 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new NotesViewModel(noteType, trashed);
+        if (modelClass.isAssignableFrom(NoteViewModel.class)) {
+            return (T) new NotesViewModel(noteType, trashed);
+        }
+        throw new ClassCastException("Unknown ViewModel Class");
     }
 }

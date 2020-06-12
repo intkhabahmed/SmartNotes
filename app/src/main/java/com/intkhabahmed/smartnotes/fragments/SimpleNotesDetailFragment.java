@@ -1,16 +1,8 @@
 package com.intkhabahmed.smartnotes.fragments;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
@@ -33,9 +34,9 @@ import com.intkhabahmed.smartnotes.viewmodels.NoteViewModelFactory;
 
 public class SimpleNotesDetailFragment extends Fragment {
 
+    private static final String BUNDLE_DATA = "bundle-data";
     private Note mNote;
     private int mNoteId;
-    private static final String BUNDLE_DATA = "bundle-data";
     private NoteDetailLayoutBinding mDetailBinding;
     private AdView bannerAdView;
 
@@ -73,8 +74,8 @@ public class SimpleNotesDetailFragment extends Fragment {
 
     private void setupNoteViewModel() {
         NoteViewModelFactory factory = new NoteViewModelFactory(mNoteId);
-        NoteViewModel noteViewModel = ViewModelProviders.of(this, factory).get(NoteViewModel.class);
-        noteViewModel.getNote().observe(this, new Observer<Note>() {
+        NoteViewModel noteViewModel = new ViewModelProvider(this, factory).get(NoteViewModel.class);
+        noteViewModel.getNote().observe(getViewLifecycleOwner(), new Observer<Note>() {
             @Override
             public void onChanged(@Nullable Note note) {
                 if (note != null) {
@@ -126,7 +127,7 @@ public class SimpleNotesDetailFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.detail_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
