@@ -18,6 +18,14 @@ import com.intkhabahmed.smartnotes.models.ChecklistItem
 import com.intkhabahmed.smartnotes.models.Note
 import com.intkhabahmed.smartnotes.utils.AppConstants
 import com.intkhabahmed.smartnotes.utils.NoteUtils
+import kotlinx.android.synthetic.main.image_note_item.view.note_image_view
+import kotlinx.android.synthetic.main.image_note_item.view.note_menu_button
+import kotlinx.android.synthetic.main.image_note_item.view.tv_note_date_created
+import kotlinx.android.synthetic.main.image_note_item.view.tv_note_title
+import kotlinx.android.synthetic.main.note_item.view.item_menu_button
+import kotlinx.android.synthetic.main.note_item.view.note_create_date
+import kotlinx.android.synthetic.main.note_item.view.note_description
+import kotlinx.android.synthetic.main.note_item.view.note_title
 import java.io.File
 
 /**
@@ -62,7 +70,7 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
                     textNotesViewHolder.noteDescriptionTextView.text = ""
                     for (i in 0 until noOfItems) {
                         textNotesViewHolder.noteDescriptionTextView
-                                .append(checklistItems!![i].title.toString())
+                                .append(checklistItems!![i].title)
                         if (checklistItems[i].isChecked) {
                             textNotesViewHolder.noteDescriptionTextView.append(" " + mContext.getString(R.string.checkmark_unicode))
                         }
@@ -80,7 +88,7 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
             }
             1 -> {
                 val imageNotesViewHolder = holder as ImageNotesViewHolder
-                val imageFile = File(note.description)
+                val imageFile = File(note.description!!)
                 if (imageFile.exists()) {
                     Glide.with(mContext).asDrawable().load(Uri.fromFile(imageFile)).into(imageNotesViewHolder.noteImageView)
                 }
@@ -99,10 +107,10 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
     }
 
     internal inner class TextNotesViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        var noteTitleTextView: TextView = itemView.findViewById(R.id.note_title)
-        var noteDescriptionTextView: TextView = itemView.findViewById(R.id.note_description)
-        var noteCreateDateTextView: TextView = itemView.findViewById(R.id.note_create_date)
-        var itemMenuButton: ImageButton = itemView.findViewById(R.id.item_menu_button)
+        var noteTitleTextView: TextView = itemView.note_title
+        var noteDescriptionTextView: TextView = itemView.note_description
+        var noteCreateDateTextView: TextView = itemView.note_create_date
+        private var itemMenuButton: ImageButton = itemView.item_menu_button
 
         init {
             noteTitleTextView.setOnClickListener(this)
@@ -122,10 +130,10 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
     }
 
     internal inner class ImageNotesViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        var noteTitleTextView: TextView = itemView.findViewById(R.id.tv_note_title)
-        var noteImageView: ImageView = itemView.findViewById(R.id.note_image_view)
-        var noteCreateDateTextView: TextView = itemView.findViewById(R.id.tv_note_date_created)
-        var itemMenuButton: ImageButton = itemView.findViewById(R.id.note_menu_button)
+        var noteTitleTextView: TextView = itemView.tv_note_title
+        var noteImageView: ImageView = itemView.note_image_view
+        var noteCreateDateTextView: TextView = itemView.tv_note_date_created
+        private var itemMenuButton: ImageButton = itemView.note_menu_button
 
         init {
             noteTitleTextView.setOnClickListener(this)

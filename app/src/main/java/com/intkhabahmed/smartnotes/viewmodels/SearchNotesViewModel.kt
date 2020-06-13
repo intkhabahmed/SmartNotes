@@ -16,7 +16,7 @@ class SearchNotesViewModel internal constructor(title: String?, trashed: Int) : 
     }
 
     fun setNotes(title: String?, trashed: Int) {
-        notes = LivePagedListBuilder(NoteRepository.getInstance().getNotesByTitleAndAvailability(title, trashed),
+        notes = LivePagedListBuilder(NoteRepository.instance!!.getNotesByTitleAndAvailability(title, trashed),
                 PagedList.Config.Builder().setPageSize(10).setInitialLoadSizeHint(20).setEnablePlaceholders(true).build()).build()
     }
 }

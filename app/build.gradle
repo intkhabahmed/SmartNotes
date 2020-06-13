@@ -79,12 +79,11 @@ dependencies {
     kapt 'androidx.lifecycle:lifecycle-compiler:2.2.0'
     implementation 'androidx.room:room-runtime:2.2.5'
     kapt 'androidx.room:room-compiler:2.2.5'
-    kapt 'androidx.room:room-compiler:2.2.5'
     implementation 'androidx.paging:paging-runtime:2.1.2'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
     implementation 'com.google.firebase:firebase-core:17.4.3'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'com.facebook.android:audience-network-sdk:5.6.0'
+    implementation 'com.facebook.android:audience-network-sdk:5.9.0'
 }
 repositories {
     mavenCentral()

@@ -23,7 +23,7 @@ public class Global extends Application {
     public void onCreate() {
         super.onCreate();
         AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CRASH_DEBUG_MODE);
-        AdSettings.addTestDevice("9e563b43-5054-4817-8c8a-1ee730d9cca7");
+        AdSettings.addTestDevice("83e6c7fa-8d9b-4869-aef1-40062b63be12");
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
         }

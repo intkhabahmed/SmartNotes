@@ -17,7 +17,7 @@ class NotesViewModel internal constructor(noteType: String, trashed: Int) : View
 
     fun setNotes(noteType: String, trashed: Int) {
         notes = LivePagedListBuilder(
-                NoteRepository.getInstance().getNotesByTypeAndAvailability(noteType, trashed),
+                NoteRepository.instance!!.getNotesByTypeAndAvailability(noteType, trashed),
                 PagedList.Config.Builder().setPageSize(10).setInitialLoadSizeHint(20).setEnablePlaceholders(true).build()
         ).build()
     }
