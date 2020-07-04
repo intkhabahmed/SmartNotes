@@ -40,7 +40,7 @@ class SimpleNotesFragment : Fragment(), NotesAdapter.OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mNotesAdapter = NotesAdapter(parentActivity!!, this)
+        mNotesAdapter = NotesAdapter(this)
         mNotesBinding.run {
             mRecyclerView = mNotesBinding.recyclerView
             mRecyclerView.apply {

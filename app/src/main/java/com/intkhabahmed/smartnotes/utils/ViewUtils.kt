@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.util.TypedValue
 import android.view.View
-import android.view.WindowManager
 import androidx.annotation.AttrRes
 import androidx.appcompat.app.AlertDialog
 import com.intkhabahmed.smartnotes.R
@@ -33,31 +32,31 @@ object ViewUtils {
             (context as Activity).finish()
             context.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
-        val dialogBuilder = AlertDialog.Builder(context)
-        dialogBuilder.setPositiveButton(context.getString(R.string.discard), discardButtonListener)
-        dialogBuilder.setNegativeButton(context.getString(R.string.keep_editing)) { dialogInterface, i -> dialogInterface.dismiss() }
-        dialogBuilder.setMessage(context.getString(R.string.unsaved_changes_dialog_message))
-        dialogBuilder.setTitle(context.getString(R.string.unsaved_changes))
-        val alertDialog = dialogBuilder.create()
-        val params = alertDialog.window!!.attributes
-        params.dimAmount = 0.7f
-        alertDialog.window!!.attributes = params
-        alertDialog.window!!.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        alertDialog.show()
+        val dialogBuilder = AlertDialog.Builder(context).apply {
+            setPositiveButton(context.getString(R.string.discard), discardButtonListener)
+            setNegativeButton(context.getString(R.string.keep_editing)) { dialogInterface, i -> dialogInterface.dismiss() }
+            setMessage(context.getString(R.string.unsaved_changes_dialog_message))
+            setTitle(context.getString(R.string.unsaved_changes))
+        }
+
+        with(dialogBuilder.create()) {
+            dimWindowBackground()
+            show()
+        }
     }
 
     fun showDeleteConfirmationDialog(context: Context, deleteButtonListener: DialogInterface.OnClickListener?, message: String?) {
-        val dialogBuilder = AlertDialog.Builder(context)
-        dialogBuilder.setPositiveButton(context.getString(R.string.yes), deleteButtonListener)
-        dialogBuilder.setNegativeButton(context.getString(R.string.no)) { dialogInterface, i -> dialogInterface.dismiss() }
-        dialogBuilder.setMessage(message)
-        dialogBuilder.setTitle(context.getString(R.string.delete_confirmation))
-        val alertDialog = dialogBuilder.create()
-        val params = alertDialog.window!!.attributes
-        params.dimAmount = 0.7f
-        alertDialog.window!!.attributes = params
-        alertDialog.window!!.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        alertDialog.show()
+        val dialogBuilder = AlertDialog.Builder(context).apply {
+            setPositiveButton(context.getString(R.string.yes), deleteButtonListener)
+            setNegativeButton(context.getString(R.string.no)) { dialogInterface, i -> dialogInterface.dismiss() }
+            setMessage(message)
+            setTitle(context.getString(R.string.delete_confirmation))
+        }
+
+        with(dialogBuilder.create()) {
+            dimWindowBackground()
+            show()
+        }
     }
 
     fun getColorFromAttribute(context: Context, @AttrRes attribute: Int): Int {

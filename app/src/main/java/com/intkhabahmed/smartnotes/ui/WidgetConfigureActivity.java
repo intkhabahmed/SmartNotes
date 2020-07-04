@@ -62,7 +62,7 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
             actionBar.setTitle(R.string.select_note_btn);
         }
         mRecyclerView = mWidgetBinding.included.recyclerView;
-        mNotesAdapter = new NotesAdapter(this, this);
+        mNotesAdapter = new NotesAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
@@ -78,7 +78,7 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
 
     private void setupViewModel() {
         mWidgetBinding.included.progressBar.setVisibility(View.VISIBLE);
-        NotesViewModelFactory factory = new NotesViewModelFactory(null, 0);
+        NotesViewModelFactory factory = new NotesViewModelFactory("", 0);
         NotesViewModel notesViewModel = new ViewModelProvider(this, factory).get(NotesViewModel.class);
         notesViewModel.getNotes().observe(this, new Observer<PagedList<Note>>() {
             @Override

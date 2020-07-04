@@ -57,7 +57,7 @@ class SearchFragment : Fragment(), NotesAdapter.OnItemClickListener, SearchView.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
-        mNotesAdapter = NotesAdapter(parentActivity!!, this)
+        mNotesAdapter = NotesAdapter(this)
         mRecyclerView = mNotesBinding.recyclerView
         mNotesBinding.recyclerView.apply {
             val linearLayoutManager = LinearLayoutManager(parentActivity, LinearLayoutManager.VERTICAL, false)

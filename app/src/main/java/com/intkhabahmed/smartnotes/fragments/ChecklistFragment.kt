@@ -45,7 +45,7 @@ class ChecklistFragment : Fragment(), NotesAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mRecyclerView = mNotesBinding.recyclerView
-        mNotesAdapter = NotesAdapter(parentActivity!!, this)
+        mNotesAdapter = NotesAdapter(this)
         mRecyclerView.apply {
             val linearLayoutManager = LinearLayoutManager(parentActivity, LinearLayoutManager.VERTICAL, false)
             layoutManager = linearLayoutManager

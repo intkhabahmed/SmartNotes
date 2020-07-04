@@ -1,6 +1,5 @@
 package com.intkhabahmed.smartnotes.adapters
 
-import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.intkhabahmed.smartnotes.R
+import com.intkhabahmed.smartnotes.adapters.view.BaseViewHolder
 import com.intkhabahmed.smartnotes.models.ChecklistItem
 import com.intkhabahmed.smartnotes.models.Note
 import com.intkhabahmed.smartnotes.utils.AppConstants
@@ -32,7 +32,7 @@ import java.io.File
  * Created by INTKHAB on 23-03-2018.
  */
 
-class NotesAdapter(private val mContext: Context, private val mOnItemClickListener: OnItemClickListener) : PagedListAdapter<Note, androidx.recyclerview.widget.RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+class NotesAdapter(private val mOnItemClickListener: OnItemClickListener) : PagedListAdapter<Note, BaseViewHolder>(DIFF_CALLBACK) {
 
     interface OnItemClickListener {
         fun onMenuItemClick(view: View, note: Note)
@@ -40,83 +40,41 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
         fun onItemClick(noteId: Int, noteType: String)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val view: View
         return when (viewType) {
-            0 -> {
-                view = LayoutInflater.from(mContext).inflate(R.layout.note_item, parent, false)
+            R.layout.note_item -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.note_item, parent, false)
                 TextNotesViewHolder(view)
             }
-            1 -> {
-                view = LayoutInflater.from(mContext).inflate(R.layout.image_note_item, parent, false)
+            R.layout.image_note_item -> {
+                view = LayoutInflater.from(parent.context).inflate(R.layout.image_note_item, parent, false)
                 ImageNotesViewHolder(view)
             }
             else -> throw IllegalArgumentException(AppConstants.INVALID_VIEW_TYPE)
         }
     }
 
-    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
-        val note = getItem(holder.adapterPosition)!!
-        when (holder.itemViewType) {
-            0 -> {
-                val textNotesViewHolder = holder as TextNotesViewHolder
-                if (note.noteType == mContext.getString(R.string.simple_note)) {
-                    textNotesViewHolder.noteDescriptionTextView.text = note.description
-                } else if (note.noteType == mContext.getString(R.string.checklist)) {
-                    val checklistItems = Gson().fromJson<List<ChecklistItem>>(note.description, object : TypeToken<List<ChecklistItem>>() {
-                    }.type)
-
-                    val noOfItems = if (checklistItems.size >= 2) 2 else checklistItems.size
-                    textNotesViewHolder.noteDescriptionTextView.text = ""
-                    for (i in 0 until noOfItems) {
-                        textNotesViewHolder.noteDescriptionTextView
-                                .append(checklistItems!![i].title)
-                        if (checklistItems[i].isChecked) {
-                            textNotesViewHolder.noteDescriptionTextView.append(" " + mContext.getString(R.string.checkmark_unicode))
-                        }
-                        if (i < noOfItems - 1) {
-                            textNotesViewHolder.noteDescriptionTextView.append("\n")
-                        }
-                    }
-                    if (checklistItems != null && checklistItems.size > 2) {
-                        textNotesViewHolder.noteDescriptionTextView.append(" ...")
-                    }
-                }
-                textNotesViewHolder.noteTitleTextView.text = note.noteTitle
-                textNotesViewHolder.noteCreateDateTextView.text = NoteUtils.getFormattedTime(note.dateCreated,
-                        System.currentTimeMillis())
-            }
-            1 -> {
-                val imageNotesViewHolder = holder as ImageNotesViewHolder
-                val imageFile = File(note.description!!)
-                if (imageFile.exists()) {
-                    Glide.with(mContext).asDrawable().load(Uri.fromFile(imageFile)).into(imageNotesViewHolder.noteImageView)
-                }
-                imageNotesViewHolder.noteTitleTextView.text = note.noteTitle
-                imageNotesViewHolder.noteCreateDateTextView.text = NoteUtils.getFormattedTime(note.dateCreated,
-                        System.currentTimeMillis())
-            }
-        }
+    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
     override fun getItemViewType(position: Int): Int {
         val note: Note? = getItem(position)
-        return if (note?.noteType == mContext.getString(R.string.simple_note) || note?.noteType == mContext.getString(R.string.checklist)) {
-            0
-        } else 1
+        return when (note?.noteType) {
+            AppConstants.SIMPLE_NOTE,
+            AppConstants.CHECKLIST -> R.layout.note_item
+            else -> R.layout.image_note_item
+        }
     }
 
-    internal inner class TextNotesViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        var noteTitleTextView: TextView = itemView.note_title
-        var noteDescriptionTextView: TextView = itemView.note_description
-        var noteCreateDateTextView: TextView = itemView.note_create_date
-        private var itemMenuButton: ImageButton = itemView.item_menu_button
+    internal inner class TextNotesViewHolder(itemView: View) : BaseViewHolder(itemView), View.OnClickListener {
 
         init {
-            noteTitleTextView.setOnClickListener(this)
-            noteDescriptionTextView.setOnClickListener(this)
-            noteCreateDateTextView.setOnClickListener(this)
-            itemMenuButton.setOnClickListener(this)
+            itemView.note_title.setOnClickListener(this)
+            itemView.note_description.setOnClickListener(this)
+            itemView.note_create_date.setOnClickListener(this)
+            itemView.item_menu_button.setOnClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -127,19 +85,45 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
                 mOnItemClickListener.onItemClick(note.noteId, note.noteType ?: "")
             }
         }
+
+        override fun bind(note: Note?) {
+            note?.let {
+                if (note.noteType == AppConstants.SIMPLE_NOTE) {
+                    itemView.note_description.text = note.description
+                } else if (note.noteType == AppConstants.CHECKLIST) {
+                    val checklistItems = Gson().fromJson<List<ChecklistItem>>(note.description, object : TypeToken<List<ChecklistItem>>() {
+                    }.type)
+
+                    val noOfItems = if (checklistItems.size >= 2) 2 else checklistItems.size
+                    itemView.note_description.text = ""
+                    for (i in 0 until noOfItems) {
+                        itemView.note_description
+                            .append(checklistItems!![i].title)
+                        if (checklistItems[i].isChecked) {
+                            itemView.note_description.append(" " + itemView.context.getString(R.string.checkmark_unicode))
+                        }
+                        if (i < noOfItems - 1) {
+                            itemView.note_description.append("\n")
+                        }
+                    }
+                    if (checklistItems != null && checklistItems.size > 2) {
+                        itemView.note_description.append(" ...")
+                    }
+                }
+                itemView.note_title.text = note.noteTitle
+                itemView.note_create_date.text = NoteUtils.getFormattedTime(note.dateCreated,
+                    System.currentTimeMillis())
+            }
+        }
     }
 
-    internal inner class ImageNotesViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        var noteTitleTextView: TextView = itemView.tv_note_title
-        var noteImageView: ImageView = itemView.note_image_view
-        var noteCreateDateTextView: TextView = itemView.tv_note_date_created
-        private var itemMenuButton: ImageButton = itemView.note_menu_button
+    internal inner class ImageNotesViewHolder(itemView: View) : BaseViewHolder(itemView), View.OnClickListener {
 
         init {
-            noteTitleTextView.setOnClickListener(this)
-            noteImageView.setOnClickListener(this)
-            noteCreateDateTextView.setOnClickListener(this)
-            itemMenuButton.setOnClickListener(this)
+            itemView.tv_note_title.setOnClickListener(this)
+            itemView.note_image_view.setOnClickListener(this)
+            itemView.tv_note_date_created.setOnClickListener(this)
+            itemView.note_menu_button.setOnClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -148,6 +132,18 @@ class NotesAdapter(private val mContext: Context, private val mOnItemClickListen
                 mOnItemClickListener.onMenuItemClick(view, note)
             } else if (view is TextView || view is ImageView) {
                 mOnItemClickListener.onItemClick(note.noteId, note.noteType ?: "")
+            }
+        }
+
+        override fun bind(note: Note?) {
+            note?.let {
+                val imageFile = File(note.description!!)
+                if (imageFile.exists()) {
+                    Glide.with(itemView.context).asDrawable().load(Uri.fromFile(imageFile)).into(itemView.note_image_view)
+                }
+                itemView.tv_note_title.text = note.noteTitle
+                itemView.tv_note_date_created.text = NoteUtils.getFormattedTime(note.dateCreated,
+                    System.currentTimeMillis())
             }
         }
     }

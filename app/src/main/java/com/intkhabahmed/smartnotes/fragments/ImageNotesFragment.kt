@@ -36,7 +36,7 @@ class ImageNotesFragment : Fragment(), NotesAdapter.OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mNotesAdapter = NotesAdapter(parentActivity!!, this)
+        mNotesAdapter = NotesAdapter(this)
         mNotesBinding.run {
             recyclerView.apply {
                 val noOfColumns = if (parentActivity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) 2 else 3

@@ -19,5 +19,7 @@ interface AppConstants {
         const val WIDGET_IMAGE_SIZE = 1000
         const val INVALID_VIEW_TYPE = "Unknown ViewType"
         const val APP_OPEN_TIME = "app_open_time"
+        const val SIMPLE_NOTE = "Simple Note"
+        const val CHECKLIST = "Checklist"
     }
 }
