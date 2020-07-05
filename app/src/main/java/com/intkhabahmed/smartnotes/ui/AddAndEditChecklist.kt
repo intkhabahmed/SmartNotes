@@ -10,6 +10,7 @@ import android.os.Handler
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -122,6 +123,7 @@ class AddAndEditChecklist : AppCompatActivity(), DateTimeListener {
         }
         val checkBoxContainer = LinearLayout(this)
         checkBoxContainer.orientation = LinearLayout.HORIZONTAL
+        checkBoxContainer.gravity = Gravity.CENTER_VERTICAL
         checkBoxContainer.contentDescription = checklistItem
         val removeButton = ImageButton(this)
         removeButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_clear_24dp))
@@ -194,8 +196,7 @@ class AddAndEditChecklist : AppCompatActivity(), DateTimeListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        when (id) {
+        when (item.itemId) {
             android.R.id.home -> {
                 if (mIsChanged) {
                     onBackPressed()
