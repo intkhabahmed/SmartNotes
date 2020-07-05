@@ -1,20 +1,23 @@
 package com.intkhabahmed.smartnotes.ui;
 
 import android.appwidget.AppWidgetManager;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.adapters.NotesAdapter;
@@ -26,8 +29,6 @@ import com.intkhabahmed.smartnotes.utils.Global;
 import com.intkhabahmed.smartnotes.utils.ViewUtils;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModel;
 import com.intkhabahmed.smartnotes.viewmodels.NotesViewModelFactory;
-
-import java.util.List;
 
 public class WidgetConfigureActivity extends AppCompatActivity implements NotesAdapter.OnItemClickListener {
 
@@ -61,7 +62,7 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
             actionBar.setTitle(R.string.select_note_btn);
         }
         mRecyclerView = mWidgetBinding.included.recyclerView;
-        mNotesAdapter = new NotesAdapter(this, this);
+        mNotesAdapter = new NotesAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mNotesAdapter);
@@ -77,17 +78,16 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
 
     private void setupViewModel() {
         mWidgetBinding.included.progressBar.setVisibility(View.VISIBLE);
-        NotesViewModelFactory factory = new NotesViewModelFactory(null, 0);
-        NotesViewModel notesViewModel = ViewModelProviders.of(this, factory).get(NotesViewModel.class);
-        notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
+        NotesViewModelFactory factory = new NotesViewModelFactory("", 0);
+        NotesViewModel notesViewModel = new ViewModelProvider(this, factory).get(NotesViewModel.class);
+        notesViewModel.getNotes().observe(this, new Observer<PagedList<Note>>() {
             @Override
-            public void onChanged(@Nullable List<Note> notes) {
+            public void onChanged(@Nullable PagedList<Note> notes) {
                 mWidgetBinding.included.progressBar.setVisibility(View.GONE);
+                mNotesAdapter.submitList(notes);
                 if (notes != null && notes.size() > 0) {
                     ViewUtils.hideEmptyView(mRecyclerView, mWidgetBinding.included.emptyView);
-                    mNotesAdapter.setNotes(notes);
                 } else {
-                    mNotesAdapter.setNotes(null);
                     ViewUtils.showEmptyView(mRecyclerView, mWidgetBinding.included.emptyView);
                 }
             }
@@ -109,22 +109,19 @@ public class WidgetConfigureActivity extends AppCompatActivity implements NotesA
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                break;
-
+        if (id == android.R.id.home) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onMenuItemClick(View view, final Note note) {
+    public void onMenuItemClick(@NonNull View view, @NonNull final Note note) {
         setNoteForWidget(note.getNoteId());
     }
 
     @Override
-    public void onItemClick(int noteId, String noteType) {
+    public void onItemClick(int noteId, @NonNull String noteType) {
         setNoteForWidget(noteId);
     }
 

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -13,7 +13,7 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -29,7 +29,7 @@
                 android:visibility="invisible"
                 tools:ignore="UseCompoundDrawables">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:contentDescription="@string/trash_empty_view_description"
@@ -54,7 +54,7 @@
                 android:visibility="invisible"
                 tools:ignore="UseCompoundDrawables">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:contentDescription="@string/trash_empty_view_description"
@@ -79,7 +79,7 @@
                 android:visibility="invisible"
                 tools:ignore="UseCompoundDrawables">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:contentDescription="@string/search_error_view_description"
@@ -103,7 +103,7 @@
 
         </FrameLayout>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_button"
             android:layout_width="@dimen/medium_icon_size"
             android:layout_height="@dimen/medium_icon_size"
@@ -115,5 +115,5 @@
             android:scaleType="centerCrop"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_add_black_24dp" />
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -2,30 +2,18 @@ package com.intkhabahmed.smartnotes.utils;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.preference.PreferenceManager;
+
 import com.facebook.ads.AdSettings;
 import com.intkhabahmed.smartnotes.R;
 import com.intkhabahmed.smartnotes.database.NotesDatabase;
-
-import io.fabric.sdk.android.Fabric;
 
 import static com.facebook.ads.AdSettings.IntegrationErrorMode.INTEGRATION_ERROR_CRASH_DEBUG_MODE;
 
 public class Global extends Application {
     private static Global sGlobalInstance;
     private static SharedPreferences sSharedPreferences;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CRASH_DEBUG_MODE);
-        AdSettings.addTestDevice("9e563b43-5054-4817-8c8a-1ee730d9cca7");
-        Fabric.with(this, new Crashlytics());
-        sGlobalInstance = (Global) getApplicationContext();
-        sSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    }
 
     public static Global getInstance() {
         return sGlobalInstance;
@@ -63,5 +51,14 @@ public class Global extends Application {
 
     public static void deleteDataForWidgetId(String key) {
         sSharedPreferences.edit().remove(key).apply();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        AdSettings.setIntegrationErrorMode(INTEGRATION_ERROR_CRASH_DEBUG_MODE);
+        AdSettings.addTestDevice("83e6c7fa-8d9b-4869-aef1-40062b63be12");
+        sGlobalInstance = (Global) getApplicationContext();
+        sSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
 }
